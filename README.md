@@ -1,4 +1,4 @@
-**The project is still under construction, we will continue to update it and welcome contributions/pull requests from the community**
+**The project is still under construction, we will continue to update it and welcome contributions/pull requests from the community.**
 
 
 
