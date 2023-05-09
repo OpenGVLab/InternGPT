@@ -1,3 +1,7 @@
+**The project is still under construction, we will continue to update it and welcome contributions/pull requests from the community**
+
+
+
 <p align="center"><img src="./assets/gvlab_logo.png" width="600"></p>
 
 # InternChat
