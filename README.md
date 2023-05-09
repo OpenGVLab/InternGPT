@@ -8,7 +8,7 @@
 
 
 <!-- ## Description -->
-The name **InternChat** (short for **iChat**) stands for **inter**action, **n**onverbal, and **chat**bots. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iChat significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iChat, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
+**InternChat**(short for **iChat**) is pointing-language-driven visual interactive system. The name InternChat stands for **inter**action, **n**onverbal, and **chat**bots. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iChat significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iChat, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
 ## Online Demo
 [InternChat](https://ichat.opengvlab.com/) is online. Let's try it!
