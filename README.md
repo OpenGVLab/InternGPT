@@ -11,7 +11,7 @@
 
 ## Schedule
 - [ ] Support Chinese
-- [ ] More powerful foundation models in [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo).
+- [ ] More powerful foundation models in [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
 - [ ] More accurate interactive experience
 - [ ] Web Page & Code Generation 
 - [x] Support voice assistant
@@ -31,7 +31,11 @@
 
 ## Online Demo
 [InternChat](https://ichat.opengvlab.com/) is online. Let's try it!
-<!-- <video id="video" controls="" poster="" ><source id="video" src="./assets/online_demo.mp4" type="video/mp4"></videos> -->
+
+
+https://github.com/OpenGVLab/InternChat/assets/13723743/6b9c8aaa-8650-4a93-97fa-86f97f6724a7
+
+
 
 ## System Overview
 <p align="center"><img src="./assets/arch1.png" alt="Logo"></p>
