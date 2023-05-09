@@ -20,6 +20,7 @@ https://github.com/OpenGVLab/InternChat/assets/8529570/dbacfe72-a40f-48cc-acff-5
 
 ## Schedule
 - [ ] Support Chinese
+- [ ] Support MOSS
 - [ ] More powerful foundation models based on [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
 - [ ] More accurate interactive experience
 - [ ] Web Page & Code Generation 
