@@ -4,18 +4,23 @@
 
 <p align="center"><img src="./assets/gvlab_logo.png" width="600"></p>
 
-# InternChat
+# InternChat [[paper](https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/ichat.pdf)]
+
 
 <!-- ## Description -->
-**InternChat** (iChat) is an interactive visual framework. This framework integrates chatbots that have planning and reasoning capabilities, such as ChatGPT, with non-verbal instructions like pointing movements that enable users to directly manipulate images or videos on the screen. Pointing (including gestures, cursors, etc.) movements can provide more flexibility and precision in performing vision-centric tasks that require fine-grained control, editing, and generation of visual content. The name InternChat stands for **inter**action, **n**onverbal, and chatbots. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, the proposed iChat significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios where the number of objects is greater than 2. Additionally, in iChat, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed Husky is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with 93.89% GPT-4 Quality). We hope this work can spark new ideas and directions for future interactive visual systems.
+The name **InternChat** (short for **iChat**) stands for **inter**action, **n**onverbal, and **chat**bots. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iChat significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iChat, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
-## Paper
-[InternChat](https://www.shlab.org.cn)
+## Online Demo
+[InternChat](https://ichat.opengvlab.com/) is online. Let's try it!
+
+
+https://github.com/OpenGVLab/InternChat/assets/8529570/dbacfe72-a40f-48cc-acff-5c7ad0f64b68
+
 
 
 ## Schedule
 - [ ] Support Chinese
-- [ ] More powerful foundation models in [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
+- [ ] More powerful foundation models based on [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
 - [ ] More accurate interactive experience
 - [ ] Web Page & Code Generation 
 - [x] Support voice assistant
@@ -33,12 +38,6 @@
 - [x] Video dense caption
 - [x] video highlight interpretation
 
-## Online Demo
-[InternChat](https://ichat.opengvlab.com/) is online. Let's try it!
-
-
-https://github.com/OpenGVLab/InternChat/assets/13723743/6b9c8aaa-8650-4a93-97fa-86f97f6724a7
-
 
 
 ## System Overview
@@ -46,22 +45,24 @@ https://github.com/OpenGVLab/InternChat/assets/13723743/6b9c8aaa-8650-4a93-97fa-
 
 ## 🎁 Major Features
 <!--<!-- <p align="center"><img src="./assets/online_demo.gif" alt="Logo"></p> -->  
-<p align="center">A) Remove the masked object</p>
+<p align="center">(a) Remove the masked object</p>
 <p align="center"><img src="./assets/demo2.gif" width="500"></p>
 
-<p align="center">B) Interactive image editing</center>
+<p align="center">(b) Interactive image editing</center>
 <p align="center"><img src="./assets/demo3.gif" width="500"></p>
 
-<p align="center">C) Image generation</p>
+<p align="center">(c) Image generation</p>
 <p align="center"><img src="./assets/demo4.gif" align='justify'  width="500"></p>
 
-<p align="center">D) Interactive visual question answer</p>
+<p align="center">(d) Interactive visual question answer</p>
 <p align="center"><img src="./assets/demo5.gif" align='justify' width="700"></p> 
 
-<p align="center">E) Video highlight interpretation</p>
+
+<p align="center">(e) Interactive image generation</p>
+<p align="center"><img src="./assets/demo5.gif" align='justify' width="700"></p> 
+
+<p align="center">(f) Video highlight interpretation</p>
 <p align="center"><img src="./assets/demo6.jpg" align='justify' width="500"></p> 
-
-
 
 <!-- ![alt]("./assets/demo5.gif" "title") -->
 
@@ -112,7 +113,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 If you find this project useful in your research, please consider cite:
 ```BibTeX
-@misc{2020mmaction2,
+@misc{2023internchat,
     title={InternChat: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
     author={Zhaoyang Liu, Yinan He, Wenhai Wang, Weiyun Wang, Yi Wang, Shoufa Chen, Qinglong Zhang, Yang Yang, Qingyun Li, Jiashuo Yu, Kunchang Li, Zhe Chen, Xue Yang, Xizhou Zhu, Yali Wang, Limin Wang, Ping Luo, Jifeng Dai, Yu Qiao},
     howpublished = {\url{https://www.shlab.org.cn}},
