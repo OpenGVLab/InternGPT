@@ -115,7 +115,7 @@ If you find this project useful in your research, please consider cite:
 ```BibTeX
 @misc{2023internchat,
     title={InternChat: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
-    author={Zhaoyang Liu, Yinan He, Wenhai Wang, Weiyun Wang, Yi Wang, Shoufa Chen, Qinglong Zhang, Yang Yang, Qingyun Li, Jiashuo Yu, Kunchang Li, Zhe Chen, Xue Yang, Xizhou Zhu, Yali Wang, Limin Wang, Ping Luo, Jifeng Dai, Yu Qiao},
+    author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
     howpublished = {\url{https://www.shlab.org.cn}},
     year={2023}
 }
