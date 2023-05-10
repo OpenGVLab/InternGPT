@@ -14,7 +14,7 @@
 [InternChat](https://ichat.opengvlab.com/) is online. Let's try it!
 
 
-https://github.com/OpenGVLab/InternChat/assets/8529570/dbacfe72-a40f-48cc-acff-5c7ad0f64b68
+https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-4010fd855643
 
 
 
