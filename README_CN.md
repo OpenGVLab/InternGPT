@@ -11,12 +11,14 @@
 
 # InternChat [[论文](https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/ichat.pdf)]
 <!-- ## 描述 -->
-**InternChat**（简称 **iChat**）是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。InternChat 的名称代表了 **inter**action（交互）、**n**onverbal（非言语）和 **chat**bots（聊天机器人）。与依赖纯语言的现有交互系统不同，通过整合指向指令，iChat 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iChat 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（使 ChatGPT-3.5-turbo 达到 **93.89% GPT-4 质量**）。
+**InternChat**（简称 **iChat**）是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。InternChat 的名称代表了 **inter**action（交互）、**n**onverbal（非语言）和 **chat**bots（聊天机器人）。与依赖纯语言的现有交互系统不同，通过整合指向指令，iChat 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iChat 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（在ChatGPT-3.5-turbo评测中达到 **93.89% GPT-4 质量**）。
   
 ## 在线Demo
-[**InternChat**已上线，尝试一下！](https://ichat.opengvlab.com)
+  
+[注意] 目前多人使用有点问题，影响体验，为此我们先暂停demo服务，尽快修复bug然后重新上线。
+  
+~~[**InternChat**已上线，尝试一下！](https://ichat.opengvlab.com)~~
 
-[注意] 可能会出现排队等待较长时间。您可以clone我们的仓库并使用您自己的GPU运行。
 
 https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-4010fd855643
   
