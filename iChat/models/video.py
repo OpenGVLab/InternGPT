@@ -21,7 +21,7 @@ class VideoCaption:
     def __init__(self, device):
         self.device = device
         self.image_size = 384
-        self.threshold = 0.68
+        # self.threshold = 0.68
         self.video_path = None
         self.result = None
         self.tags = None
@@ -34,12 +34,6 @@ class VideoCaption:
 
     def framewise_details(self, inputs):
         video_path = inputs.strip()
-        # if self.video_path != video_path:
-        #     caption = self.inference(video_path)
-        # else:
-        #     caption = self.result
-        
-        # data = loadvideo_decord_origin(video_path)
         caption = self.inference(video_path)
         frame_caption = ""
         prev_caption = ""
@@ -79,10 +73,6 @@ class VideoCaption:
                          "representing the video_path")
     def inference(self, inputs):
         video_path = inputs.strip()
-        # if self.video_path == video_path:
-        #     return '. '.join(self.result)
-        self.video_path = video_path
-        # data = loadvideo_decord_origin(video_path)
         data = self.load_video(video_path)
         # progress(0.2, desc="Loading Videos")
         tmp = []
@@ -91,23 +81,20 @@ class VideoCaption:
 
         # Video Caption
         image = torch.cat(tmp).to(self.device)    
-        self.threshold = 0.68
+        # self.threshold = 0.68
 
         input_tag_list = None
         with torch.no_grad():
             caption, tags = self.model.generate(image,tag_input = input_tag_list, max_length = 50, return_tag_predict = True)
         # print(frame_caption, dense_caption, synth_caption)
-        print(caption)
+        # print(caption)
         del data, image, tmp
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
-        # video_prompt = f"""The tags for this vieo are: {prediction}, {','.join(tag_1)};
-        # The temporal description of the video is: {frame_caption}
-        # The dense caption of the video is: {dense_caption}
-        # The general description of the video is: {synth_caption[0]}"""
         self.result = caption
         self.tags = tags
-        return '. '.join(caption)
+        # return '. '.join(caption)
+        return caption
 
 
 class Summarization:
@@ -136,7 +123,7 @@ class ActionRecognition:
     def __init__(self, device):
         self.device = device
         self.video_path = None
-        self.result = None
+        # self.result = None
         self.model = load_intern_action(device)
         self.transform = transform_action()
         self.toPIL = T.ToPILImage()
@@ -169,7 +156,7 @@ class ActionRecognition:
             prediction = self.model(action_tensor)
             prediction = F.softmax(prediction, dim=1).flatten()
             prediction = kinetics_classnames[str(int(prediction.argmax()))]
-        self.result = prediction
+        # self.result = prediction
         return prediction
 
 
@@ -226,6 +213,7 @@ class GenerateTikTokVideo:
         dense_caption = self.DenseCaption.inference(video_path)
         print(f'dense_caption = {dense_caption}')
         caption = self.VideoCaption.inference(video_path)
+        caption = '. '.join(caption)
         print(f'caption = {caption}')
         tags = self.VideoCaption.tags
         print(f'tags = {tags}')

@@ -1177,28 +1177,7 @@ class ConversationBot:
                 if e.startswith('inference'):
                     func = getattr(instance, e)
                     self.tools.append(Tool(name=func.name, description=func.description, func=func))
-        # self.llm = None
-        # self.memory = None
-        # self.audio_model = None
-    '''
-    def init_agent(self):
-        if self.memory is not None:
-            self.memory.clear() #clear previous history
-        else:
-            self.memory = ConversationBufferMemory(memory_key="chat_history", output_key='output')
-        
-        self.reset()
-        self.llm = OpenAI(temperature=0)
-        self.agent = initialize_agent(
-            self.tools,
-            self.llm,
-            agent="conversational-react-description",
-            verbose=True,
-            memory=self.memory,
-            return_intermediate_steps=True,
-            agent_kwargs={'prefix': INTERN_CHAT_PREFIX, 'format_instructions': INTERN_CHAT_FORMAT_INSTRUCTIONS,
-                          'suffix': INTERN_CHAT_SUFFIX}, )
-    '''
+
     
     def find_latest_image(self, file_list):
         res = None
@@ -1337,7 +1316,7 @@ class ConversationBot:
         user_state[0]['agent'].memory.buffer = cut_dialogue_history(user_state[0]['agent'].memory.buffer, keep_last_n_words=500)
         pattern = re.compile('(image/[-\\w]*.(png|mp4))')
         try:
-            response = self.agent({"input": text.strip()})['output']
+            response = user_state[0]['agent']({"input": text.strip()})['output']
             response = response.replace("\\", "/")
             out_filenames = pattern.findall(response)
             illegal_files = self.check_illegal_files(out_filenames)
@@ -1703,7 +1682,7 @@ def cut_dialogue_history(history_memory, keep_last_n_words=500):
 def login_with_key(bot, debug, api_key):
     # Just for debug
     print('===>logging in')
-    user_state = []
+    user_state = [{}]
     is_error = True
     if debug:
         user_state = init_agent(bot)
