@@ -61,7 +61,7 @@ https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-
 <p align="center">(d) 交互式视觉问答</p>
 <p align="center"><img src="./assets/demo5.gif" align='justify' width="700"></p>
 
-<p align="center">(e) 交互式图像生成</p>
+<p align="center">(e) 交互式图像生成（你需要点击"Save"按钮保存你的笔画）</p>
 <p align="center"><img width="800" alt="image" src="https://github.com/OpenGVLab/InternChat/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917"></p>
 
 <p align="center">(f) 视频高光解释</p>
