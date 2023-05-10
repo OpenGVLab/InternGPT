@@ -70,7 +70,7 @@ https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-
 <p align="center"><img src="./assets/demo5.gif" align='justify' width="700"></p> 
 
 
-<p align="center">(e) Interactive image generation</p>
+<p align="center">(e) Interactive image generation (you need to click the "Save" bottom to save your strokes)</p>
 <p align="center"><img width="800" alt="image" src="https://github.com/OpenGVLab/InternChat/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917"></p> 
 
 
