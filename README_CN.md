@@ -15,9 +15,9 @@
   
 ## 在线Demo
   
-[注意] 目前多人使用有点问题，影响体验，为此我们先暂停demo服务，尽快修复bug然后重新上线。
+[注意] 可能会出现排队等待较长时间。您可以clone我们的仓库并使用您自己的GPU运行。
   
-~~[**InternChat**已上线，尝试一下！](https://ichat.opengvlab.com)~~
+[**InternChat**已上线，尝试一下！](https://ichat.opengvlab.com)
 
 
 https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-4010fd855643
