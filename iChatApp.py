@@ -257,13 +257,15 @@ class CannyText2Image:
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
-        self.seed = random.randint(0, 65535)
-        seed_everything(self.seed)
+        w, h = image.size
+        image = resize_800(image)
+        seed_everything(GLOBAL_SEED)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
         # updated_image_path = get_new_image_name(image_path, func_name="canny2image")
         updated_image_path = gen_new_name(image_path, f'{type(self).__name__}')
+        image = image.resize((w, h))
         image.save(updated_image_path)
         print(f"\nProcessed CannyText2Image, Input Canny: {image_path}, Input Text: {instruct_text}, "
               f"Output Text: {updated_image_path}")
@@ -317,13 +319,15 @@ class LineText2Image:
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
-        self.seed = random.randint(0, 65535)
-        seed_everything(self.seed)
+        w, h = image.size
+        image = resize_800(image)
+        seed_everything(GLOBAL_SEED)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
         # updated_image_path = get_new_image_name(image_path, func_name="line2image")
         updated_image_path = gen_new_name(image_path, f'{type(self).__name__}')
+        image = image.resize((w, h))
         image.save(updated_image_path)
         print(f"\nProcessed LineText2Image, Input Line: {image_path}, Input Text: {instruct_text}, "
               f"Output Text: {updated_image_path}")
@@ -377,13 +381,15 @@ class HedText2Image:
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
-        self.seed = random.randint(0, 65535)
-        seed_everything(self.seed)
+        w, h = image.size
+        image = resize_800(image)
+        seed_everything(GLOBAL_SEED)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
         # updated_image_path = get_new_image_name(image_path, func_name="hed2image")
         updated_image_path = gen_new_name(image_path, f'{type(self).__name__}')
+        image = image.resize((w, h))
         image.save(updated_image_path)
         print(f"\nProcessed HedText2Image, Input Hed: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
@@ -435,12 +441,15 @@ class ScribbleText2Image:
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
+        w, h = image.size
+        image = resize_800(image)
         seed_everything(GLOBAL_SEED)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
         # updated_image_path = get_new_image_name(image_path, func_name="scribble2image")
         updated_image_path = gen_new_name(image_path, f'{type(self).__name__}')
+        image = image.resize((w, h))
         image.save(updated_image_path)
         print(f"\nProcessed ScribbleText2Image, Input Scribble: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
@@ -494,13 +503,15 @@ class PoseText2Image:
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
-        self.seed = random.randint(0, 65535)
-        seed_everything(self.seed)
+        w, h = image.size
+        image = resize_800(image)
+        seed_everything(GLOBAL_SEED)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
         # updated_image_path = get_new_image_name(image_path, func_name="pose2image")
         updated_image_path = gen_new_name(image_path, f'{type(self).__name__}')
+        image = image.resize((w, h))
         image.save(updated_image_path)
         print(f"\nProcessed PoseText2Image, Input Pose: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
@@ -532,13 +543,15 @@ class SegText2Image:
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
-        self.seed = random.randint(0, 65535)
-        seed_everything(self.seed)
+        w, h = image.size
+        image = resize_800(image)
+        seed_everything(GLOBAL_SEED)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
         # updated_image_path = get_new_image_name(image_path, func_name="segment2image")
         updated_image_path = gen_new_name(image_path, f'{type(self).__name__}')
+        image = image.resize((w, h))
         image.save(updated_image_path)
         print(f"\nProcessed SegText2Image, Input Seg: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
@@ -553,7 +566,6 @@ class ImageText2Image:
         # self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.SegText2Image = SegText2Image
         self.SegmentAnything = SegmentAnything
-        self.seed = -1
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
                             ' fewer digits, cropped, worst quality, low quality'
@@ -623,13 +635,15 @@ class DepthText2Image:
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
-        self.seed = random.randint(0, 65535)
-        seed_everything(self.seed)
+        w, h = image.size
+        image = resize_800(image)
+        seed_everything(GLOBAL_SEED)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
         # updated_image_path = get_new_image_name(image_path, func_name="depth2image")
         updated_image_path = gen_new_name(image_path, f'{type(self).__name__}')
+        image = image.resize((w, h))
         image.save(updated_image_path)
         print(f"\nProcessed DepthText2Image, Input Depth: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
@@ -1662,6 +1676,16 @@ css='''
 #image_upload:{align-items: center; min-width: 640px}
 '''
 
+def resize_800(image):
+    w, h = image.size
+    if w > h:
+        ratio = w * 1.0 / 800
+        new_w, new_h = 800, int(h * 1.0 / ratio)
+    else:
+        ratio = h * 1.0 / 800
+        new_w, new_h = int(w * 1.0 / ratio), 800
+    image = image.resize((new_w, new_h))
+    return image
 
 def cut_dialogue_history(history_memory, keep_last_n_words=500):
     if history_memory is None or len(history_memory) == 0:
