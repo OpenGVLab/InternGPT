@@ -34,13 +34,13 @@ class VideoCaption:
 
     def framewise_details(self, inputs):
         video_path = inputs.strip()
-        if self.video_path != video_path:
-            caption = self.inference(video_path)
-        else:
-            caption = self.result
+        # if self.video_path != video_path:
+        #     caption = self.inference(video_path)
+        # else:
+        #     caption = self.result
         
         # data = loadvideo_decord_origin(video_path)
-        # caption = self.inference(video_path)
+        caption = self.inference(video_path)
         frame_caption = ""
         prev_caption = ""
         start_time = 0
@@ -79,8 +79,8 @@ class VideoCaption:
                          "representing the video_path")
     def inference(self, inputs):
         video_path = inputs.strip()
-        if self.video_path == video_path:
-            return '. '.join(self.result)
+        # if self.video_path == video_path:
+        #     return '. '.join(self.result)
         self.video_path = video_path
         # data = loadvideo_decord_origin(video_path)
         data = self.load_video(video_path)
@@ -150,9 +150,9 @@ class ActionRecognition:
                          "representing the video_path")
     def inference(self, inputs):
         video_path = inputs.strip()
-        if self.video_path == video_path:
-            return self.result
-        self.video_path = video_path
+        # if self.video_path == video_path:
+        #     return self.result
+        # self.video_path = video_path
         # data = loadvideo_decord_origin(video_path)
         data = self.load_video(video_path)
 
@@ -231,12 +231,6 @@ class GenerateTikTokVideo:
         print(f'tags = {tags}')
         framewise_caption = self.VideoCaption.framewise_details(video_path)
         print(f'framewise_caption = {framewise_caption}')
-        # video_summarization = self.Summarization.inference(caption)
-        # print(f'video_summarization = {video_summarization}')
-        # video_prompt = f"""The tags for this video are: {action_classes}, {','.join(tags)};
-        #     The temporal description of the video is: {framewise_caption}
-        #     The dense caption of the video is: {dense_caption}
-        #     The general description of the video is: {video_summarization[0]}"""
         video_prompt = f"""The tags for this video are: {action_classes}, {','.join(tags)};
             The temporal description of the video is: {framewise_caption}
             The dense caption of the video is: {dense_caption}"""

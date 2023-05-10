@@ -367,6 +367,7 @@ class HuskyVQA:
         # NOTE: strip is important to align with the training data.
         self.chat.conv.messages[-1][1] = outputs.strip()
         # print(f'HuskyVQA: {outputs}')
+        self.reset()
         print(
             f"\nProcessed HuskyVQA, Inputs: {inputs}. "
             f"Output: {outputs}")
@@ -388,6 +389,7 @@ class HuskyVQA:
         outputs = self.chat.answer(conversations, vision_feature)
         # NOTE: strip is important to align with the training data.
         self.chat.conv.messages[-1][1] = outputs.strip()
+        self.reset()
         print(
             f"\nProcessed HuskyVQA captioning, Inputs: {inputs}. "
             f"Output: {outputs}")
@@ -412,6 +414,7 @@ class HuskyVQA:
         new_image_path = gen_new_name(image_path, '')
         new_image.save(new_image_path, 'PNG')
         answer = self.inference(f'{new_image_path},{question}')
+        self.reset()
         print(f"\nProcessed HuskyVQA, Inputs: {inputs}, Input Question: {question}, "
               f"Output Answer: {answer}")
         return answer
