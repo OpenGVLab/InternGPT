@@ -1,4 +1,7 @@
-**The project is still under construction, we will continue to update it and welcome contributions/pull requests from the community.**[中文文档及交流群](README_CN.md)
+[[中文文档]](README_CN.md)
+
+**The project is still under construction, we will continue to update it and welcome contributions/pull requests from the community.**
+
 
 
 
