@@ -7,7 +7,7 @@
 <img src="https://img.shields.io/badge/Demo-Open-green?logo=alibabacloud"> </a> | <a src="https://img.shields.io/twitter/follow/opengvlab?style=social" href="https://twitter.com/opengvlab">
 <img src="https://img.shields.io/twitter/follow/opengvlab?style=social">
 
-# InternChat [论文](https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/ichat.pdf)
+# InternChat [[论文](https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/ichat.pdf)]
 <!-- ## 描述 -->
 **InternChat**（简称 **iChat**）是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。InternChat 的名称代表了 **inter**action（交互）、**n**onverbal（非言语）和 **chat**bots（聊天机器人）。与依赖纯语言的现有交互系统不同，通过整合指向指令，iChat 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iChat 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（使 ChatGPT-3.5-turbo 达到 **93.89% GPT-4 质量**）。
   
@@ -104,11 +104,6 @@ openssl req -x509 -newkey rsa:4096 -keyout ./key.pem -out ./cert.pem -sha256 -da
 python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
 ```
 
-## 交流群
-
-如果您在试用、运行、部署中有任何问题，欢迎加入我们的微信群讨论！如果您对项目有任何的想法和建议，欢迎加入我们的微信群讨论！
-![43a79ad1c696c3267ad053db6d94278](https://github.com/OpenGVLab/InternChat/assets/43169235/ba580988-4f89-433e-a3e3-bdb97115bdc2)
-
 
 ## 🎫 许可
 
@@ -140,3 +135,9 @@ python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRec
 [BLIP](https://github.com/salesforce/BLIP) &#8194;
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
 [EasyOCR](https://github.com/JaidedAI/EasyOCR) &#8194;
+
+
+
+如果您在试用、运行、部署中有任何问题，欢迎加入我们的微信群讨论！如果您对项目有任何的想法和建议，欢迎加入我们的微信群讨论！
+
+<p align="center"><img width="500" alt="image" src="https://github.com/OpenGVLab/InternChat/assets/8529570/881c231d-9049-4920-a22c-680f41f0f7ee"></p> 
