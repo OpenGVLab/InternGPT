@@ -100,7 +100,7 @@ openssl req -x509 -newkey rsa:4096 -keyout ./key.pem -out ./cert.pem -sha256 -da
 
 and then run:
 ```shell
-python -u IChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
+python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
 ```
  
 
@@ -133,7 +133,6 @@ Thanks to the open source of the following projects:
 [ControlNet](https://github.com/lllyasviel/ControlNet) &#8194; 
 [InstructPix2Pix](https://github.com/timothybrooks/instruct-pix2pix) &#8194; 
 [BLIP](https://github.com/salesforce/BLIP) &#8194;
-[Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
 [EasyOCR](https://github.com/JaidedAI/EasyOCR) &#8194;
 
