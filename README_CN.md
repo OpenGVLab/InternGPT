@@ -1,3 +1,5 @@
+[[English Document](https://github.com/OpenGVLab/InternChat/blob/main/README.md)]
+
 **[NOTE] 该项目仍在建设中，我们将继续更新，并欢迎社区的贡献/拉取请求。**
 
 <p align="center"><img src="./assets/gvlab_logo.png" width="600"></p>
