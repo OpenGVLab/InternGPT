@@ -90,7 +90,7 @@ Coming soon...
 ## 👨‍🏫 Get Started 
 Running the following shell can start a gradio service:
 ```shell
-python -u IChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
+python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
 ```
 
 if you want to enable the voice assistant, please use `openssl` to generate the certificate:
