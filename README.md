@@ -143,4 +143,9 @@ Thanks to the open source of the following projects:
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
 [EasyOCR](https://github.com/JaidedAI/EasyOCR) &#8194;
 
+Welcome to discuss with us and continuously improve the user experience of InternChat.
+
+WeChat QR Code
+
+<p align="center"><img width="500" alt="image" src="https://github.com/OpenGVLab/InternChat/assets/8529570/881c231d-9049-4920-a22c-680f41f0f7ee"></p> 
 
