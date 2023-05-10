@@ -14,7 +14,7 @@
     
 
 
-# InternChat [[paper](https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/ichat.pdf)]
+# InternChat [[paper](https://arxiv.org/pdf/2305.05662.pdf)]
 
 
 <!-- ## Description -->
