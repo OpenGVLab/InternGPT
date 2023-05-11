@@ -20,7 +20,7 @@
 [**internGPT**已上线，尝试一下！](https://igpt.opengvlab.com)
 
 
-https://github.com/OpenGVLab/internGPT/assets/13723743/3270b05f-0823-4f13-9966-4010fd855643
+https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
   
 ## Schedule
 - [ ] 支持中文
