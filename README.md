@@ -152,5 +152,5 @@ Welcome to discuss with us and continuously improve the user experience of Inter
 
 WeChat QR Code
 
-<p align="center"><img width="500" alt="image" src="https://s1.ax1x.com/2023/05/11/p9rTzMq.jpg"></p> 
+<p align="center"><img width="500" alt="image" src="https://s1.ax1x.com/2023/05/11/p9r7JSA.jpg"></p> 
 
