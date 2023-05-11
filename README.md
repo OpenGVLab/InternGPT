@@ -2,9 +2,6 @@
 
 **The project is still under construction, we will continue to update it and welcome contributions/pull requests from the community.**
 
-
-
-
 <p align="center"><img src="./assets/gvlab_logo.png" width="600"></p>
 
 <a src="https://img.shields.io/discord/1099920215724277770?label=Discord&logo=discord" href="https://discord.gg/khWBFnCgAN">
@@ -14,19 +11,18 @@
     
 
 
-# InternChat [[paper](https://arxiv.org/pdf/2305.05662.pdf)]
+# InternGPT [[paper](https://arxiv.org/pdf/2305.05662.pdf)]
 
 
 <!-- ## Description -->
-**InternChat**(short for **iChat**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternChat stands for **inter**action, **n**onverbal, and **chat**bots. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iChat significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iChat, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
+**InternGPT**(short for **iGPT**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternGPT stands for **inter**action, **n**onverbal, and **chat**bots. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iGPT significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iGPT, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
 ## Online Demo
 [**NOTE**] It is possible that you are waiting in a lengthy queue. You can clone our repo and run it with your private GPU.
 
-[**InternChat**](https://ichat.opengvlab.com/) is online. Let's try it!
+[**InternGPT**](https://igpt.opengvlab.com/) is online. Let's try it!
 
-https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-4010fd855643
-
+https://github.com/OpenGVLab/InternGPT/assets/13723743/3270b05f-0823-4f13-9966-4010fd855643
 
 
 ## Schedule
@@ -34,7 +30,7 @@ https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-
 - [ ] Support MOSS
 - [ ] More powerful foundation models based on [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
 - [ ] More accurate interactive experience
-- [ ] Web Page & Code Generation 
+- [ ] Web page & code generation 
 - [x] Support voice assistant
 - [x] Support click interaction
 - [x] Interactive image editing
@@ -70,8 +66,8 @@ https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-
 <p align="center"><img src="./assets/demo5.gif" align='justify' width="700"></p> 
 
 
-<p align="center">(e) Interactive image generation (you need to click the "Save" bottom to save your strokes)</p>
-<p align="center"><img width="800" alt="image" src="https://github.com/OpenGVLab/InternChat/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917"></p> 
+<p align="center">(e) Interactive image generation</p>
+<p align="center"><img width="800" alt="image" src="https://github.com/OpenGVLab/InternGPT/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917"></p> 
 
 
 <p align="center">(f) Video highlight interpretation</p>
@@ -102,20 +98,19 @@ Coming soon...
 ## 👨‍🏫 Get Started 
 Running the following shell can start a gradio service:
 ```shell
-python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
+python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
 ```
 
 if you want to enable the voice assistant, please use `openssl` to generate the certificate:
 ```shell
-openssl req -x509 -newkey rsa:4096 -keyout ./key.pem -out ./cert.pem -sha256 -days 365 -nodes
+mkdir certificate
+openssl req -x509 -newkey rsa:4096 -keyout certificate/key.pem -out certificate/cert.pem -sha256 -days 365 -nodes
 ```
 
 and then run:
 ```shell
-python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
+python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
 ```
- 
-
 
 
 ## 🎫 License
@@ -126,8 +121,8 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 If you find this project useful in your research, please consider cite:
 ```BibTeX
-@misc{2023internchat,
-    title={InternChat: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
+@misc{2023interngpt,
+    title={InternGPT: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
     author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
     howpublished = {\url{https://arxiv.org/abs/2305.05662}},
     year={2023}
@@ -148,7 +143,7 @@ Thanks to the open source of the following projects:
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
 [EasyOCR](https://github.com/JaidedAI/EasyOCR) &#8194;
 
-Welcome to discuss with us and continuously improve the user experience of InternChat.
+Welcome to discuss with us and continuously improve the user experience of InternGPT.
 
 WeChat QR Code
 

@@ -1,4 +1,4 @@
-[[English Document](https://github.com/OpenGVLab/InternChat/blob/main/README.md)]
+[[English Document](https://github.com/OpenGVLab/internGPT/blob/main/README.md)]
 
 **[NOTE] 该项目仍在建设中，我们将继续更新，并欢迎社区的贡献/拉取请求。**
 
@@ -9,18 +9,18 @@
 <img src="https://img.shields.io/badge/Demo-Open-green?logo=alibabacloud"> </a> | <a src="https://img.shields.io/twitter/follow/opengvlab?style=social" href="https://twitter.com/opengvlab">
 <img src="https://img.shields.io/twitter/follow/opengvlab?style=social">
 
-# InternChat [[论文](https://arxiv.org/pdf/2305.05662.pdf)]
+# internGPT [[论文](https://arxiv.org/pdf/2305.05662.pdf)]
 <!-- ## 描述 -->
-**InternChat**（简称 **iChat**）是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。InternChat 的名称代表了 **inter**action（交互）、**n**onverbal（非语言）和 **chat**bots（聊天机器人）。与依赖纯语言的现有交互系统不同，通过整合指向指令，iChat 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iChat 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（在ChatGPT-3.5-turbo评测中达到 **93.89% GPT-4 质量**）。
+**internGPT**（简称 **iGPT**）是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。internGPT 的名称代表了 **inter**action（交互）、**n**onverbal（非语言）和 **chat**bots（聊天机器人）。与依赖纯语言的现有交互系统不同，通过整合指向指令，iGPT 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iGPT 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（在ChatGPT-3.5-turbo评测中达到 **93.89% GPT-4 质量**）。
   
 ## 在线Demo
   
 [注意] 可能会出现排队等待较长时间。您可以clone我们的仓库并使用您自己的GPU运行。
   
-[**InternChat**已上线，尝试一下！](https://ichat.opengvlab.com)
+[**internGPT**已上线，尝试一下！](https://igpt.opengvlab.com)
 
 
-https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-4010fd855643
+https://github.com/OpenGVLab/internGPT/assets/13723743/3270b05f-0823-4f13-9966-4010fd855643
   
 ## Schedule
 - [ ] 支持中文
@@ -61,8 +61,9 @@ https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-
 <p align="center">(d) 交互式视觉问答</p>
 <p align="center"><img src="./assets/demo5.gif" align='justify' width="700"></p>
 
-<p align="center">(e) 交互式图像生成（你需要点击"Save"按钮保存你的笔画）</p>
-<p align="center"><img width="800" alt="image" src="https://github.com/OpenGVLab/InternChat/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917"></p>
+
+<p align="center">(e) 交互式图像生成</p>
+<p align="center"><img width="800" alt="image" src="https://github.com/OpenGVLab/internGPT/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917"></p>
 
 <p align="center">(f) 视频高光解释</p>
 <p align="center"><img src="./assets/demo6.jpg" align='justify' width="500"></p> 
@@ -94,7 +95,7 @@ pip install -r requirements.txt
 运行以下 shell 可启动一个 gradio 服务：
 
 ```shell
-python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
+python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
 ```
 
 如果您想启用语音助手，请使用 openssl 生成证书：
@@ -105,7 +106,7 @@ openssl req -x509 -newkey rsa:4096 -keyout ./key.pem -out ./cert.pem -sha256 -da
 然后运行：
 
 ```shell
-python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
+python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
 ```
 
 
@@ -117,8 +118,8 @@ python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRec
 
 如果您在研究中发现这个项目有用，请考虑引用：
 ```BibTeX
-@misc{2023internchat,
-    title={InternChat: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
+@misc{2023interngpt,
+    title={internGPT: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
     author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
     howpublished = {\url{https://arxiv.org/abs/2305.05662}},
     year={2023}
