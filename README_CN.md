@@ -11,7 +11,7 @@
 
 # internGPT [[论文](https://arxiv.org/pdf/2305.05662.pdf)]
 <!-- ## 描述 -->
-**internGPT**（简称 **iGPT**）是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。internGPT 的名称代表了 **inter**action（交互）、**n**onverbal（非语言）和 **chat**bots（聊天机器人）。与依赖纯语言的现有交互系统不同，通过整合指向指令，iGPT 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iGPT 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（在ChatGPT-3.5-turbo评测中达到 **93.89% GPT-4 质量**）。
+**internGPT**（简称 **iGPT**）是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。internGPT 的名称代表了 **inter**action（交互）、**n**onverbal（非语言）和 Chat**GPT**。与依赖纯语言的现有交互系统不同，通过整合指向指令，iGPT 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iGPT 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（在ChatGPT-3.5-turbo评测中达到 **93.89% GPT-4 质量**）。
   
 ## 在线Demo
   
@@ -119,7 +119,7 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 如果您在研究中发现这个项目有用，请考虑引用：
 ```BibTeX
 @misc{2023interngpt,
-    title={internGPT: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
+    title={internGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
     author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
     howpublished = {\url{https://arxiv.org/abs/2305.05662}},
     year={2023}
