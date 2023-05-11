@@ -53,7 +53,7 @@ https://github.com/OpenGVLab/InternChat/assets/13723743/3270b05f-0823-4f13-9966-
 <p align="center"><img src="./assets/demo2.gif" width="500"></p>
 
 <p align="center">(b) 交互式图像编辑</center>
-<p align="center"><img src="./assets/demo3.gif" width="500"></p>
+<p align="center"><img src="./assets/tower.gif" width="500"></p>
 
 <p align="center">(c) 图像生成</p>
 <p align="center"><img src="./assets/demo4.gif" align='justify'  width="500"></p>
