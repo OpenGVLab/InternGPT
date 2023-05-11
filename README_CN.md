@@ -119,7 +119,7 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 如果您在研究中发现这个项目有用，请考虑引用：
 ```BibTeX
 @misc{2023interngpt,
-    title={internGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
+    title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
     author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
     howpublished = {\url{https://arxiv.org/abs/2305.05662}},
     year={2023}
