@@ -144,7 +144,7 @@ python -u iChatApp.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRec
 
 如果您在试用、运行、部署中有任何问题，欢迎加入我们的微信群讨论！如果您对项目有任何的想法和建议，欢迎加入我们的微信群讨论！
 
-<p align="center"><img width="500" alt="image" src="https://s1.ax1x.com/2023/05/11/p9rTzMq.jpg"></p> 
+<p align="center"><img width="500" alt="image" src="https://s1.ax1x.com/2023/05/11/p9r7JSA.jpg"></p> 
 
 一群快满了，可以添加2群
 <p align="center"><img width="500" alt="image" src="https://github.com/OpenGVLab/InternChat/assets/8529570/881c231d-9049-4920-a22c-680f41f0f7ee"></p> 
