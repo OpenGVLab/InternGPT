@@ -17,15 +17,23 @@
 <!-- ## Description -->
 **InternGPT**(short for **iGPT**) / **InternChat**(short for **iChat**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternGPT stands for **inter**action, **n**onverbal, and Chat**GPT**. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iGPT significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iGPT, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
-## Online Demo
+## 🤖💬 Online Demo
 **InternGPT** is online (see [https://igpt.opengvlab.com](https://igpt.opengvlab.com/)). Let's try it!
 
 [**NOTE**] It is possible that you are waiting in a lengthy queue. You can clone our repo and run it with your private GPU.
 
+### 🧭 Usage Tips
+After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of image?"`.     
+You also can interactively operate, edit or generate the image as follows:
+- You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
+- To **remove the masked reigon** in the image, you can send the message like: `"remove the maked region"`;
+- To **replace the masked reigon** in the image, you can send the message like: `"replace the maked region with {your prompt}"`;
+- To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation decribing {your prompt}"`
+- To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble describing {your prompt}"`.
+
 <p align="center"><img src="./assets/demo_short.gif" width="500"></p>
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
-
 
 
 ## 🗓️ Schedule
@@ -36,7 +44,6 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 - [ ] More accurate interactive experience
 - [ ] OpenMMLab Toolkit
 - [ ] Web page & code generation 
-- [ ] Support Search Engine 
 - [ ] Support Search Engine 
 - [ ] Low Cost Deployment
 - [x] Support voice assistant
@@ -111,7 +118,7 @@ pip install -r requirements.txt
 ```
 
 
-### Model zoo
+### 🗃 Model zoo
 Coming soon...
 
 ## 👨‍🏫 Get Started 
@@ -132,24 +139,12 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 ```
 
 
-
 ## 🎫 License
 
 This project is released under the [Apache 2.0 license](LICENSE). 
 
 ## 🖊️ Citation
-<!-- <details>
-<summary>If you find this project useful in your research, please consider cite:</summary>
 
-```BibTeX
-@misc{2023interngpt,
-    title={InternGPT: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
-    author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
-    howpublished = {\url{https://arxiv.org/abs/2305.05662}},
-    year={2023}
-}
-```
-</details> -->
 If you find this project useful in your research, please consider cite:
 
 ```BibTeX
