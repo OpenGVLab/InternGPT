@@ -29,8 +29,6 @@ https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a
 
 
 ## 🗓️ Schedule
-<details>
-<summary>Click to see details</summary>
 
 - [ ] Support Chinese
 - [ ] Support MOSS
@@ -52,7 +50,7 @@ https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a
 - [x] Video caption
 - [x] Video dense caption
 - [x] video highlight interpretation
-</details>
+
 
 
 
