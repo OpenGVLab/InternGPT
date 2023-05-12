@@ -22,9 +22,10 @@
 
 [**NOTE**] It is possible that you are waiting in a lengthy queue. You can clone our repo and run it with your private GPU.
 
+<p align="center"><img src="./assets/demo_short.gif" width="500"></p>
+
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
-<p align="center"><img src="./assets/demo_short.gif" width="500"></p>
 
 
 ## 🗓️ Schedule
