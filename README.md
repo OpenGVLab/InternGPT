@@ -11,7 +11,7 @@
     
 
 
-# InternGPT [[paper](https://arxiv.org/pdf/2305.05662.pdf)][[play it](https://igpt.opengvlab.com/)]
+# InternGPT [[Paper](https://arxiv.org/pdf/2305.05662.pdf)] [[Try it](https://igpt.opengvlab.com/)]
 
 
 <!-- ## Description -->
