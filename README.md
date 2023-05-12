@@ -36,6 +36,9 @@ https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a
 - [ ] More accurate interactive experience
 - [ ] OpenMMLab Toolkit
 - [ ] Web page & code generation 
+- [ ] Support Search Engine 
+- [ ] Support Search Engine 
+- [ ] Low Cost Deployment
 - [x] Support voice assistant
 - [x] Support click interaction
 - [x] Interactive image editing
