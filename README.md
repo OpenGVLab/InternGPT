@@ -22,11 +22,9 @@
 
 [**NOTE**] It is possible that you are waiting in a lengthy queue. You can clone our repo and run it with your private GPU.
 
-
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
-https://github.com/OpenGVLab/InternGPT/assets/8529570/ad109eda-5717-4d6c-a140-41d6205df4df
-
+<p align="center"><img src="./assets/demo_short.gif" width="500"></p>
 
 
 ## 🗓️ Schedule
@@ -57,7 +55,7 @@ https://github.com/OpenGVLab/InternGPT/assets/8529570/ad109eda-5717-4d6c-a140-41
 
 
 ## 🏠 System Overview
-<p align="center"><img width="800" src="./assets/arch1.png" alt="Logo"></p>
+<p align="center"><img width="800" src="./assets/arch1.png" alt="arch"></p>
 
 ## 🎁 Major Features 
 <details>
@@ -67,7 +65,7 @@ https://github.com/OpenGVLab/InternGPT/assets/8529570/ad109eda-5717-4d6c-a140-41
 
 <details>
 <summary>Interactive image editing</summary>
-<p align="center"><img src="./assets/tower.gif" width="500"></p>
+<p align="center"><img src="./assets/demo3.gif" width="500"></p>
 </details>
 
 <details>
