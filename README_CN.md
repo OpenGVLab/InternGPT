@@ -13,24 +13,34 @@
 <!-- ## 描述 -->
 **InternGPT**（简称 **iGPT**） / **InternChat**（简称 **iChat**） 是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。internGPT 的名称代表了 **inter**action（交互）、**n**onverbal（非语言）和 Chat**GPT**。与依赖纯语言的现有交互系统不同，通过整合指向指令，iGPT 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iGPT 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（在ChatGPT-3.5-turbo评测中达到 **93.89% GPT-4 质量**）。
   
-## 在线Demo
+## 🤖💬 在线Demo
   
 [注意] 可能会出现排队等待较长时间。您可以clone我们的仓库并使用您自己的GPU运行。
   
+### 🧭 Usage Tips
+在图片上传成功后, 您可以发送如下消息与iGPT进行多模态相关的对话：`"what is it in the image?"` or `"what is the background color of image?"`.   
+您同样也可以交互式地操作、编辑或者生成图片，具体如下：
+- 点击图片上的任意位置，然后按下**`Pick`** 按钮，**预览分割区域**。您也可以按下**`OCR`**按钮，识别具体位置处存在的所有单词；
+- 要在图像中**删除掩码区域**，您可以发送如下消息：“remove the maked region”；
+- 要在图像中“替换掩码区域的物体为其他物体”，您可以发送如下消息：“replace the maked region with {your prompt}”；
+- 要生成新图像，您可以发送如下消息：“generate a new image based on its segmentation describing {your prompt}”；
+- 要通过您的涂鸦创建新图像，您应该按下 **`Whiteboard`** 按钮并在白板上绘制。绘制完成后，您需要按下 “保存” 按钮并发送如下消息：“generate a new image based on this scribble decribing {your prompt}”。
+
 [**InternGPT** 已上线，尝试一下！](https://igpt.opengvlab.com)
 
+https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
-视频demo：https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
-
-## 项目规划
-<details>
-<summary>点击查看详情</summary>
-
+  
+## 🗓️ 项目规划
+  
 - [ ] 支持中文
 - [ ] 支持 MOSS
 - [ ] 基于 InternImage 和 InternVideo 的更强大的基础模型
 - [ ] 更准确的交互体验
+- [ ] OpenMMLab Toolkit
 - [ ] 网页 & 代码生成
+- [ ] 支持搜索引擎 
+- [ ] 低成本部署
 - [x] 支持语音助手
 - [x] 支持点击交互
 - [x] 交互式图像编辑
@@ -45,10 +55,9 @@
 - [x] 视频描述
 - [x] 视频密集描述
 - [x] 视频高光时刻截取
-</details>
 
   
-## 系统概览
+## 🏠 系统概览
 <p align="center"><img src="./assets/arch1.png" alt="Logo"></p>
   
 ## 🎁 主要功能
@@ -87,35 +96,28 @@
 <!-- ![alt]("./assets/demo5.gif" "title") -->
 
 ## 🛠️ 安装
-<details>
-<summary>基本要求</summary>
 
+### 基本要求
 - Linux 
 - Python 3.8+ 
 - PyTorch 1.12+
 - CUDA 11.6+ 
 - GCC & G++ 5.4+
 - GPU Memory > 17G 用于加载基本工具 (HuskyVQA, SegmentAnything, ImageOCRRecognition)
-</details>
 
-<details>
-<summary>安装Python的依赖项</summary>
-
+### 安装Python的依赖项
 ```shell
 pip install -r requirements.txt
 ```
-</details>
 
 
-### 模型库
+### 🗃 模型库
 
 即将推出...
 
 ## 👨‍🏫 运行指南
 
-
-<details>
-<summary>运行以下 shell 可启动一个 gradio 服务（点击即可展开）：</summary>
+运行以下 shell 可启动一个 gradio 服务：
 
 ```shell
 python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
@@ -132,7 +134,6 @@ openssl req -x509 -newkey rsa:4096 -keyout certificate/key.pem -out certificate/
 python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
 ```
 
-</details>
 
 
 ## 🎫 许可
@@ -170,7 +171,9 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 
 如果您在试用、运行、部署中有任何问题，欢迎加入我们的微信群讨论！如果您对项目有任何的想法和建议，欢迎加入我们的微信群讨论！
 
-<details>
-<summary>加入微信群组二维码 (点击展开)：</summary>
-
+加入微信群组二维码：
+  
 <p align="center"><img width="500" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
+
+  
+  
