@@ -22,12 +22,7 @@
 
 [**NOTE**] It is possible that you are waiting in a lengthy queue. You can clone our repo and run it with your private GPU.
 
-
-
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
-
-
-
 
 ## 🗓️ Schedule
 
@@ -60,11 +55,9 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 
 
 ## 🏠 System Overview
-<p align="center"><img src="./assets/arch1.png" alt="Logo"></p>
+<p align="center"><img width="800" src="./assets/arch1.png" alt="Logo"></p>
 
-## 🎁 Major Features
-<!-- <summary>Evaluate the fine-tuned EVA (<code>336px, patch_size=14</code>) on <b>ImageNet-1K val</b> with a single node (click to expand).</summary> -->
-<!--<!-- <p align="center"><img src="./assets/online_demo.gif" alt="Logo"></p> -->  
+## 🎁 Major Features 
 <details>
 <summary>Remove the masked object</summary>
 <p align="center"><img src="./assets/demo2.gif" width="500"></p>
@@ -186,7 +179,7 @@ Welcome to discuss with us and continuously improve the user experience of Inter
 
 WeChat QR Code
 
-<p align="left"><img width="400" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
+<p align="center"><img width="400" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
 
 
 
