@@ -24,6 +24,8 @@
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
+
+
 ## 🗓️ Schedule
 
 - [ ] Support Chinese
