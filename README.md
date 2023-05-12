@@ -24,8 +24,9 @@
 
 
 
+https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
-https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
+
 
 
 ## 🗓️ Schedule
