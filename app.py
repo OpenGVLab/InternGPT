@@ -3,7 +3,7 @@ import os
 os.environ['CURL_CA_BUNDLE'] = ''
 
 try:
-    import detectron
+    import detectron2
 except:
     os.system('pip install git+https://github.com/facebookresearch/detectron2.git')
 
