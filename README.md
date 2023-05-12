@@ -25,7 +25,8 @@
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
-https://github.com/OpenGVLab/InternGPT/assets/8529570/edbbaaef-4222-4cb4-a58b-2abb55c00e30
+![demo_short](https://github.com/OpenGVLab/InternGPT/assets/8529570/ef852f12-2e01-408c-a8f6-25af1a250d59)
+
 
 
 
