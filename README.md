@@ -34,6 +34,7 @@ https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a
 - [ ] Support MOSS
 - [ ] More powerful foundation models based on [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
 - [ ] More accurate interactive experience
+- [ ] OpenMMLab Toolkit
 - [ ] Web page & code generation 
 - [x] Support voice assistant
 - [x] Support click interaction
