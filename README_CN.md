@@ -20,11 +20,11 @@
 ### 🧭 Usage Tips
 在图片上传成功后, 您可以发送如下消息与iGPT进行多模态相关的对话：`"what is it in the image?"` or `"what is the background color of image?"`.   
 您同样也可以交互式地操作、编辑或者生成图片，具体如下：
-- 点击图片上的任意位置，然后按下**`Pick`** 按钮，**预览分割区域**。您也可以按下**`OCR`**按钮，识别具体位置处存在的所有单词；
-- 要在图像中**删除掩码区域**，您可以发送如下消息：“remove the maked region”；
-- 要在图像中“替换掩码区域的物体为其他物体”，您可以发送如下消息：“replace the maked region with {your prompt}”；
-- 要生成新图像，您可以发送如下消息：“generate a new image based on its segmentation describing {your prompt}”；
-- 要通过您的涂鸦创建新图像，您应该按下 **`Whiteboard`** 按钮并在白板上绘制。绘制完成后，您需要按下 “保存” 按钮并发送如下消息：“generate a new image based on this scribble decribing {your prompt}”。
+- 点击图片上的任意位置，然后按下 **`Pick`** 按钮，**预览分割区域**。您也可以按下 **`OCR`** 按钮，识别具体位置处存在的所有单词；
+- 要在图像中 **删除掩码区域**，您可以发送如下消息：`“remove the maked region”`；
+- 要在图像中 **替换掩码区域的物体为其他物体**，您可以发送如下消息：`“replace the maked region with {your prompt}”`；
+- 想 **生成新图像**，您可以发送如下消息：`“generate a new image based on its segmentation describing {your prompt}”`；
+- 想通过 **涂鸦创建新图像**，您应该按下 **`Whiteboard`** 按钮并在白板上绘制。绘制完成后，您需要按下 **`保存`** 按钮并发送如下消息：`“generate a new image based on this scribble decribing {your prompt}”`。
 
 [**InternGPT** 已上线，尝试一下！](https://igpt.opengvlab.com)
 
