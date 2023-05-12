@@ -1901,26 +1901,26 @@ if __name__ == '__main__':
         gr.HTML(
             """
             <body>
-            <p style="font-family:verdana;color:#FF0000";>Tips!!! (More detailed instructions are coming soon): </p>
+            <p style="font-family:verdana;color:#FF0000";>!!!Tips (More detailed instructions can see <a href="https://github-production-user-asset-6210df.s3.amazonaws.com/8529570/237790678-a02bcea5-6d1f-4e84-85a3-8a66239b8a51.mp4"><b>here</b></a>): </p>
             </body>
             """
         )
         gr.Markdown(
             '''
-            After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `what is it in the image?` or `what is the background color of image?`.
+            After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of image?"`.
             
             You also can interactively operate, edit or generate the image as follows:
-            - You can click the image and press the button `Pick` to **visualize the segmented region** or press the button `OCR` to **recognize the words** at chosen position;
-            - To **remove the masked reigon** in the image, you can send the message like: `remove the maked region`;
-            - To **replace the masked reigon** in the image, you can send the message like: `replace the maked region with {your prompt}`;
-            - To **generate a new image**, you can send the message like: `generate a new image based on its segmentation decribing {your prompt}`
-            - To **create a new image by your scribble**, you can press button `Whiteboard` and drawing in the below board. After drawing, you need to press the button `Save` and send the message like: `generate a new image based on this scribble decribing {your prompt}`.
+            - You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
+            - To **remove the masked reigon** in the image, you can send the message like: `"remove the maked region"`;
+            - To **replace the masked reigon** in the image, you can send the message like: `"replace the maked region with {your prompt}"`;
+            - To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation decribing {your prompt}"`
+            - To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble decribing {your prompt}"`.
             '''
         )
         gr.HTML(
             """
             <body>
-            <p style="font-family:verdana;color:#11AA00";>More features is coming soon. Hope you have fun with our demo!</p>
+            <p style="font-family:verdana;color:#11AA00";>More features are coming soon. Hope you have fun with our demo!</p>
             </body>
             """
         )
