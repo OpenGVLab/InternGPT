@@ -23,7 +23,7 @@
 [**InternGPT**](https://igpt.opengvlab.com/) is online. Let's try it!
 
 
-See video demo: https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
+https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
 
 
 ## 🗓️ Schedule
