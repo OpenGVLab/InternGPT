@@ -1,5 +1,5 @@
 torch==1.13.0
-opencv-python==4.7.0.72
+opencv-python==4.5.5.64
 Pillow==9.5.0
 openai-whisper==20230314
 gradio==3.28.1
@@ -22,5 +22,5 @@ webdataset==0.2.48
 kornia==0.5.0
 sentencepiece==0.1.98
 accelerate==0.18.0
+timm==0.6.13
 git+https://github.com/facebookresearch/segment-anything.git
-git+https://github.com/facebookresearch/detectron2.git

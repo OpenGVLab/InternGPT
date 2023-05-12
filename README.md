@@ -114,6 +114,8 @@ See video demo: https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6
 <summary>Install Python dependencies</summary>
 
 ```shell
+conda create -n ichat python=3.8
+conda activate ichat
 pip install -r requirements.txt
 ```
 </details>
