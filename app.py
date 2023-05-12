@@ -55,7 +55,7 @@ from saicinpainting.training.trainers import load_checkpoint
 from saicinpainting.evaluation.data import pad_tensor_to_modulo
 import openai
 
-openai.api_base = 'https://closeai.deno.dev/v1'
+# openai.api_base = 'https://closeai.deno.dev/v1'
 
 GLOBAL_SEED=1912
 
@@ -1906,10 +1906,10 @@ if __name__ == '__main__':
             
             You also can interactively operate, edit or generate the image as follows:
             - You can click the image and press the button `Pick` to **visualize the segmented region** or press the button `OCR` to **recognize the words** at chosen position;
-            - if you want to **remove the masked reigon** in the image, you can send the message like: `remove the maked region`;
-            - if you want to **replace the masked reigon** in the image, you can send the message like: `replace the maked region with {your prompt}`;
-            - if you want to **generate a new image**, you can send the message like: `generate a new image based on its segmentation decribing {your prompt}`
-            - if you want to **create a new image by your scribble**, you can press button `Whiteboard` and drawing in the below board. After drawing, you need to press the button `Save` and send the message like: `generate a new image based on this scribble decribing {your prompt}`.
+            - To **remove the masked reigon** in the image, you can send the message like: `remove the maked region`;
+            - To **replace the masked reigon** in the image, you can send the message like: `replace the maked region with {your prompt}`;
+            - To **generate a new image**, you can send the message like: `generate a new image based on its segmentation decribing {your prompt}`
+            - To **create a new image by your scribble**, you can press button `Whiteboard` and drawing in the below board. After drawing, you need to press the button `Save` and send the message like: `generate a new image based on this scribble decribing {your prompt}`.
             '''
         )
         gr.HTML(

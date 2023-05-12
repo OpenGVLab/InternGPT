@@ -23,13 +23,13 @@
 [**InternGPT**](https://igpt.opengvlab.com/) is online. Let's try it!
 
 
-https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
+See video demo: https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
 
 
+## 🗓️ Schedule
+<details>
+<summary>Click to see details</summary>
 
-
-
-## Schedule
 - [ ] Support Chinese
 - [ ] Support MOSS
 - [ ] More powerful foundation models based on [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
@@ -50,57 +50,82 @@ https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a
 - [x] Video caption
 - [x] Video dense caption
 - [x] video highlight interpretation
+</details>
 
 
 
-## System Overview
+
+## 🏠 System Overview
 <p align="center"><img src="./assets/arch1.png" alt="Logo"></p>
 
 ## 🎁 Major Features
+<!-- <summary>Evaluate the fine-tuned EVA (<code>336px, patch_size=14</code>) on <b>ImageNet-1K val</b> with a single node (click to expand).</summary> -->
 <!--<!-- <p align="center"><img src="./assets/online_demo.gif" alt="Logo"></p> -->  
-<p align="center">(a) Remove the masked object</p>
+<details>
+<summary>A) Remove the masked object</summary>
 <p align="center"><img src="./assets/demo2.gif" width="500"></p>
+</details>
 
-<p align="center">(b) Interactive image editing</center>
+<details>
+<summary>B) Interactive image editing</summary>
 <p align="center"><img src="./assets/tower.gif" width="500"></p>
+</details>
 
-<p align="center">(c) Image generation</p>
-<p align="center"><img src="./assets/demo4.gif" align='justify'  width="500"></p>
+<details>
+<summary>C) Image generation</summary>
+<p align="center"><img src="./assets/demo4.gif" width="500"></p>
+</details>
 
-<p align="center">(d) Interactive visual question answer</p>
-<p align="center"><img src="./assets/demo5.gif" align='justify' width="700"></p> 
+<details>
+<summary>D) Interactive visual question answer</summary>
+<p align="center"><img src="./assets/demo5.gif" width="500"></p>
+</details>
 
+<details>
+<summary>E) Interactive image generation</summary>
+<p align="center"><img src="https://github.com/OpenGVLab/InternGPT/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917" width="500"></p>
+</details>
 
-<p align="center">(e) Interactive image generation</p>
-<p align="center"><img width="800" alt="image" src="https://github.com/OpenGVLab/InternGPT/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917"></p> 
+<details>
+<summary>F) Video highlight interpretation</summary>
+<p align="center"><img src="./assets/demo6.jpg" width="500"></p>
+</details>
 
-
-<p align="center">(f) Video highlight interpretation</p>
-<p align="center"><img src="./assets/demo6.jpg" align='justify' width="500"></p> 
 
 <!-- ![alt]("./assets/demo5.gif" "title") -->
 
 
 ## 🛠️ Installation
 
-### Basic requirements
+<!-- ### Basic requirements -->
+<details>
+<summary>Basic requirements</summary>
 
-- Linux
-- Python 3.8+
+- Linux 
+- Python 3.8+ 
 - PyTorch 1.12+
 - CUDA 11.6+ 
 - GCC & G++ 5.4+
 - GPU Memory >= 17G for loading basic tools (HuskyVQA, SegmentAnything, ImageOCRRecognition)
+</details>
 
-### Install Python dependencies
+<!-- ### Install Python dependencies -->
+<details>
+<summary>Install Python dependencies</summary>
+
 ```shell
 pip install -r requirements.txt
 ```
+</details>
+
 
 ### Model zoo
 Coming soon...
 
 ## 👨‍🏫 Get Started 
+<details>
+<summary>Click to see details</summary>
+
 Running the following shell can start a gradio service:
 ```shell
 python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
@@ -116,6 +141,8 @@ and then run:
 ```shell
 python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
 ```
+</details>
+
 
 
 ## 🎫 License
@@ -123,8 +150,20 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 This project is released under the [Apache 2.0 license](LICENSE). 
 
 ## 🖊️ Citation
+<!-- <details>
+<summary>If you find this project useful in your research, please consider cite:</summary>
 
+```BibTeX
+@misc{2023interngpt,
+    title={InternGPT: Solving Vision-Centric Tasks by Interacting with Chatbots Beyond Language},
+    author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
+    howpublished = {\url{https://arxiv.org/abs/2305.05662}},
+    year={2023}
+}
+```
+</details> -->
 If you find this project useful in your research, please consider cite:
+
 ```BibTeX
 @misc{2023interngpt,
     title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
@@ -148,9 +187,13 @@ Thanks to the open source of the following projects:
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
 [EasyOCR](https://github.com/JaidedAI/EasyOCR) &#8194;
 
+
 Welcome to discuss with us and continuously improve the user experience of InternGPT.
 
-WeChat QR Code
+<details>
+<summary>WeChat QR Code (Click to expand)</summary>
 
-<p align="center"><img width="500" alt="image" src="https://s1.ax1x.com/2023/05/11/p9r7JSA.jpg"></p> 
+<p align="center"><img width="500" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
+</details>
+
 

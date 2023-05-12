@@ -17,12 +17,15 @@
   
 [注意] 可能会出现排队等待较长时间。您可以clone我们的仓库并使用您自己的GPU运行。
   
-[**internGPT**已上线，尝试一下！](https://igpt.opengvlab.com)
+[**InternGPT** 已上线，尝试一下！](https://igpt.opengvlab.com)
 
 
-https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
-  
-## Schedule
+视频demo：https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a66239b8a51
+
+## 项目规划
+<details>
+<summary>点击查看详情</summary>
+
 - [ ] 支持中文
 - [ ] 支持 MOSS
 - [ ] 基于 InternImage 和 InternVideo 的更强大的基础模型
@@ -42,49 +45,67 @@ https://github.com/OpenGVLab/InternGPT/assets/8529570/a02bcea5-6d1f-4e84-85a3-8a
 - [x] 视频描述
 - [x] 视频密集描述
 - [x] 视频高光时刻截取
+</details>
+
   
 ## 系统概览
 <p align="center"><img src="./assets/arch1.png" alt="Logo"></p>
   
-## 🎁 主要特点
+## 🎁 主要功能
 <!--<!-- <p align="center"><img src="./assets/online_demo.gif" alt="Logo"></p> -->
 
-<p align="center">(a) 移除遮盖的对象</p>
+<details>
+<summary>A) 移除遮盖的对象</summary>
 <p align="center"><img src="./assets/demo2.gif" width="500"></p>
+</details>
 
-<p align="center">(b) 交互式图像编辑</center>
+<details>
+<summary>B) 交互式图像编辑</summary>
 <p align="center"><img src="./assets/tower.gif" width="500"></p>
+</details>
 
-<p align="center">(c) 图像生成</p>
-<p align="center"><img src="./assets/demo4.gif" align='justify'  width="500"></p>
+<details>
+<summary>C) 图像生成</summary>
+<p align="center"><img src="./assets/demo4.gif" width="500"></p>
+</details>
 
-<p align="center">(d) 交互式视觉问答</p>
-<p align="center"><img src="./assets/demo5.gif" align='justify' width="700"></p>
+<details>
+<summary>D) 交互式视觉问答</summary>
+<p align="center"><img src="./assets/demo5.gif" width="500"></p>
+</details>
 
+<details>
+<summary>E) 交互式图像生成</summary>
+<p align="center"><img src="https://github.com/OpenGVLab/InternGPT/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917" width="500"></p>
+</details>
 
-<p align="center">(e) 交互式图像生成</p>
-<p align="center"><img width="800" alt="image" src="https://github.com/OpenGVLab/internGPT/assets/8529570/2b0da08e-af86-453d-99e5-1327f93aa917"></p>
-
-<p align="center">(f) 视频高光解释</p>
-<p align="center"><img src="./assets/demo6.jpg" align='justify' width="500"></p> 
+<details>
+<summary>F) 视频高光解说</summary>
+<p align="center"><img src="./assets/demo6.jpg" width="500"></p>
+</details>
 
 <!-- ![alt]("./assets/demo5.gif" "title") -->
 
 ## 🛠️ 安装
+<details>
+<summary>基本要求</summary>
 
-### 基本要求
-
-- Linux
-- Python 3.8+
+- Linux 
+- Python 3.8+ 
 - PyTorch 1.12+
-- CUDA 11.6+
+- CUDA 11.6+ 
 - GCC & G++ 5.4+
-- GPU 内存 >= 17G 用于加载基本工具 (HuskyVQA, SegmentAnything, ImageOCRRecognition)
+- GPU Memory > 17G 用于加载基本工具 (HuskyVQA, SegmentAnything, ImageOCRRecognition)
+</details>
 
-### 安装Python的依赖项
+<details>
+<summary>安装Python的依赖项</summary>
+
 ```shell
 pip install -r requirements.txt
 ```
+</details>
+
 
 ### 模型库
 
@@ -92,22 +113,26 @@ pip install -r requirements.txt
 
 ## 👨‍🏫 运行指南
 
-运行以下 shell 可启动一个 gradio 服务：
+
+<details>
+<summary>运行以下 shell 可启动一个 gradio 服务（点击即可展开）：</summary>
 
 ```shell
 python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
 ```
-
 如果您想启用语音助手，请使用 openssl 生成证书：
 
 ```shell
-openssl req -x509 -newkey rsa:4096 -keyout ./key.pem -out ./cert.pem -sha256 -days 365 -nodes
+mkdir certificate
+openssl req -x509 -newkey rsa:4096 -keyout certificate/key.pem -out certificate/cert.pem -sha256 -days 365 -nodes
 ```
 然后运行：
 
 ```shell
 python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
 ```
+
+</details>
 
 
 ## 🎫 许可
@@ -116,7 +141,7 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 
 ## 🖊️ 引用
 
-如果您在研究中发现这个项目有用，请考虑引用：
+如果您在研究中发现这个项目有用，请考虑引用我们的论文：
 ```BibTeX
 @misc{2023interngpt,
     title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
@@ -145,7 +170,7 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 
 如果您在试用、运行、部署中有任何问题，欢迎加入我们的微信群讨论！如果您对项目有任何的想法和建议，欢迎加入我们的微信群讨论！
 
-<p align="center"><img width="500" alt="image" src="https://s1.ax1x.com/2023/05/11/p9r7JSA.jpg"></p> 
+<details>
+<summary>加入微信群组二维码 (点击展开)：</summary>
 
-一群快满了，可以添加2群
-<p align="center"><img width="500" alt="image" src="https://github.com/OpenGVLab/InternChat/assets/8529570/881c231d-9049-4920-a22c-680f41f0f7ee"></p> 
+<p align="center"><img width="500" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
