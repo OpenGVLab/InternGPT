@@ -1,8 +1,8 @@
-indir: no  # to be overriden in CLI
-outdir: no  # to be overriden in CLI
+indir: no  # to be overridden in CLI
+outdir: no  # to be overridden in CLI
 
 model:
-  path: no  # to be overriden in CLI
+  path: no  # to be overridden in CLI
   checkpoint: model_zoo/big_lama.ckpt
 
 dataset:
