@@ -42,16 +42,19 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 - [ ] Support MOSS
 - [ ] More powerful foundation models based on [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
 - [ ] More accurate interactive experience
-- [ ] OpenMMLab Toolkit
+- [ ] OpenMMLab toolkit
 - [ ] Web page & code generation 
-- [ ] Support Search Engine 
-- [ ] Low Cost Deployment
+- [ ] Support search engine 
+- [ ] Low cost deployment
+- [x] Response verification for agent
+- [x] Prompt optimization
+- [x] User manual and video demo
 - [x] Support voice assistant
 - [x] Support click interaction
 - [x] Interactive image editing
 - [x] Interactive image generation
 - [x] Interactive visual question answering
-- [x] Segment Anything
+- [x] Segment anything
 - [x] Image inpainting
 - [x] Image caption
 - [x] image matting

@@ -41,6 +41,9 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 - [ ] 网页 & 代码生成
 - [ ] 支持搜索引擎 
 - [ ] 低成本部署
+- [x] Agent响应验证
+- [x] 提示词优化
+- [x] 用户手册和视频demo
 - [x] 支持语音助手
 - [x] 支持点击交互
 - [x] 交互式图像编辑
