@@ -17,11 +17,17 @@ import random
 GLOBAL_SEED=1912
 
 def seed_everything(seed):
+    if seed == -1:
+        seed = gen_new_seed()
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     return seed
+
+
+def gen_new_seed():
+    return random.randint(0, 65535)
 
 
 def prompts(name, description):
