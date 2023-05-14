@@ -66,13 +66,10 @@ def load_model(
 ):
     kwargs = {"torch_dtype": torch.float16}
 
-    if not os.path.exists(model_path[1]):
-        apply_delta(model_path[0], model_path[1], model_path[2])
-
     tokenizer = AutoTokenizer.from_pretrained(
-        model_path[1], use_fast=False)
+        model_path, use_fast=False)
     model = Blip2LlaMAForConditionalGeneration.from_pretrained(
-        model_path[1], low_cpu_mem_usage=True, **kwargs
+        model_path, low_cpu_mem_usage=True, **kwargs
     )
 
     if load_8bit:
@@ -337,12 +334,41 @@ class Chat:
         else:
             self.conv = get_default_conv_template(self.model_path).copy()
 
+
+def download_if_not_exists(base_path, delta_path, new_path):
+    if os.path.exists(new_path):
+        return
+    
+    if not os.path.exists(base_path):
+        # download if not exists
+        os.system('bash third-party/llama_download.sh')
+        
+    output_dir = os.path.join(os.path.dirname(base_path), 'llama_7B_hf')
+    
+    if not os.path.exists(output_dir):
+        # convert to hf format if not exists
+        from .husky_src.convert_llama_weights_to_hf import write_model, write_tokenizer
+        write_model(
+            model_path=output_dir,
+            input_base_path=os.path.join(base_path, '7B'),
+            model_size="7B",
+        )
+        spm_path = os.path.join(base_path, "tokenizer.model")
+        write_tokenizer(output_dir, spm_path)
+
+    apply_delta(output_dir, new_path, delta_path)
+
+
 class HuskyVQA:
     def __init__(
         self,
         device
     ):
-        model_path=["model_zoo/llama-7b-hf", "model_zoo/husky-7b-v0_01", 'model_zoo/husky-7b-delta-v0_01']
+        model_path = 'model_zoo/husky-7b-v0_01'
+        download_if_not_exists(base_path="model_zoo/llama", 
+                               delta_path="model_zoo/husky-7b-delta-v0_01",
+                               new_path=model_path)
+        
         load_8bit=True
         max_new_tokens=512
         self.chat = Chat(

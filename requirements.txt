@@ -24,3 +24,4 @@ sentencepiece==0.1.98
 accelerate==0.18.0
 timm==0.6.13
 git+https://github.com/facebookresearch/segment-anything.git
+wget
