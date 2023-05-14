@@ -26,9 +26,9 @@
 After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of image?"`.     
 You also can interactively operate, edit or generate the image as follows:
 - You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
-- To **remove the masked reigon** in the image, you can send the message like: `"remove the maked region"`;
-- To **replace the masked reigon** in the image, you can send the message like: `"replace the maked region with {your prompt}"`;
-- To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation decribing {your prompt}"`
+- To **remove the masked reigon** in the image, you can send the message like: `"remove the masked region"`;
+- To **replace the masked reigon** in the image, you can send the message like: `"replace the masked region with {your prompt}"`;
+- To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation describing {your prompt}"`
 - To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble describing {your prompt}"`.
 
 <p align="center"><img src="./assets/demo_short.gif" width="500"></p>
