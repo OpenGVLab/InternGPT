@@ -8,6 +8,7 @@ from .utils import gen_new_name, prompts
 import torch
 from omegaconf import OmegaConf
 import numpy as np
+import wget
 from .inpainting_src.ldm_inpainting.ldm.models.diffusion.ddim import DDIMSampler
 from .inpainting_src.ldm_inpainting.ldm.util import instantiate_from_config
 from .utils import cal_dilate_factor, dilate_mask
@@ -35,16 +36,22 @@ def make_batch(image, mask, device):
 
 class LDMInpainting:
     def __init__(self, device):
-        ckpt_path = 'model_zoo/ldm_inpainting_big.ckpt'
+        self.model_checkpoint_path = 'model_zoo/ldm_inpainting_big.ckpt'
         config = './iGPT/models/inpainting_src/ldm_inpainting/config.yaml'
         self.ddim_steps = 50
         self.device = device
         config = OmegaConf.load(config)
         model = instantiate_from_config(config.model)
-        model.load_state_dict(torch.load(ckpt_path)["state_dict"], strict=False)
+        self.download_parameters()
+        model.load_state_dict(torch.load(self.model_checkpoint_path)["state_dict"], strict=False)
         self.model = model.to(device=device)
         self.sampler = DDIMSampler(model)
     
+    def download_parameters(self):
+        url = 'https://heibox.uni-heidelberg.de/f/4d9ac7ea40c64582b7c9/?dl=1'
+        if not os.path.exists(self.model_checkpoint_path):
+            wget.download(url, out=self.model_checkpoint_path)
+
     @prompts(name="Remove the Masked Object",
              description="useful when you want to remove an object by masking the region in the image. "
                          "like: remove masked object or inpaint the masked region.. "

@@ -24,6 +24,7 @@ import inspect
 from functools import partial
 import shutil
 import whisper
+import wget
 
 import gradio as gr
 import gradio.themes.base as ThemeBase
@@ -83,7 +84,7 @@ INTERN_CHAT_FORMAT_INSTRUCTIONS = """To use a tool, please use the following for
 ```
 Thought: Do I need to use a tool? Yes
 Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action, you can find all input paths in the history but can not feed the tool's description into the tool.
+Action Input: the input to the action, you can find all input paths in the history but must not take the tool's description as inputs.
 Observation: the result of the action
 ```
 
@@ -826,14 +827,20 @@ class SegmentAnything:
         print(f"Initializing SegmentAnything to {device}")
 
         self.device = device
-        sam_checkpoint = "model_zoo/sam_vit_h_4b8939.pth"
+        self.model_checkpoint_path = "model_zoo/sam_vit_h_4b8939.pth"
         model_type = "vit_h"
-        self.sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
+        self.download_parameters()
+        self.sam = sam_model_registry[model_type](checkpoint=self.model_checkpoint_path)
         self.predictor = SamPredictor(self.sam)
         self.sam.to(device=device)
         # self.clicked_region = None
         # self.img_path = None
         # self.history_mask_res = None
+
+    def download_parameters(self):
+        url = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
+        if not os.path.exists(self.model_checkpoint_path):
+            wget.download(url, out=self.model_checkpoint_path)
 
     @prompts(name="Segment Anything on Image",
              description="useful when you want to segment anything in the image. "
@@ -1173,7 +1180,7 @@ class ConversationBot:
 
     def find_param(self, msg, keyword, excluded=False):
         p1 = re.compile(f'(image/[-\\w]*.(png|mp4))')
-        p2 = re.compile(f'(image/[-\\w]*_{keyword}.(png|mp4))')
+        p2 = re.compile(f'(image/[-\\w]*{keyword}.(png|mp4))')
         if keyword == None or len(keyword) == 0:
             out_filenames = p1.findall(msg)
         elif not excluded:
@@ -1192,6 +1199,7 @@ class ConversationBot:
         func = None
         func_name = None
         func_inputs = None
+        res = None
         if 'remove' in inputs.lower() or 'erase' in inputs.lower():
             # func = self.models['RemoveMaskedAnything']
             # cls = self.models.get('RemoveMaskedAnything', None)
@@ -1199,7 +1207,10 @@ class ConversationBot:
             if cls is not None:
                 func = cls.inference
             mask_path = self.find_param(history_msg+inputs, 'mask')
-            img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+            img_path =  self.find_parent(mask_path, history_msg+inputs)
+            if img_path is None:
+                    img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+            # img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
             func_inputs = f'{img_path},{mask_path}'
             func_name = 'RemoveMaskedAnything'
         elif 'replace' in inputs.lower():
@@ -1207,8 +1218,11 @@ class ConversationBot:
             if cls is not None:
                 func = cls.inference
             mask_path = self.find_param(history_msg+inputs, 'mask')
-            # img_path = self.find_param(history_msg, 'raw')
-            img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+            img_path =  self.find_parent(mask_path, history_msg+inputs)
+            if img_path is None:
+                img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+            # mask_path = self.find_param(history_msg+inputs, 'mask')
+            # img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
             prompt = inputs.strip()
             func_inputs = f'{img_path},{mask_path},{prompt}'
             func_name = 'ReplaceMaskedAnything'
@@ -1228,8 +1242,12 @@ class ConversationBot:
             if cls is not None and 'mask' in inputs.lower():
                 prompt = inputs.strip()
                 func = cls.inference_by_mask
-                img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
                 mask_path = self.find_param(history_msg+inputs, 'mask')
+                img_path =  self.find_parent(mask_path, history_msg+inputs)
+                if img_path is None:
+                    img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+                # img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+                # mask_path = self.find_param(history_msg+inputs, 'mask')
                 func_inputs = f'{img_path},{mask_path},{prompt}'
             elif cls is not None: 
                 prompt = inputs.strip()
@@ -1248,9 +1266,14 @@ class ConversationBot:
             func_inputs = f'{img_path},{prompt}'
         else:
             # raise NotImplementedError('Can not find the matched function.')
-            res = user_state[0]['agent'](f"You can use history message to sanswer this question without using any tools. {inputs}")
-            res = res['output'].replace("\\", "/")
-
+            def only_chat(inputs):
+                res = user_state[0]['agent'](f"You can use history message to sanswer this question without using any tools. {inputs}")
+                res = res['output'].replace("\\", "/")
+                return res
+            func_name = 'ChatGPT'
+            func_inputs = inputs
+            func = only_chat
+        
         print(f'{func_name}: {func_inputs}')
         return_res = None
         if func is None:
@@ -1260,7 +1283,7 @@ class ConversationBot:
             if os.path.exists(return_res):
                 res = f"I have used the tool: \"{func_name}\" to obtain the results. The output image is named {return_res}."
             else:
-                res = f"I have used the tool: \"{func_name}\" to obtain the results. {return_res}"
+                res = return_res
         print(f"I have used the tool: \"{func_name}\" to obtain the results. The Inputs: {func_inputs}. Result: {return_res}.")
         return res
     
@@ -1271,6 +1294,73 @@ class ConversationBot:
                 illegal_files.append(file_item[0])
 
         return illegal_files
+    
+    def find_parent(self, cur_path, history_msg):
+        root_path = os.path.dirname(cur_path)
+        name = os.path.basename(cur_path)
+        name = name.split('.')[0]
+        parent_name = name.split('_')[1]
+        # p1 = re.compile(f'(image/[-\\w]*.(png|mp4))')
+        p = re.compile(f'(image/{parent_name}[-\\w]*.(png|mp4))')
+        out_filenames = p.findall(history_msg)
+        if len(out_filenames) > 0:
+            out_filenames = out_filenames[0][0]
+        else:
+            out_filenames = None
+            
+            all_file_items = os.listdir(f'{root_path}')
+            for item in all_file_items:
+                if item.startswith(parent_name):
+                    out_filenames = os.path.join(root_path, item)
+                    # out_filenames = item
+                    break
+
+        print(f'{cur_path}, parent path: {out_filenames}')
+        return out_filenames
+    
+    def get_suggested_inputs(self, inputs, history_msg):
+        image_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+        mask_path = self.find_param(history_msg+inputs, 'mask')
+        if image_path is None or mask_path is None:
+            return inputs
+            
+        prompt_template2 = f"If the tool only needs image_path, image_path might be {image_path}. If the tool only needs mask_path, mask_path might be {mask_path}. "
+
+        image_path = self.find_parent(mask_path, history_msg)
+        if image_path is None:
+            image_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+
+        prompt_template1 = f"If the tool needs both image_path and mask_path as inputs, image_path might be {image_path} and mask_path might be {mask_path}. "
+        prompt_template3 = 'In other cases, you could refer to history message to finish the action. '
+        # prompt_template4 = 'Please finish my request using or not using tools. '
+        # prompt_template4 = 'If you understand, say \"Received\". \n'
+        new_inputs = prompt_template1 + prompt_template2 + prompt_template3 + inputs
+        print(f'Processed by get_suggested_inputs, prompt: {new_inputs}')
+        return new_inputs
+    
+    def check_response(self, response):
+        mask_pattern = re.compile('(image/[-\\w]*.(png|mp4))')
+        # img_pattern = re.compile('(image/[-\\w]*.(png|mp4))')
+        file_items = mask_pattern.findall(response, )
+        image_path = ''
+        mask_path = ''
+        for item in file_items:
+            if '_image' in item[0]:
+                image_path = item[0]
+            elif '_mask.' in item[0]:
+                mask_path = item[0]
+
+        if len(image_path) == 0 or len(mask_path) == 0:
+            return True
+        res = self.find_param(response, '')
+        if res == image_path:
+            return True
+        
+        img_idx = response.find(image_path)
+        mask_idx = response.find(mask_path)
+        if mask_idx < img_idx:
+            return False
+        return True
         
     def run_text(self, text, state, user_state):
         if text is None or len(text) == 0:
@@ -1279,8 +1369,17 @@ class ConversationBot:
         user_state[0]['agent'].memory.buffer = cut_dialogue_history(user_state[0]['agent'].memory.buffer, keep_last_n_words=500)
         pattern = re.compile('(image/[-\\w]*.(png|mp4))')
         try:
-            response = user_state[0]['agent']({"input": text.strip()})['output']
+            new_inputs = self.get_suggested_inputs(text.strip(), user_state[0]['agent'].memory.buffer[:])
+            # buffer_copy = user_state[0]['agent'].memory.buffer[:]
+            response = user_state[0]['agent']({"input": new_inputs})['output']
             response = response.replace("\\", "/")
+            nonsense_words = 'I do not need to use a tool'
+            if nonsense_words in response.split('.')[0] and len(response.split('.')) > 1:
+                response = '.'.join(response.split('.')[1:])
+
+            if not self.check_response(response):
+                raise RuntimeError('Arguments are not matched.')
+
             out_filenames = pattern.findall(response)
             illegal_files = self.check_illegal_files(out_filenames)
             if len(illegal_files) > 0:
@@ -1288,18 +1387,19 @@ class ConversationBot:
             res = self.find_latest_image(out_filenames)
         except Exception as err1:
             # state += [(text, 'Sorry, I failed to understand your instruction. You can try it again or turn to more powerful language model.')]
-            print(f'Error: {err1}')
+            print(f'Error in line {err1.__traceback__.tb_lineno}: {err1}')
             try:
                 response = self.rectify_action(text, user_state[0]['agent'].memory.buffer[:], user_state)
                 # print('response = ', response)
                 out_filenames = pattern.findall(response)
                 res = self.find_latest_image(out_filenames)
                 # print(out_filenames)
-                user_state[0]['agent'].memory.buffer += f'\nHuman: {text.strip()}\n' + f'AI:{response})'
+                user_state[0]['agent'].memory.buffer += f'\nHuman: {text.strip()}\n' + f'AI: {response})'
 
             except Exception as err2:
-                print(f'Error: {err2}')
-                state += [(text, 'Sorry, I failed to understand your instruction. You can try it again or turn to more powerful language model.')]
+                print(f'Error in line {err2.__traceback__.tb_lineno}: {err2}')
+                # state += [(text, 'Sorry, I failed to understand your instruction. You can try it again or turn to more powerful language model.')]
+                state += [(text, 'Sorry, something went wrong inside the ChatGPT. Please check whether your image, video and message have been uploaded successfully.')]
                 return state, state, user_state
 
         if res is not None and user_state[0]['agent'].memory.buffer.count(res) <= 1:
@@ -1747,7 +1847,8 @@ if __name__ == '__main__':
         gr.HTML(
             """
             <div align='center'> <img src='/file=./assets/gvlab_logo.png' style='height:70px'/> </div>
-            <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>&nbsp;&nbsp;&nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>ArXiv</b></a></p>
+            <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>&nbsp;&nbsp;&nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>ArXiv</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593"><b>Video Demo</b></a></p>
             """)
         with gr.Row(visible=True, elem_id='login') as login:
             with gr.Column(scale=0.6, min_width=0) :
@@ -1808,21 +1909,13 @@ if __name__ == '__main__':
                 lambda: gr.update(visible=True), [], [send_btn]
             ).then(lambda: "", None, [txt, ]).then(
                 lambda: gr.update(visible=True), [], [txt])
-            
-            # send_audio_btn.click(bot.run_audio, [audio_input, state], [chatbot, state])
+
             send_btn.click(
-                lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then(
                 bot.run_task, [audio_switch, txt, audio_input, state, user_state], [chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [send_btn]).then(
-                lambda: "", None, [txt, ]).then(
-                lambda: gr.update(visible=True), [], [txt]
-            )
+                lambda: "", None, [txt, ])
             
             audio_switch.change(change_input_type, [audio_switch, ], [txt, audio_input])
-            # add_img_example.click(ramdom_image, [], [click_img,]).then(
-            #     bot.upload_image, [click_img, state, user_state], [chatbot, state, user_state])
-            
+
             add_img_example.click(ramdom_image, [], [click_img,]).then(
                 lambda: gr.update(visible=False), [], [send_btn]).then(
                 lambda: gr.update(visible=False), [], [txt]).then(
@@ -1833,9 +1926,6 @@ if __name__ == '__main__':
                 lambda: gr.update(visible=True), [], [txt]).then(
                 lambda: gr.update(visible=True), [], [vis_btn])
 
-            # add_vid_example.click(ramdom_video, [], [video_input,]).then(
-            #     bot.upload_video, [video_input, state, user_state], [chatbot, state, user_state])
-            
             add_vid_example.click(ramdom_video, [], [video_input,]).then(
                 lambda: gr.update(visible=False), [], [send_btn]).then(
                 lambda: gr.update(visible=False), [], [txt]).then(
@@ -1896,24 +1986,18 @@ if __name__ == '__main__':
             
             clear_func = partial(bot.clear_user_state, False)
             video_input.clear(clear_func, [user_state, ], [user_state, ])
-
-        # (More detailed instructions can be found in <a href="https://www.shailab.org.cn">here</a>:</p>
-        gr.HTML(
-            """
-            <body>
-            <p style="font-family:verdana;color:#FF0000";>!!!Tips (More detailed instructions can see <a href="https://github-production-user-asset-6210df.s3.amazonaws.com/8529570/237790678-a02bcea5-6d1f-4e84-85a3-8a66239b8a51.mp4"><b>here</b></a>): </p>
-            </body>
-            """
-        )
+        
         gr.Markdown(
             '''
+            **User Manual:**
+
             After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of image?"`.
             
             You also can interactively operate, edit or generate the image as follows:
             - You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
             - To **remove the masked reigon** in the image, you can send the message like: `"remove the maked region"`;
             - To **replace the masked reigon** in the image, you can send the message like: `"replace the maked region with {your prompt}"`;
-            - To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation decribing {your prompt}"`
+            - To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation describing {your prompt}"`
             - To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble decribing {your prompt}"`.
             '''
         )

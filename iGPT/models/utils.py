@@ -38,11 +38,12 @@ def gen_new_name(orginal_name, suffix="update", ext="png"):
     name_split = os.path.splitext(filename)[0].split('_')
     this_new_uuid = str(uuid.uuid4())[:3]
     timestamp = int(math.modf(time.time())[0] * 1000)
-    if len(name_split) == 1:
-        prev_file_name = name_split[0]
-    else:
-        # assert len(name_split) == 3
-        prev_file_name = name_split[1]
+    prev_file_name = name_split[0]
+    # if len(name_split) == 1:
+    #     prev_file_name = name_split[0]
+    # else:
+    #     # assert len(name_split) == 3
+    #     prev_file_name = name_split[0]
     if len(suffix.strip()) == 0:
         new_file_name = f'{this_new_uuid}{timestamp:03d}_{prev_file_name}.{ext}'
     else:
