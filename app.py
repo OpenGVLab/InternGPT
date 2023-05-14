@@ -1471,7 +1471,6 @@ class ConversationBot:
         image_filename = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
         image_filename = gen_new_name(image_filename, 'image')
         img.save(image_filename, "PNG")
-        # self.uploaded_image_filename = image_filename
         user_state[0]['image_path'] = image_filename
         img = img.convert('RGB')
 
@@ -1599,7 +1598,7 @@ class ConversationBot:
             AI_prompt = "Please upload an image for processing."
             state += [(Human_prompt, AI_prompt)]
             return None, state, state, user_state
-
+        uploaded_image_filename = user_state[0]['image_path']
         img = np.array(image['image'])
         # img[:100+int(time.time() % 50),:100, :] = 0 
         img = Image.fromarray(img)
@@ -1628,7 +1627,7 @@ class ConversationBot:
         
         state = state + [(Human_prompt, AI_prompt)]
         user_state[0]['agent'].memory.buffer += '\nHuman: ' + Human_prompt + '\nAI: ' + AI_prompt
-        print(f"\nProcessed process_ocr, Input image: {self.uploaded_image_filename}\nCurrent state: {state}\n"
+        print(f"\nProcessed process_ocr, Input image: {uploaded_image_filename}\nCurrent state: {state}\n"
               f"Current Memory: {user_state[0]['agent'].memory.buffer}")
         return image['image'], state, state, user_state
 
@@ -1636,6 +1635,7 @@ class ConversationBot:
         if image is None:
             return None, state, state, user_state
         
+        uploaded_image_filename = user_state[0]['image_path']
         mask_image = image['mask'].convert('RGB')
         # mask = np.array(mask, dtype=np.uint8)
         # mask_image = Image.fromarray(mask).convert('RGB')
@@ -1652,7 +1652,7 @@ class ConversationBot:
         state = state + [(Human_prompt, AI_prompt)]
         state = state + [(None, (mask_image_name, ))]
         user_state[0]['agent'].memory.buffer = user_state[0]['agent'].memory.buffer + Human_prompt + ' AI: ' + AI_prompt
-        print(f"\nProcessed process_ocr, Input image: {self.uploaded_image_filename}\nCurrent state: {state}\n"
+        print(f"\nProcessed process_ocr, Input image: {uploaded_image_filename}\nCurrent state: {state}\n"
               f"Current Memory: {user_state[0]['agent'].memory.buffer}")
         return image['image'], state, state, user_state
     
