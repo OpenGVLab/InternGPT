@@ -45,7 +45,8 @@ from langchain.llms.openai import OpenAI
 from iGPT.models import VideoCaption, ActionRecognition, DenseCaption, GenerateTikTokVideo
 from iGPT.models import HuskyVQA, LDMInpainting
 from iGPT.models.utils import (cal_dilate_factor, dilate_mask, gen_new_name,
-                                seed_everything, prompts, blend_gt2pt)
+                                seed_everything, prompts, blend_gt2pt, 
+                                gen_new_seed, GLOBAL_SEED)
 
 # from segment_anything.utils.amg import remove_small_regions
 from segment_anything import build_sam, sam_model_registry, SamAutomaticMaskGenerator
@@ -62,8 +63,6 @@ from saicinpainting.evaluation.data import pad_tensor_to_modulo
 import openai
 
 # openai.api_base = 'https://closeai.deno.dev/v1'
-
-GLOBAL_SEED=1912
 
 INTERN_CHAT_PREFIX = """InternGPT is designed to be able to assist with a wide range of text and visual related tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. InternGPT is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
 
@@ -265,7 +264,8 @@ class CannyText2Image:
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
-        seed_everything(GLOBAL_SEED)
+        seed = gen_new_seed()
+        seed_everything(seed)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
@@ -326,7 +326,8 @@ class LineText2Image:
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
-        seed_everything(GLOBAL_SEED)
+        seed = gen_new_seed()
+        seed_everything(seed)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
@@ -387,7 +388,8 @@ class HedText2Image:
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
-        seed_everything(GLOBAL_SEED)
+        seed = gen_new_seed()
+        seed_everything(seed)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
@@ -446,7 +448,8 @@ class ScribbleText2Image:
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
-        seed_everything(GLOBAL_SEED)
+        seed = gen_new_seed()
+        seed_everything(seed)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
@@ -507,7 +510,8 @@ class PoseText2Image:
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
-        seed_everything(GLOBAL_SEED)
+        seed = gen_new_seed()
+        seed_everything(seed)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
@@ -546,7 +550,8 @@ class SegText2Image:
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
-        seed_everything(GLOBAL_SEED)
+        seed = gen_new_seed()
+        seed_everything(seed)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
@@ -637,7 +642,8 @@ class DepthText2Image:
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
-        seed_everything(GLOBAL_SEED)
+        seed = gen_new_seed()
+        seed_everything(seed)
         prompt = f'{instruct_text}, {self.a_prompt}'
         image = self.pipe(prompt, image, num_inference_steps=20, eta=0.0, negative_prompt=self.n_prompt,
                           guidance_scale=9.0).images[0]
@@ -1193,40 +1199,14 @@ class ConversationBot:
         res = self.find_latest_image(out_filenames)
         return res
 
-    def rectify_action(self, inputs, history_msg, user_state):
+    def rectify_action(self, inputs, history_msg, agent):
         print('Rectify the action.')
         print(inputs)
         func = None
         func_name = None
         func_inputs = None
         res = None
-        if 'remove' in inputs.lower() or 'erase' in inputs.lower():
-            # func = self.models['RemoveMaskedAnything']
-            # cls = self.models.get('RemoveMaskedAnything', None)
-            cls = self.models.get('LDMInpainting', None)
-            if cls is not None:
-                func = cls.inference
-            mask_path = self.find_param(history_msg+inputs, 'mask')
-            img_path =  self.find_parent(mask_path, history_msg+inputs)
-            if img_path is None:
-                    img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-            # img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-            func_inputs = f'{img_path},{mask_path}'
-            func_name = 'RemoveMaskedAnything'
-        elif 'replace' in inputs.lower():
-            cls = self.models.get('ReplaceMaskedAnything', None)
-            if cls is not None:
-                func = cls.inference
-            mask_path = self.find_param(history_msg+inputs, 'mask')
-            img_path =  self.find_parent(mask_path, history_msg+inputs)
-            if img_path is None:
-                img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-            # mask_path = self.find_param(history_msg+inputs, 'mask')
-            # img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-            prompt = inputs.strip()
-            func_inputs = f'{img_path},{mask_path},{prompt}'
-            func_name = 'ReplaceMaskedAnything'
-        elif 'generate' in inputs.lower() or 'beautify' in inputs.lower():
+        if 'generate' in inputs.lower() or 'beautify' in inputs.lower():
             # print('*' * 40)
             cls = self.models.get('ImageText2Image', None)
             if cls is not None:
@@ -1246,8 +1226,7 @@ class ConversationBot:
                 img_path =  self.find_parent(mask_path, history_msg+inputs)
                 if img_path is None:
                     img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-                # img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-                # mask_path = self.find_param(history_msg+inputs, 'mask')
+                
                 func_inputs = f'{img_path},{mask_path},{prompt}'
             elif cls is not None: 
                 prompt = inputs.strip()
@@ -1265,9 +1244,8 @@ class ConversationBot:
             prompt = inputs.strip()
             func_inputs = f'{img_path},{prompt}'
         else:
-            # raise NotImplementedError('Can not find the matched function.')
             def only_chat(inputs):
-                res = user_state[0]['agent'](f"You can use history message to sanswer this question without using any tools. {inputs}")
+                res = agent(f"You can use history message to answer this question without using any tools. {inputs}")
                 res = res['output'].replace("\\", "/")
                 return res
             func_name = 'ChatGPT'
@@ -1281,7 +1259,7 @@ class ConversationBot:
         else:
             return_res = func(func_inputs)
             if os.path.exists(return_res):
-                res = f"I have used the tool: \"{func_name}\" to obtain the results. The output image is named {return_res}."
+                res = f"I have used the tool: \"{func_name}\" with the inputs: {func_inputs} to get the results. The result image is named {return_res}."
             else:
                 res = return_res
         print(f"I have used the tool: \"{func_name}\" to obtain the results. The Inputs: {func_inputs}. Result: {return_res}.")
@@ -1339,77 +1317,136 @@ class ConversationBot:
         return new_inputs
     
     def check_response(self, response):
-        mask_pattern = re.compile('(image/[-\\w]*.(png|mp4))')
+        pattern = re.compile('(image/[-\\w]*.(png|mp4))')
         # img_pattern = re.compile('(image/[-\\w]*.(png|mp4))')
-        file_items = mask_pattern.findall(response, )
+        file_items = pattern.findall(response, )
         image_path = ''
         mask_path = ''
         for item in file_items:
-            if '_image' in item[0]:
+            if len(image_path) == 0 and '_image.' in item[0]:
                 image_path = item[0]
-            elif '_mask.' in item[0]:
+            elif len(mask_path) == 0 and '_mask.' in item[0]:
                 mask_path = item[0]
 
         if len(image_path) == 0 or len(mask_path) == 0:
             return True
+        
         res = self.find_param(response, '')
         if res == image_path:
             return True
         
         img_idx = response.find(image_path)
         mask_idx = response.find(mask_path)
+        # if self.find_parent(mask_path) != image_path or \
+        #     mask_idx < img_idx:
+        #     return False
         if mask_idx < img_idx:
             return False
+
         return True
+
+    def exec_simple_action(self, inputs, history_msg):
+        print('Execute the simple action without ChatGPT.')
+        print('history_msg + inputs: ', history_msg + inputs)
+        func = None
+        func_name = None
+        func_inputs = None
+        res = None
+        if 'remove' in inputs.lower() or 'erase' in inputs.lower():
+            # func = self.models['RemoveMaskedAnything']
+            # cls = self.models.get('RemoveMaskedAnything', None)
+            cls = self.models.get('LDMInpainting', None)
+            if cls is not None:
+                func = cls.inference
+            mask_path = self.find_param(history_msg+inputs, 'mask')
+            img_path =  self.find_parent(mask_path, history_msg+inputs)
+            if img_path is None:
+                    img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+            # img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+            func_inputs = f'{img_path},{mask_path}'
+            func_name = 'RemoveMaskedAnything'
+        elif 'replace' in inputs.lower():
+            cls = self.models.get('ReplaceMaskedAnything', None)
+            if cls is not None:
+                func = cls.inference
+            mask_path = self.find_param(history_msg+inputs, 'mask')
+            img_path =  self.find_parent(mask_path, history_msg+inputs)
+            if img_path is None:
+                img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+           
+            func_inputs = f'{img_path},{mask_path},{inputs}'
+            func_name = 'ReplaceMaskedAnything'
+        
+        print(f'{func_name}: {func_inputs}')
+        
+        if func is None:
+            return None
+
+        return_res = func(func_inputs)
+        res = f"I have used the tool: \"{func_name}\" with the inputs: {func_inputs} to get the results. The result image is named {return_res}."
+        print(res)
+        return res
+    
+    def exec_agent(self, inputs, agent):
+        # pattern = re.compile('(image/[-\\w]*.(png|mp4))')
+        response = agent({"input": inputs})['output']
+        response = response.replace("\\", "/")
+        nonsense_words = 'I do not need to use a tool'
+        if nonsense_words in response.split('.')[0] and len(response.split('.')) > 1:
+            response = '.'.join(response.split('.')[1:])
+
+        if not self.check_response(response):
+            raise RuntimeError('Arguments are not matched.')
+
+        return response
+
+    def find_result_path(self, inputs):
+        pattern = re.compile('(image/[-\\w]*.(png|mp4))')
+        out_filenames = pattern.findall(inputs)
+        illegal_files = self.check_illegal_files(out_filenames)
+        if len(illegal_files) > 0:
+            raise FileNotFoundError(f'{illegal_files} do (does) not exist.')
+        res = self.find_latest_image(out_filenames)
+        return res
         
     def run_text(self, text, state, user_state):
+        text = text.strip()
         if text is None or len(text) == 0:
             state += [(None, 'Please input text.')]
             return state, state, user_state
-        user_state[0]['agent'].memory.buffer = cut_dialogue_history(user_state[0]['agent'].memory.buffer, keep_last_n_words=500)
-        pattern = re.compile('(image/[-\\w]*.(png|mp4))')
+
+        agent = user_state[0]['agent']
+        agent.memory.buffer = cut_dialogue_history(agent.memory.buffer, keep_last_n_words=500)
+        history_msg = agent.memory.buffer[:]
+        # pattern = re.compile('(image/[-\\w]*.(png|mp4))')
         try:
-            new_inputs = self.get_suggested_inputs(text.strip(), user_state[0]['agent'].memory.buffer[:])
-            # buffer_copy = user_state[0]['agent'].memory.buffer[:]
-            response = user_state[0]['agent']({"input": new_inputs})['output']
-            response = response.replace("\\", "/")
-            nonsense_words = 'I do not need to use a tool'
-            if nonsense_words in response.split('.')[0] and len(response.split('.')) > 1:
-                response = '.'.join(response.split('.')[1:])
-
-            if not self.check_response(response):
-                raise RuntimeError('Arguments are not matched.')
-
-            out_filenames = pattern.findall(response)
-            illegal_files = self.check_illegal_files(out_filenames)
-            if len(illegal_files) > 0:
-                raise FileNotFoundError(f'{illegal_files} do (does) not exist.')
-            res = self.find_latest_image(out_filenames)
+            response = self.exec_simple_action(text, history_msg)
+            if response is None:
+                inputs = self.get_suggested_inputs(text, history_msg)
+                # inputs = text
+                response = self.exec_agent(inputs, agent)
+            else:
+                agent.memory.buffer += f'\nHuman: {text}\n' + f'AI: {response})'
+            res = self.find_result_path(response)
         except Exception as err1:
-            # state += [(text, 'Sorry, I failed to understand your instruction. You can try it again or turn to more powerful language model.')]
             print(f'Error in line {err1.__traceback__.tb_lineno}: {err1}')
             try:
-                response = self.rectify_action(text, user_state[0]['agent'].memory.buffer[:], user_state)
-                # print('response = ', response)
-                out_filenames = pattern.findall(response)
-                res = self.find_latest_image(out_filenames)
-                # print(out_filenames)
-                user_state[0]['agent'].memory.buffer += f'\nHuman: {text.strip()}\n' + f'AI: {response})'
-
+                response = self.rectify_action(text, history_msg, agent)
+                res = self.find_result_path(response)
+                agent.memory.buffer += f'\nHuman: {text}\n' + f'AI: {response})'
             except Exception as err2:
                 print(f'Error in line {err2.__traceback__.tb_lineno}: {err2}')
-                # state += [(text, 'Sorry, I failed to understand your instruction. You can try it again or turn to more powerful language model.')]
                 state += [(text, 'Sorry, something went wrong inside the ChatGPT. Please check whether your image, video and message have been uploaded successfully.')]
                 return state, state, user_state
 
-        if res is not None and user_state[0]['agent'].memory.buffer.count(res) <= 1:
+        if res is not None and agent.memory.buffer.count(res) <= 1:
             state = state + [(text, response + f' `{res}` is as follows: ')]
             state = state + [(None, (res, ))]
         else:
             state = state + [(text, response)]
             
         print(f"\nProcessed run_text, Input text: {text}\nCurrent state: {state}\n"
-              f"Current Memory: {user_state[0]['agent'].memory.buffer}")
+              f"Current Memory: {agent.memory.buffer}")
         return state, state, user_state
     
     def run_audio(self, audio_path, state, user_state):
@@ -1838,7 +1875,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     load_dict = {e.split('_')[0].strip(): e.split('_')[1].strip() for e in args.load.split(',')}
     bot = ConversationBot(load_dict=load_dict)
-    # bot.init_agent()
     with gr.Blocks(theme=Seafoam(), css=css) as demo:
         state = gr.State([])
         # user_state is dict. Keys: [agent, memory, image_path, video_path, seg_mask, image_caption, OCR_res, ...]
@@ -1847,7 +1883,7 @@ if __name__ == '__main__':
         gr.HTML(
             """
             <div align='center'> <img src='/file=./assets/gvlab_logo.png' style='height:70px'/> </div>
-            <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>&nbsp;&nbsp;&nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>ArXiv</b></a>
+            <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>&nbsp;&nbsp;&nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>Report</b></a>
             &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593"><b>Video Demo</b></a></p>
             """)
         with gr.Row(visible=True, elem_id='login') as login:
