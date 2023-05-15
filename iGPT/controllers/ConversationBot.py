@@ -5,7 +5,6 @@ import numpy as np
 import uuid
 import shutil
 import whisper
-import gradio as gr
 
 from PIL import Image
 
@@ -155,6 +154,22 @@ class ConversationBot:
                 if e.startswith('inference'):
                     func = getattr(instance, e)
                     self.tools.append(Tool(name=func.name, description=func.description, func=func))
+    
+    def init_agent(self):
+        memory = ConversationBufferMemory(memory_key="chat_history", output_key='output')
+        llm = OpenAI(temperature=0)
+        agent = initialize_agent(
+                self.tools,
+                llm,
+                agent="conversational-react-description",
+                verbose=True,
+                memory=memory,
+                return_intermediate_steps=True,
+                agent_kwargs={'prefix': INTERN_CHAT_PREFIX, 'format_instructions': INTERN_CHAT_FORMAT_INSTRUCTIONS,
+                            'suffix': INTERN_CHAT_SUFFIX}, )
+        
+        user_state = [{'agent': agent, 'memory': memory}]
+        return user_state
 
     
     def find_latest_image(self, file_list):
