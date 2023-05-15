@@ -11,11 +11,16 @@
     
 
 
-# InternGPT [[Paper](https://arxiv.org/pdf/2305.05662.pdf)] 
+# 🤖💬 InternGPT [[Paper](https://arxiv.org/pdf/2305.05662.pdf)] 
 
 
 <!-- ## Description -->
 **InternGPT**(short for **iGPT**) / **InternChat**(short for **iChat**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternGPT stands for **inter**action, **n**onverbal, and Chat**GPT**. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iGPT significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iGPT, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
+
+## 🥳 🚀 What's New 
+(2023.15.15) The [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) including HuskyVQA has been released! Try it on your local machine!
+
+(2023.15.15) Our code is also publicly available on [Hugging Face](https://huggingface.co/spaces/OpenGVLab/InternGPT)! You can duplicate the repository and run it on your own GPUs.
 
 ## 🤖💬 Online Demo
 **InternGPT** is online (see [https://igpt.opengvlab.com](https://igpt.opengvlab.com/)). Let's try it!
@@ -122,7 +127,10 @@ pip install -r requirements.txt
 
 
 ### 🗃 Model zoo
-Coming soon...
+our `model_zoo` has been released in [huggingface](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo)! 
+You can download it and directly place it into the root directory of this repo before running the app.
+
+HuskyVQA, a strong VQA model, is also available in `model_zoo`. More details can refer to our [report](https://arxiv.org/pdf/2305.05662.pdf).
 
 ## 👨‍🏫 Get Started 
 Running the following shell can start a gradio service:
