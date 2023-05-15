@@ -9,9 +9,16 @@
 <img src="https://img.shields.io/badge/Demo-Open-green?logo=alibabacloud"> </a> | <a src="https://img.shields.io/twitter/follow/opengvlab?style=social" href="https://twitter.com/opengvlab">
 <img src="https://img.shields.io/twitter/follow/opengvlab?style=social">
 
-# InternGPT [[论文](https://arxiv.org/pdf/2305.05662.pdf)][[试玩](https://igpt.opengvlab.com)]
+# 🤖💬 InternGPT [[论文](https://arxiv.org/pdf/2305.05662.pdf)][[试玩](https://igpt.opengvlab.com)]
 <!-- ## 描述 -->
 **InternGPT**（简称 **iGPT**） / **InternChat**（简称 **iChat**） 是一种基于指向语言驱动的视觉交互系统，允许您使用指向设备通过点击、拖动和绘制与 ChatGPT 进行互动。internGPT 的名称代表了 **inter**action（交互）、**n**onverbal（非语言）和 Chat**GPT**。与依赖纯语言的现有交互系统不同，通过整合指向指令，iGPT 显著提高了用户与聊天机器人之间的沟通效率，以及聊天机器人在视觉为中心任务中的准确性，特别是在复杂的视觉场景中。此外，在 iGPT 中，采用辅助控制机制来提高 LLM 的控制能力，并对一个大型视觉-语言模型 **Husky** 进行微调，以实现高质量的多模态对话（在ChatGPT-3.5-turbo评测中达到 **93.89% GPT-4 质量**）。
+
+
+## 🥳 🚀 更新
+(2023.15.15) [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) 已经公开，里面包含了HuskyVQA! 赶紧在你自己的机器上部署试试吧!
+
+(2023.15.15) 我们的代码在 [Hugging Face](https://huggingface.co/spaces/OpenGVLab/InternGPT)也同步更新! 你可以复制一份仓库，然后使用自己的GPU运行demo。
+
   
 ## 🤖💬 在线Demo
   
@@ -115,8 +122,10 @@ pip install -r requirements.txt
 
 
 ### 🗃 模型库
+我们模型库 `model_zoo` 正式在[huggingface](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo)公开！在运行我们的demo前，你需要先将`model_zoo`下载到本地，然后放进项目的根目录下面。
 
-即将推出...
+小彩蛋：HuskyVQA模型也在`model_zoo`里开源了！经我们测试，HuskyVQA的视觉问答能力达到了业界顶尖水平。更多细节请参考我们的[report](https://arxiv.org/pdf/2305.05662.pdf)。
+
 
 ## 👨‍🏫 运行指南
 
