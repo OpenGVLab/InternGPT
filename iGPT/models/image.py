@@ -466,7 +466,7 @@ class ImageText2Image:
     @prompts(name="Beautify The Image",
              description="useful when you want to beatify or create a new real image from both the user description and segmentations. "
                          "like: generate a real image from its segmentation image, "
-                         "beautify this image with it's segmentations, "
+                         "beautify this image with it's segmentation, "
                          "or beautify this image by user description. "
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and the user description")

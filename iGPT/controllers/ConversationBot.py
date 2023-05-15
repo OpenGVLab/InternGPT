@@ -376,7 +376,7 @@ class ConversationBot:
             cls = self.models.get('LDMInpainting', None)
             if cls is not None:
                 func = cls.inference
-            mask_path = self.find_param(history_msg+inputs, 'mask.')
+            mask_path = self.find_param(history_msg+inputs, 'mask')
             img_path =  self.find_parent(mask_path, history_msg+inputs)
             if img_path is None:
                     img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
