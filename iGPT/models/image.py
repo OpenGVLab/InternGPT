@@ -1,6 +1,6 @@
 import os
 import torch
-from PIL import Image, ImageOps
+from PIL import Image
 import random
 import time
 import numpy as np
@@ -24,10 +24,6 @@ from .sam_preditor import SamPredictor
 
 # Please DO NOT MOVE THE IMPORT ORDER FOR easyocr.
 import easyocr
-
-from saicinpainting.evaluation.utils import move_to_device
-from saicinpainting.training.trainers import load_checkpoint
-from saicinpainting.evaluation.data import pad_tensor_to_modulo
 
 
 def HWC3(x):

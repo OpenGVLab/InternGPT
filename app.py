@@ -12,19 +12,16 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent / "third-party" / "lama"))
 
 import random
-import torch
-import cv2
+
 import re
 import uuid
 from PIL import Image
-import math
 import numpy as np
 import argparse
 import inspect
 from functools import partial
 import shutil
 import whisper
-import wget
 
 import gradio as gr
 import gradio.themes.base as ThemeBase
@@ -40,24 +37,11 @@ from iGPT.models.utils import gen_new_name
 
 from iGPT.controllers import ConversationBot
 
-# from segment_anything.utils.amg import remove_small_regions
-from segment_anything import build_sam, sam_model_registry, SamAutomaticMaskGenerator
-from iGPT.models.sam_preditor import SamPredictor
-from bark import SAMPLE_RATE, generate_audio
-
-import matplotlib.pyplot as plt
-# Please DO NOT MOVE THE IMPORT ORDER FOR easyocr.
-import easyocr
-
-from saicinpainting.evaluation.utils import move_to_device
-from saicinpainting.training.trainers import load_checkpoint
-from saicinpainting.evaluation.data import pad_tensor_to_modulo
 import openai
 
 # openai.api_base = 'https://closeai.deno.dev/v1'
 
 os.makedirs('image', exist_ok=True)
-
 
 
 INTERN_CHAT_PREFIX = """InternGPT is designed to be able to assist with a wide range of text and visual related tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. InternGPT is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
