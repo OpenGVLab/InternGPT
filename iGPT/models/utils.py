@@ -30,6 +30,18 @@ def gen_new_seed():
     return random.randint(0, 65535)
 
 
+def resize_800(image):
+    w, h = image.size
+    if w > h:
+        ratio = w * 1.0 / 800
+        new_w, new_h = 800, int(h * 1.0 / ratio)
+    else:
+        ratio = h * 1.0 / 800
+        new_w, new_h = int(w * 1.0 / ratio), 800
+    image = image.resize((new_w, new_h))
+    return image
+
+
 def prompts(name, description):
     def decorator(func):
         func.name = name
