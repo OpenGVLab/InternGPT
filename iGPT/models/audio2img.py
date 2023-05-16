@@ -4,12 +4,6 @@ from .utils import gen_new_name, prompts
 
 from . import imagebind
 
-# construct models
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
-
-
-
-
 class Audio2Image:
     def __init__(self, device):
         pipe = StableUnCLIPImg2ImgPipeline.from_pretrained(
