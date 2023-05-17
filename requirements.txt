@@ -25,3 +25,11 @@ accelerate==0.18.0
 timm==0.6.13
 git+https://github.com/facebookresearch/segment-anything.git
 wget
+protobuf==3.20
+pytorchvideo==0.1.5
+soundfile
+fvcore
+decord==0.6.0
+ftfy
+regex
+einops
