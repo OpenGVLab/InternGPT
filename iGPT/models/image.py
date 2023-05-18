@@ -630,7 +630,7 @@ class SegmentAnything:
         if not os.path.exists(self.model_checkpoint_path):
             wget.download(url, out=self.model_checkpoint_path)
 
-    @prompts(name="Segment Anything on Image",
+    @prompts(name="Segment Anything On Image",
              description="useful when you want to segment anything in the image. "
                          "like: segment anything from this image, "
                          "The input to this tool should be a string, "
@@ -648,7 +648,7 @@ class SegmentAnything:
         print(f"\nProcessed SegmentAnything, Input Image: {inputs}, Output Depth: {seg_all_image_path}")
         return seg_all_image_path
         
-    @prompts(name="Segment the Clicked Region in the Image",
+    @prompts(name="Segment The Clicked Region In The Image",
              description="useful when you want to segment the masked region or block in the image. "
                          "like: segment the masked region in this image, "
                          "The input to this tool should be a comma separated string of two, "
@@ -759,9 +759,10 @@ class ExtractMaskedAnything:
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                         'fewer digits, cropped, worst quality, low quality'
 
-    @prompts(name="Extract the masked anything",
-             description="useful when you want to extract the masked region in the image. "
-                         "like: extract the masked region or keep the masked region in the image"
+    @prompts(name="Extract The Masked Anything",
+             description="useful when you want to extract or save the masked region in the image. "
+                         "like: extract the masked region, keep the clicked region in the image "
+                         "or save the maskd region in the image. "
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and mask_path")
     def inference(self, inputs):
@@ -792,7 +793,7 @@ class ReplaceMaskedAnything:
             "runwayml/stable-diffusion-inpainting", revision=self.revision, torch_dtype=self.torch_dtype).to(device)
     
 
-    @prompts(name="Replace the Masked Object",
+    @prompts(name="Replace The Masked Object",
              description="useful when you want to replace an object by clicking in the image "
                          "with other object or something. "
                          "like: replace the masked object with a new object or something. "
@@ -827,7 +828,7 @@ class ImageOCRRecognition:
         self.device = device
         self.reader = easyocr.Reader(['ch_sim', 'en'], gpu=device) # this needs to run only once to load the model into memory
 
-    @prompts(name="recognize the optical characters in the image",
+    @prompts(name="Recognize The Optical Characters By Clicking",
              description="useful when you want to recognize the characters or words in the clicked region of image. "
                          "like: recognize the characters or words in the clicked region."
                          "The input to this tool should be a comma separated string of two, "
@@ -868,7 +869,7 @@ class ImageOCRRecognition:
         
         return ocr_text
 
-    @prompts(name="recognize all optical characters in the image",
+    @prompts(name="Recognize All Optical Characters",
              description="useful when you want to recognize all characters or words in the image. "
                          "like: recognize all characters and words in the image."
                          "The input to this tool should be a string, "

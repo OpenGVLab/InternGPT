@@ -36,7 +36,7 @@ INTERN_CHAT_FORMAT_INSTRUCTIONS = """To use a tool, please use the following for
 ```
 Thought: Do I need to use a tool? Yes
 Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action, you can find all input paths in the history but must not take the tool's description as inputs.
+Action Input: the input to the action
 Observation: the result of the action
 ```
 
@@ -223,12 +223,30 @@ class ConversationBot:
         func_name = None
         func_inputs = None
         res = None
-        if 'generate' in inputs.lower() or 'beautify' in inputs.lower():
+        if 'extract' in inputs.lower() or 'save' in inputs.lower():
+            cls = self.models.get('ExtractMaskedAnything', None)
+            if cls is not None:
+                func = cls.inference
+            
+            mask_path = self.find_param(inputs, 'mask')
+            if mask_path is None:
+                mask_path = self.find_param(history_msg, 'mask')
+
+            img_path =  self.find_parent(mask_path, history_msg+inputs)
+            if img_path is None:
+                img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+            
+            func_inputs = f'{img_path},{mask_path}'
+            func_name = 'ExtractMaskedAnything'
+        elif 'generate' in inputs.lower() or 'beautify' in inputs.lower():
             # print('*' * 40)
             cls = self.models.get('ImageText2Image', None)
             if cls is not None:
                 func = cls.inference
-            img_path = self.find_param(history_msg+inputs, '')
+            
+            img_path = self.find_param(inputs, '')
+            if img_path is None:
+                img_path = self.find_param(history_msg, '')
             # img_path = self.find_param(history_msg, 'raw')
             prompt = inputs.strip()
             func_inputs = f'{img_path},{prompt}'
@@ -239,7 +257,9 @@ class ConversationBot:
             if cls is not None and 'mask' in inputs.lower():
                 prompt = inputs.strip()
                 func = cls.inference_by_mask
-                mask_path = self.find_param(history_msg+inputs, 'mask')
+                mask_path = self.find_param(inputs, 'mask')
+                if mask_path is None:
+                    mask_path = self.find_param(history_msg, 'mask')
                 img_path =  self.find_parent(mask_path, history_msg+inputs)
                 if img_path is None:
                     img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
@@ -248,7 +268,10 @@ class ConversationBot:
             elif cls is not None: 
                 prompt = inputs.strip()
                 func = cls.inference
-                img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+                img_path = self.find_param(inputs, 'mask', excluded=True)
+                if img_path is None:
+                    img_path = self.find_param(history_msg, 'mask', excluded=True)
+
                 func_inputs = f'{img_path}'
 
         elif 'image' in inputs.lower() or 'figure' in inputs.lower() or 'picture' in inputs.lower():
@@ -256,13 +279,14 @@ class ConversationBot:
             func_name = 'HuskyVQA'
             if cls is not None:
                 func = cls.inference
-            img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-            # img_path = self.find_param(history_msg, 'raw')
+            img_path = self.find_param(inputs, 'mask', excluded=True)
+            if img_path is None:
+                img_path = self.find_param(history_msg, 'mask', excluded=True)
             prompt = inputs.strip()
             func_inputs = f'{img_path},{prompt}'
         else:
             def only_chat(inputs):
-                res = agent(f"You can use history message to answer this question without using any tools. {inputs}")
+                res = agent(f"You can use history message to finish the user's request without using any tools. {inputs}")
                 res = res['output'].replace("\\", "/")
                 return res
             func_name = 'ChatGPT'
@@ -276,10 +300,10 @@ class ConversationBot:
         else:
             return_res = func(func_inputs)
             if os.path.exists(return_res):
-                res = f"I have used the tool: \"{func_name}\" with the inputs: {func_inputs} to get the results. The result image is named {return_res}."
+                res = f"I have used the tool: \"{func_name}\" with the inputs: \"{func_inputs}\" to get the results. The result image is named {return_res}."
             else:
                 res = return_res
-        print(f"I have used the tool: \"{func_name}\" to obtain the results. The Inputs: {func_inputs}. Result: {return_res}.")
+        print(f"I have used the tool: \"{func_name}\" to obtain the results. The Inputs: \"{func_inputs}\". Result: {return_res}.")
         return res
     
     def check_illegal_files(self, file_list):
@@ -291,6 +315,8 @@ class ConversationBot:
         return illegal_files
     
     def find_parent(self, cur_path, history_msg):
+        if cur_path is None:
+            return None
         root_path = os.path.dirname(cur_path)
         name = os.path.basename(cur_path)
         name = name.split('.')[0]
@@ -336,7 +362,7 @@ class ConversationBot:
     def check_response(self, response):
         pattern = re.compile('(image/[-\\w]*.(png|mp4))')
         # img_pattern = re.compile('(image/[-\\w]*.(png|mp4))')
-        file_items = pattern.findall(response, )
+        file_items = pattern.findall(response)
         image_path = ''
         mask_path = ''
         for item in file_items:
@@ -370,28 +396,44 @@ class ConversationBot:
         func_name = None
         func_inputs = None
         res = None
+        new_inputs = inputs.replace('ReplaceMaskedAnything', 'placeholder')
         if 'remove' in inputs.lower() or 'erase' in inputs.lower():
-            # func = self.models['RemoveMaskedAnything']
-            # cls = self.models.get('RemoveMaskedAnything', None)
             cls = self.models.get('LDMInpainting', None)
             if cls is not None:
                 func = cls.inference
-            mask_path = self.find_param(history_msg+inputs, 'mask')
-            img_path =  self.find_parent(mask_path, history_msg+inputs)
-            if img_path is None:
-                    img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-            # img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-            func_inputs = f'{img_path},{mask_path}'
-            func_name = 'RemoveMaskedAnything'
-        elif 'replace' in inputs.lower():
-            cls = self.models.get('ReplaceMaskedAnything', None)
-            if cls is not None:
-                func = cls.inference
-            mask_path = self.find_param(history_msg+inputs, 'mask')
+            
+            mask_path = self.find_param(inputs, 'mask')
+            if mask_path is None:
+                mask_path = self.find_param(history_msg, 'mask')
+
+            if mask_path is None:
+                return 'I can not found the mask_path. Please check you have successfully operated on input image.'
+
             img_path =  self.find_parent(mask_path, history_msg+inputs)
             if img_path is None:
                 img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
-           
+            
+            func_inputs = f'{img_path},{mask_path}'
+            func_name = 'RemoveMaskedAnything'
+        elif 'replace' in new_inputs.lower():
+            cls = self.models.get('ReplaceMaskedAnything', None)
+            if cls is not None:
+                func = cls.inference
+            
+            mask_path = self.find_param(inputs, 'mask')
+            if mask_path is None:
+                mask_path = self.find_param(history_msg, 'mask')
+
+            if mask_path is None:
+                return 'I can not found the mask_path. Please check you have successfully operated on input image.'
+                
+            img_path =  self.find_parent(mask_path, history_msg+inputs)
+            if img_path is None:
+                img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
+
+            if img_path is None:
+                return 'I can not found the image_path. Please check you have successfully uploaded an input image.'
+            
             func_inputs = f'{img_path},{mask_path},{inputs}'
             func_name = 'ReplaceMaskedAnything'
         
@@ -401,7 +443,7 @@ class ConversationBot:
             return None
 
         return_res = func(func_inputs)
-        res = f"I have used the tool: \"{func_name}\" with the inputs: {func_inputs} to get the results. The result image is named {return_res}."
+        res = f"I have used the tool: \"{func_name}\" with the inputs: \"{func_inputs}\" to get the results. The result image is named {return_res}."
         print(res)
         return res
     
@@ -437,11 +479,12 @@ class ConversationBot:
         agent.memory.buffer = cut_dialogue_history(agent.memory.buffer, keep_last_n_words=500)
         history_msg = agent.memory.buffer[:]
         # pattern = re.compile('(image/[-\\w]*.(png|mp4))')
+        response = self.exec_simple_action(text, history_msg)
         try:
             response = self.exec_simple_action(text, history_msg)
             if response is None:
-                inputs = self.get_suggested_inputs(text, history_msg)
-                # inputs = text
+                # inputs = self.get_suggested_inputs(text, history_msg)
+                inputs = text
                 response = self.exec_agent(inputs, agent)
             else:
                 agent.memory.buffer += f'\nHuman: {text}\n' + f'AI: {response})'
@@ -451,7 +494,7 @@ class ConversationBot:
             try:
                 response = self.rectify_action(text, history_msg, agent)
                 res = self.find_result_path(response)
-                agent.memory.buffer += f'\nHuman: {text}\n' + f'AI: {response})'
+                agent.memory.buffer += f'\nHuman: {text}\n' + f'AI: {response}'
             except Exception as err2:
                 print(f'Error in line {err2.__traceback__.tb_lineno}: {err2}')
                 state += [(text, 'Sorry, something went wrong inside the ChatGPT. Please check whether your image, video and message have been uploaded successfully.')]
@@ -479,6 +522,33 @@ class ConversationBot:
         print(f"\nProcessed run_audio, Input transcribed audio: {text}\nCurrent state: {state}\n"
               f"Current Memory: {user_state[0]['agent'].memory.buffer}")
         return res[0], res[1], res[2]
+    
+    def upload_audio(self, audio_path, state, user_state):
+        print(f'audio_path = {audio_path}')
+        if audio_path is None or not os.path.exists(audio_path):
+            state += [(None, 'No audio input. Please stop recording first and then send the audio.')]
+            return state, state
+
+        user_state = self.clear_user_state(False, user_state)
+        audio_name = os.path.basename(audio_path)
+        # vid_name = gen_new_name(vid_name, '', vid_name.split('.')[-1])
+        new_audio_path = os.path.join('./image/', audio_name)
+        new_audio_path = gen_new_name(new_audio_path, 'image', audio_name.split('.')[-1])
+        shutil.copy(audio_path, new_audio_path)
+
+        user_state[0]['audio_path'] = new_audio_path
+
+        Human_prompt = f'\nHuman: provide an audio file named {new_audio_path}. You should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
+        AI_prompt = f"Received video: {new_audio_path} "
+        # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
+        user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
+
+        state = state + [((new_audio_path, ), AI_prompt)]
+        # print('exists = ', os.path.exists("./tmp_files/1e7f_f4236666_tmp.mp4"))
+        print(f"\nProcessed upload_video, Input Audio: `{new_audio_path}`\nCurrent state: {state}\n"
+              f"Current Memory: {user_state[0]['agent'].memory.buffer}")
+
+        return state, state, user_state
 
     def upload_image(self, image, state, user_state):
         # [txt, click_img, state, user_state], [chatbot, txt, state, user_state]
