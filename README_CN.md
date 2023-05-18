@@ -185,7 +185,7 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 
 加入微信群组二维码：
   
-<p align="center"><img width="500" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
+<p align="center"><img width="500" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/paper/media/wechat1.jpg"></p> 
 
   
   
