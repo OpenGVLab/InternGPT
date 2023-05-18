@@ -62,12 +62,12 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 - [x] Segment anything
 - [x] Image inpainting
 - [x] Image caption
-- [x] image matting
+- [x] Image matting
 - [x] Optical character recognition
 - [x] Action recognition
 - [x] Video caption
 - [x] Video dense caption
-- [x] video highlight interpretation
+- [x] Video highlight interpretation
 
 
 ## 🏠 System Overview
