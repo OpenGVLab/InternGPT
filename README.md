@@ -44,7 +44,7 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 
 
 ## 🗓️ Schedule
-
+- [ ] Support [VisionLLM](https://github.com/OpenGVLab/VisionLLM)
 - [ ] Support Chinese
 - [ ] Support MOSS
 - [ ] More powerful foundation models based on [InternImage](https://github.com/OpenGVLab/InternImage) and [InternVideo](https://github.com/OpenGVLab/InternVideo)
