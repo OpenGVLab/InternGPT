@@ -167,7 +167,7 @@ def login_with_key(bot, debug, api_key):
                 llm('Hi!')
                 response = 'Success!'
                 is_error = False
-                user_state = bot.init_agent(bot)
+                user_state = bot.init_agent()
             except:
                 # gr.update(visible=True)
                 response = 'Incorrect key, please input again'
