@@ -186,5 +186,5 @@ Welcome to discuss with us and continuously improve the user experience of Inter
 
 WeChat QR Code
 
-<p align="center"><img width="400" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
+<p align="center"><img width="400" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/paper/media/wechat1.jpg"></p> 
 
