@@ -11,6 +11,8 @@ class Audio2Image:
         )
         self.device = device
         self.pipe = pipe.to(device)
+        self.pipe.enable_model_cpu_offload()
+        self.pipe.enable_vae_slicing()
         
         self.model = imagebind.imagebind_huge(pretrained=True)
         self.model.eval()
@@ -31,7 +33,7 @@ class Audio2Image:
             imagebind.ModalityType.AUDIO: imagebind.load_and_transform_audio_data(audio_paths, self.device),
         })
         embeddings = embeddings[imagebind.ModalityType.AUDIO]
-        images = self.pipe(image_embeds=embeddings.half()).images
+        images = self.pipe(image_embeds=embeddings.half(), width=512, height=512).images
         new_img_name = gen_new_name(audio_paths[0], 'Audio2Image')
         images[0].save(new_img_name)
         return new_img_name
