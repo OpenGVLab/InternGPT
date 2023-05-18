@@ -188,5 +188,3 @@ WeChat QR Code
 
 <p align="center"><img width="400" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
 
-
-
