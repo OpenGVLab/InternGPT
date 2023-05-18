@@ -144,12 +144,6 @@ def cut_dialogue_history(history_memory, keep_last_n_words=500):
     return '\n' + '\n'.join(paragraphs)
 
 
-def connect_openai(bot):
-    llm = OpenAI(temperature=0)
-    llm('Hi!')
-    return user_state
-
-
 def login_with_key(bot, debug, api_key):
     # Just for debug
     print('===>logging in')
