@@ -53,7 +53,7 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 - [ ] Web page & code generation 
 - [ ] Support search engine 
 - [ ] Low cost deployment
-- [x] Audio2Image
+- [x] Support [ImageBind](https://github.com/facebookresearch/ImageBind)
 - [x] Response verification for agent
 - [x] Prompt optimization
 - [x] User manual and video demo
