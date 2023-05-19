@@ -15,7 +15,7 @@
 
 
 ## 🥳 🚀 更新
-- (2023.05.18) 增加Audio2Image工具类，可以根据音频生成图片。感谢ImageBind! 快来体验一下: [Demo](https://igpt.opengvlab.com/)
+- (2023.05.18) 已支持[ImageBind](https://github.com/facebookresearch/ImageBind) 🎉🎉🎉。赶紧来体验根据音频生成视频的新工具: [Demo](https://igpt.opengvlab.com/)
 
 - (2023.15.15) [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) 已经公开，里面包含了HuskyVQA! 赶紧在你自己的机器上部署试试吧!
 
@@ -50,7 +50,7 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 - [ ] 网页 & 代码生成
 - [ ] 支持搜索引擎 
 - [ ] 低成本部署
-- [x] 音频生成图片
+- [x] 支持[ImageBind](https://github.com/facebookresearch/ImageBind)
 - [x] Agent响应验证
 - [x] 提示词优化
 - [x] 用户手册和视频demo
