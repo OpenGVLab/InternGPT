@@ -234,7 +234,8 @@ if __name__ == '__main__':
             """
             <div align='center'> <img src='/file=./assets/gvlab_logo.png' style='height:70px'/> </div>
             <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>&nbsp;&nbsp;&nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>Report</b></a>
-            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593"><b>Video Demo</b></a></p>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593"><b>Video Demo</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af"><b>Video Demo with ImageBind</b></a></p>
             """
         )
         with gr.Row(visible=True, elem_id='login') as login:
@@ -284,7 +285,7 @@ if __name__ == '__main__':
                             process_save_btn = gr.Button(value="📁 Save", variant="primary", elem_id="process_save_btn")
                         with gr.Column(scale=0.25, min_width=0):
                             clear_btn = gr.Button(value="🗑️ Clear All", elem_id="clear_btn")
-                with gr.Tab("Audio", elem_id='audio_tab') as audio_tab:
+                with gr.Tab("Audio (with ImageBind)", elem_id='audio_tab') as audio_tab:
                     audio_input = gr.Audio(source="upload", type="filepath", visible=True, elem_id="audio_upload").style(height=360)
                 with gr.Tab("Video", elem_id='video_tab') as video_tab:
                     video_input = gr.Video(interactive=True, include_audio=True, elem_id="video_upload").style(height=360)
@@ -399,6 +400,12 @@ if __name__ == '__main__':
         gr.Markdown(
             '''
             **User Manual:**
+            Update:
+            
+            We now support [ImageBind](https://github.com/facebookresearch/ImageBind). If you want to generate a new image conditioned on audio, you can upload an audio file in advance:
+            - To **generate a new image from a single audio file**, you can send the message like: `"generate a real image from this audio"`;
+            - To **generate a new image from audio and text**, you can send the message like: `"generate a real image from this audio and {your prompt}"`;
+            - To **generate a new image from audio and image**, you need to upload an image and then send the message like: `"generate a new image from above image and audio"`;
 
             After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of the image?"`.
             
@@ -408,6 +415,7 @@ if __name__ == '__main__':
             - To **replace the masked region** in the image, you can send the message like: `"replace the masked region with {your prompt}"`;
             - To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation describing {your prompt}"`.
             - To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble describing {your prompt}"`.
+
             '''
         )
         gr.HTML(
