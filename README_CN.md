@@ -15,15 +15,17 @@
 
 
 ## 🥳 🚀 更新
-(2023.15.15) [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) 已经公开，里面包含了HuskyVQA! 赶紧在你自己的机器上部署试试吧!
+- (2023.05.18) 已支持[ImageBind](https://github.com/facebookresearch/ImageBind) 🎉🎉🎉。赶紧来体验根据音频生成视频的新工具: [Demo](https://igpt.opengvlab.com/)
 
-(2023.15.15) 我们的代码在 [Hugging Face](https://huggingface.co/spaces/OpenGVLab/InternGPT)也同步更新! 你可以复制一份仓库，然后使用自己的GPU运行demo。
+- (2023.15.15) [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) 已经公开，里面包含了HuskyVQA! 赶紧在你自己的机器上部署试试吧!
+
+- (2023.15.15) 我们的代码在 [Hugging Face](https://huggingface.co/spaces/OpenGVLab/InternGPT)也同步更新! 你可以复制一份仓库，然后使用自己的GPU运行demo。
 
   
 ## 🤖💬 在线Demo
-  
+**InternGPT** 上线了 (请访问： [https://igpt.opengvlab.com](https://igpt.opengvlab.com/)). 赶紧来体验吧!
 [注意] 可能会出现排队等待较长时间。您可以clone我们的仓库并使用您自己的GPU运行。
-  
+ 
 ### 🧭 Usage Tips
 在图片上传成功后, 您可以发送如下消息与iGPT进行多模态相关的对话：`"what is it in the image?"` or `"what is the background color of image?"`.   
 您同样也可以交互式地操作、编辑或者生成图片，具体如下：
@@ -48,6 +50,7 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 - [ ] 网页 & 代码生成
 - [ ] 支持搜索引擎 
 - [ ] 低成本部署
+- [x] 支持[ImageBind](https://github.com/facebookresearch/ImageBind)
 - [x] Agent响应验证
 - [x] 提示词优化
 - [x] 用户手册和视频demo
