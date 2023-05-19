@@ -30,7 +30,7 @@ from iGPT.controllers import ConversationBot
 import openai
 from langchain.llms.openai import OpenAI
 
-# openai.api_base = 'https://closeai.deno.dev/v1'
+openai.api_base = 'https://closeai.deno.dev/v1'
 
 os.makedirs('image', exist_ok=True)
 

@@ -526,20 +526,20 @@ class ConversationBot:
     def upload_audio(self, audio_path, state, user_state):
         print(f'audio_path = {audio_path}')
         if audio_path is None or not os.path.exists(audio_path):
-            state += [(None, 'No audio input. Please stop recording first and then send the audio.')]
+            state += [(None, 'No audio input. Please upload audio file.')]
             return state, state
 
         user_state = self.clear_user_state(False, user_state)
         audio_name = os.path.basename(audio_path)
         # vid_name = gen_new_name(vid_name, '', vid_name.split('.')[-1])
         new_audio_path = os.path.join('./image/', audio_name)
-        new_audio_path = gen_new_name(new_audio_path, 'image', audio_name.split('.')[-1])
+        new_audio_path = gen_new_name(new_audio_path, 'audio', audio_name.split('.')[-1])
         shutil.copy(audio_path, new_audio_path)
 
         user_state[0]['audio_path'] = new_audio_path
 
         Human_prompt = f'\nHuman: provide an audio file named {new_audio_path}. You should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
-        AI_prompt = f"Received video: {new_audio_path} "
+        AI_prompt = f"Received audio: {new_audio_path} "
         # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
 
@@ -594,7 +594,7 @@ class ConversationBot:
         vid_name = os.path.basename(video_path)
         # vid_name = gen_new_name(vid_name, '', vid_name.split('.')[-1])
         new_video_path = os.path.join('./image/', vid_name)
-        new_video_path = gen_new_name(new_video_path, 'image', vid_name.split('.')[-1])
+        new_video_path = gen_new_name(new_video_path, 'video', vid_name.split('.')[-1])
         shutil.copy(video_path, new_video_path)
 
         user_state[0]['video_path'] = new_video_path

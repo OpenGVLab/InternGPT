@@ -26,6 +26,7 @@ class Audio2Image:
     def __init__(self, Anything2Image):
         self.pipe = Anything2Image.pipe
         self.model = Anything2Image.model
+        self.device = Anything2Image.device
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
             ' fewer digits, cropped, worst quality, low quality'
@@ -54,6 +55,7 @@ class Thermal2Image:
     def __init__(self, Anything2Image):
         self.pipe = Anything2Image.pipe
         self.model = Anything2Image.model
+        self.device = Anything2Image.device
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
             ' fewer digits, cropped, worst quality, low quality'
@@ -62,7 +64,7 @@ class Thermal2Image:
              description="useful when you want to generate a real image from a thermal image. "
                          "like: generate a real image from thermal image, "
                          "or generate a new image based on the given thermal image. "
-                         "The input to this tool should be a string, representing the thermal_path")
+                         "The input to this tool should be a string, representing the image_path")
     @torch.no_grad()
     def inference(self, inputs):
         thermal_paths = [inputs]
@@ -82,26 +84,29 @@ class AudioImage2Image:
     def __init__(self, Anything2Image):
         self.pipe = Anything2Image.pipe
         self.model = Anything2Image.model
+        self.device = Anything2Image.device
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
             ' fewer digits, cropped, worst quality, low quality'
 
-    @prompts(name="Generate Image from Audio and Image",
-             description="useful when you want to generate a real image from audio and image. "
-                         "like: generate a real image from audio and image, "
-                         "or generate a new image based on the given audio and image. "
-                         "The input to this tool should be two string, representing the audio_path and image path")
+    @prompts(name="Generate Image from Image and Audio",
+             description="useful when you want to generate a real image from image and audio. "
+                         "like: generate a real image from image and audio, "
+                         "or generate a new image based on the given image and audio. "
+                         "The input to this tool should be a comma separated string of two, "
+                         "representing the image_path and audio_path")
     @torch.no_grad()
     def inference(self, inputs):
-        audio_path, image_path = inputs.split(',')
-        audio_path, image_path = audio_path.strip(), image_path.strip()
+        print(f'AudioImage2Image: {inputs}')
+        image_path, audio_path = inputs.split(',')
+        image_path, audio_path = image_path.strip(), audio_path.strip()
         embeddings = self.model.forward({
-            ib.ModalityType.VISION: ib.load_and_transform_vision_data([audio_path], self.device),
-        })
+            ib.ModalityType.VISION: ib.load_and_transform_vision_data([image_path], self.device),
+        }, normalize=False)
         img_embeddings = embeddings[ib.ModalityType.VISION]
         embeddings = self.model.forward({
-            ib.ModalityType.AUDIO: ib.load_and_transform_audio_data([image_path], self.device),
-        }, normalize=False)
+            ib.ModalityType.AUDIO: ib.load_and_transform_audio_data([audio_path], self.device),
+        })
         audio_embeddings = embeddings[ib.ModalityType.AUDIO]
         embeddings = (img_embeddings + audio_embeddings) / 2
         images = self.pipe(image_embeds=embeddings.half(), width=512, height=512).images
@@ -116,25 +121,37 @@ class AudioText2Image:
     def __init__(self, Anything2Image):
         self.pipe = Anything2Image.pipe
         self.model = Anything2Image.model
+        self.device = Anything2Image.device
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
             ' fewer digits, cropped, worst quality, low quality'
 
-    @prompts(name="Generate Image from Audio",
+    @prompts(name="Generate Image from Audio And Text",
              description="useful when you want to generate a real image from audio and text prompt. "
-                         "like: generate a real image from audio and text prompt, "
-                         "or generate a new image based on the given audio and text prompt. "
-                         "The input to this tool should be two string, representing the text prompt and audio_path")
+                         "like: generate a real image from audio with user's prompt, "
+                         "or generate a new image based on the given audio with user's description. "
+                         "The input to this tool should be a comma separated string of two, "
+                         "representing audio_path and prompt")
     @torch.no_grad()
     def inference(self, inputs):
-        prompt, audio_path = inputs.split(',')
-        prompt, audio_path = prompt.strip(), audio_path.strip()
+        audio_path  = inputs.split(',')[0]
+        prompt = ','.join(inputs.split(',')[1:])
+        audio_path = audio_path.strip()
+        prompt = prompt.strip()
         audio_paths = [audio_path]
+        embeddings = self.model.forward({
+            ib.ModalityType.TEXT: ib.load_and_transform_text([prompt], self.device),
+        }, normalize=False)
+        text_embeddings = embeddings[ib.ModalityType.TEXT]
+
         embeddings = self.model.forward({
             ib.ModalityType.AUDIO: ib.load_and_transform_audio_data(audio_paths, self.device),
         })
-        embeddings = embeddings[ib.ModalityType.AUDIO]
-        images = self.pipe(prompt=prompt, image_embeds=embeddings.half(), width=512, height=512).images
+        audio_embeddings = embeddings[ib.ModalityType.AUDIO]
+        # embeddings = (text_embeddings + audio_embeddings) / 2
+        embeddings = text_embeddings * 0.5 + audio_embeddings * 0.5
+        # images = self.pipe(prompt=prompt, image_embeds=embeddings.half(), width=512, height=512).images
+        images = self.pipe(image_embeds=embeddings.half(), width=512, height=512).images
         new_img_name = gen_new_name(audio_paths[0], 'AudioText2Image')
         images[0].save(new_img_name)
         return new_img_name
