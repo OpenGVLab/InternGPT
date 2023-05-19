@@ -452,7 +452,7 @@ class ImageBindModel(nn.Module):
 
         return nn.ModuleDict(modality_postprocessors)
 
-    def forward(self, inputs):
+    def forward(self, inputs, normalize=True):
         outputs = {}
         for modality_key, modality_value in inputs.items():
             reduce_list = (
@@ -474,9 +474,10 @@ class ImageBindModel(nn.Module):
                 modality_value = self.modality_heads[modality_key](
                     modality_value, **head_inputs
                 )
-                modality_value = self.modality_postprocessors[modality_key](
-                    modality_value
-                )
+                if normalize:
+                    modality_value = self.modality_postprocessors[modality_key](
+                        modality_value
+                    )
 
                 if reduce_list:
                     modality_value = modality_value.reshape(B, S, -1)
