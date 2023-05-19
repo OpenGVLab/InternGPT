@@ -7,6 +7,7 @@
 
 import logging
 import math
+import os
 
 import torch
 import torch.nn as nn
@@ -22,7 +23,8 @@ from .models.multimodal_preprocessors import SimpleTokenizer
 
 DEFAULT_AUDIO_FRAME_SHIFT_MS = 10  # in milliseconds
 
-BPE_PATH = "bpe/bpe_simple_vocab_16e6.txt.gz"
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+BPE_PATH = os.path.join(CURRENT_DIR, "bpe/bpe_simple_vocab_16e6.txt.gz")
 
 
 def waveform2melspec(waveform, sample_rate, num_mel_bins, target_length):
@@ -102,6 +104,54 @@ def load_and_transform_vision_data(image_paths, device):
     return torch.stack(image_ouputs, dim=0)
 
 
+def load_and_transform_depth_data(depth_paths, device):
+    if depth_paths is None:
+        return None
+
+    depth_ouputs = []
+    for depth_path in depth_paths:
+        data_transform = transforms.Compose(
+            [
+                transforms.Resize(
+                    224, interpolation=transforms.InterpolationMode.BICUBIC
+                ),
+                transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                # transforms.Normalize((0.5, ), (0.5, ))  # if I use this normalization, I cannot get good results...
+            ]
+        )
+        with open(depth_path, "rb") as fopen:
+            image = Image.open(fopen).convert("L")
+
+        image = data_transform(image).to(device)
+        depth_ouputs.append(image)
+    return torch.stack(depth_ouputs, dim=0)
+
+
+def load_and_transform_thermal_data(thermal_paths, device):
+    if thermal_paths is None:
+        return None
+
+    thermal_ouputs = []
+    for thermal_path in thermal_paths:
+        data_transform = transforms.Compose(
+            [
+                transforms.Resize(
+                    224, interpolation=transforms.InterpolationMode.BICUBIC
+                ),
+                transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, ), (0.5, ))
+            ]
+        )
+        with open(thermal_path, "rb") as fopen:
+            image = Image.open(fopen).convert("L")
+
+        image = data_transform(image).to(device)
+        thermal_ouputs.append(image)
+    return torch.stack(thermal_ouputs, dim=0)
+
+
 def load_and_transform_text(text, device):
     if text is None:
         return None
@@ -143,7 +193,7 @@ def load_and_transform_audio_data(
         for clip_timepoints in all_clips_timepoints:
             waveform_clip = waveform[
                 :,
-                int(clip_timepoints[0] * sample_rate) : int(
+                int(clip_timepoints[0] * sample_rate): int(
                     clip_timepoints[1] * sample_rate
                 ),
             ]
@@ -159,6 +209,7 @@ def load_and_transform_audio_data(
         audio_outputs.append(all_clips)
 
     return torch.stack(audio_outputs, dim=0)
+
 
 def get_clip_timepoints(clip_sampler, duration):
     # Read out all clips in this video
@@ -242,7 +293,7 @@ def uniform_crop(images, size, spatial_idx, boxes=None, scale_size=None):
             x_offset = 0
         elif spatial_idx == 2:
             x_offset = width - size
-    cropped = images[:, :, y_offset : y_offset + size, x_offset : x_offset + size]
+    cropped = images[:, :, y_offset: y_offset + size, x_offset: x_offset + size]
     cropped_boxes = crop_boxes(boxes, x_offset, y_offset) if boxes is not None else None
     if ndim == 3:
         cropped = cropped.squeeze(0)
