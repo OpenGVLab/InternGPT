@@ -18,7 +18,7 @@
 **InternGPT**(short for **iGPT**) / **InternChat**(short for **iChat**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternGPT stands for **inter**action, **n**onverbal, and Chat**GPT**. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iGPT significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iGPT, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
 ## 🥳 🚀 What's New 
-- (2023.05.18) We have supported the tool of Audio2Image 🎉🎉🎉. Thanks for [ImageBind](https://github.com/facebookresearch/ImageBind)! Let's try it: [Demo](https://igpt.opengvlab.com/).
+- (2023.05.18) We have supported [ImageBind](https://github.com/facebookresearch/ImageBind) 🎉🎉🎉. Let's try the new tool of Audio2Image: [Demo](https://igpt.opengvlab.com/).
 
 - (2023.05.15) The [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) including HuskyVQA has been released! Try it on your local machine!
 
