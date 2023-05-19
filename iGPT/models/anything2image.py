@@ -96,12 +96,12 @@ class AudioImage2Image:
         audio_path, image_path = inputs.split(',')
         audio_path, image_path = audio_path.strip(), image_path.strip()
         embeddings = self.model.forward({
-            ib.ModalityType.VISION: ib.load_and_transform_vision_data([audio_path], self.device),
-        })
+            ib.ModalityType.VISION: ib.load_and_transform_vision_data([image_path], self.device),
+        }, normalize=False)
         img_embeddings = embeddings[ib.ModalityType.VISION]
         embeddings = self.model.forward({
-            ib.ModalityType.AUDIO: ib.load_and_transform_audio_data([image_path], self.device),
-        }, normalize=False)
+            ib.ModalityType.AUDIO: ib.load_and_transform_audio_data([audio_path], self.device),
+        })
         audio_embeddings = embeddings[ib.ModalityType.AUDIO]
         embeddings = (img_embeddings + audio_embeddings) / 2
         images = self.pipe(image_embeds=embeddings.half(), width=512, height=512).images
