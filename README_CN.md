@@ -15,7 +15,7 @@
 
 
 ## 🥳 🚀 更新
-- (2023.05.18) 已支持[ImageBind](https://github.com/facebookresearch/ImageBind) 🎉🎉🎉。赶紧来体验根据音频生成视频的新工具: [Demo](https://igpt.opengvlab.com/)
+- (2023.05.18) 已支持[ImageBind](https://github.com/facebookresearch/ImageBind) 🎉🎉🎉。使用方法请参考[视频演示](#imagebind_demo)。赶紧来体验: [Demo](https://igpt.opengvlab.com/)
 
 - (2023.15.15) [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) 已经公开，里面包含了HuskyVQA! 赶紧在你自己的机器上部署试试吧!
 
@@ -30,15 +30,27 @@
 在图片上传成功后, 您可以发送如下消息与iGPT进行多模态相关的对话：`"what is it in the image?"` or `"what is the background color of image?"`.   
 您同样也可以交互式地操作、编辑或者生成图片，具体如下：
 - 点击图片上的任意位置，然后按下 **`Pick`** 按钮，**预览分割区域**。您也可以按下 **`OCR`** 按钮，识别具体位置处存在的所有单词；
-- 要在图像中 **删除掩码区域**，您可以发送如下消息：`“remove the maked region”`；
-- 要在图像中 **替换掩码区域的物体为其他物体**，您可以发送如下消息：`“replace the maked region with {your prompt}”`；
+- 要在图像中 **删除掩码区域**，您可以发送如下消息：`“remove the masked region”`；
+- 要在图像中 **替换掩码区域的物体为其他物体**，您可以发送如下消息：`“replace the masked region with {your prompt}”`；
 - 想 **生成新图像**，您可以发送如下消息：`“generate a new image based on its segmentation describing {your prompt}”`；
-- 想通过 **涂鸦创建新图像**，您应该按下 **`Whiteboard`** 按钮并在白板上绘制。绘制完成后，您需要按下 **`保存`** 按钮并发送如下消息：`“generate a new image based on this scribble decribing {your prompt}”`。
+- 想通过 **涂鸦创建新图像**，您应该按下 **`Whiteboard`** 按钮并在白板上绘制。绘制完成后，您需要按下 **`保存`** 按钮并发送如下消息：`“generate a new image based on this scribble describing {your prompt}”`。
+  
+更新:
+
+我们现在已经支持 [ImageBind](https://github.com/facebookresearch/ImageBind). 如果你想基于音频生成一个新的图片，你可以先上传一个音频文件：
+- 从**单个音频生成新的图片**，你可以发送如下消息：`"generate a real image from this audio"`;
+- 从**音频和文本生成新的图片**，你可以发送如下消息：`"generate a real image from this audio and {your prompt}"`;
+- 从**音频和图片生成新的图片**，你需要再上传一个图片，然后发送如下消息：`"generate a new image from above image and audio"`;
+  
 
 [**InternGPT** 已上线，尝试一下！](https://igpt.opengvlab.com)
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
+<!-- <span id="imagebind_demo">iGPT + ImageBind视频演示：</span> -->
+<a id="imagebind_demo">iGPT + ImageBind视频演示：</a>
+  
+https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af
   
 ## 🗓️ 项目规划
   
