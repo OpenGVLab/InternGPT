@@ -51,7 +51,7 @@ We now support [ImageBind](https://github.com/facebookresearch/ImageBind). If yo
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
-<a id="imagebind_demo"> **Video Demo with ImageBind: ** </a>
+**<a id="imagebind_demo">Video Demo with ImageBind: </a>**
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af
 
