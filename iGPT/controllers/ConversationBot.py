@@ -5,6 +5,9 @@ import numpy as np
 import uuid
 import shutil
 import whisper
+import torch
+import gradio as gr
+import imageio
 
 from PIL import Image
 
@@ -14,7 +17,9 @@ from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.llms.openai import OpenAI
 
 from ..models import *
-from iGPT.models.utils import gen_new_name
+from iGPT.models.utils import (gen_new_name, to_image, 
+                               seed_everything, add_points_to_image)
+from ..models.drag_gan import drag_gan
 
 
 INTERN_CHAT_PREFIX = """InternGPT is designed to be able to assist with a wide range of text and visual related tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. InternGPT is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
@@ -168,7 +173,7 @@ class ConversationBot:
                 agent_kwargs={'prefix': INTERN_CHAT_PREFIX, 'format_instructions': INTERN_CHAT_FORMAT_INSTRUCTIONS,
                             'suffix': INTERN_CHAT_SUFFIX}, )
         
-        user_state = [{'agent': agent, 'memory': memory}]
+        user_state = [{'agent': agent, 'memory': memory, 'StyleGAN': {}}]
         return user_state
 
     
@@ -746,12 +751,174 @@ class ConversationBot:
               f"Current Memory: {user_state[0]['agent'].memory.buffer}")
         return image['image'], state, state, user_state
     
+    def gen_new_image(self, state, user_state):
+        model = self.models.get('StyleGAN', None)
+        if model is None:
+            state += [None, 'Please load StyleGAN!']
+            return None, state, state, user_state
+        if user_state[0].get('StyleGAN', None) is None or \
+                user_state[0]['StyleGAN'].get('seed', None) is None:
+            seed = 2048
+            seed_everything(seed)
+            user_state[0]['StyleGAN']['seed'] = seed
 
-    def clear_user_state(self, clear_momery, user_state):
+        device = model.device
+        g_ema = model.g_ema
+        sample_z = torch.randn([1, 512], device=device)
+        latent, noise = g_ema.prepare([sample_z])
+        sample, F = g_ema.generate(latent, noise)
+
+        gan_state = {
+            'latent': latent,
+            'noise': noise,
+            'F': F,
+            'sample': sample,
+            'history': []
+        }
+        
+        image_arr = to_image(sample)
+        new_image = Image.fromarray(image_arr)
+        image_filename = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
+        image_filename = gen_new_name(image_filename, 'image')
+        
+        new_image.save(image_filename, "PNG")
+        state = state + [(None, f"![](file={image_filename})*{image_filename}*")]
+        user_state[0]['StyleGAN']['state'] = gan_state
+        user_state[0]['StyleGAN']['points'] = {'end': [], 'start': []}
+        user_state[0]['StyleGAN']['image_path'] = image_filename
+        user_state[0]['StyleGAN']['image_size'] = model.image_size
+        SIZE_TO_CLICK_SIZE = {
+            1024: 15,
+            256: 6
+        }
+        user_state[0]['StyleGAN']['click_size'] = SIZE_TO_CLICK_SIZE[model.image_size]
+        
+        return image_arr, state, state, user_state
+    
+    def drag_it(self, image, max_iters, state, user_state):
+
+        model = self.models.get('StyleGAN', None)
+        if model is None:
+            state += [(None, 'Please load StyleGAN!')]
+            return image, 0, state, state, user_state
+
+        image_path = user_state[0]['StyleGAN'].get('image_path', None)
+        if image_path is None:
+            return image, 0, state, state, user_state
+        
+        points = user_state[0]['StyleGAN']['points']
+        # image_path = user_state[0]['StyleGAN'].get('image_path', None)
+        if len(points['start']) == 0:
+            # raise gr.Error('You must select at least one start point and target point.')
+            # image, step, state, state, user_state
+            
+            return image, 0, state, state, user_state
+
+        if len(points['start']) != len(points['end']):
+            state += [(None, f'Start points (num={len(points["start"])}) can not match end points (num={len(points["end"])})')]
+            return image, 0, state, state, user_state
+
+        click_size = user_state[0]['StyleGAN']['click_size']
+        style_gan_state = user_state[0]['StyleGAN']['state']
+        max_iters = int(max_iters)
+        latent = style_gan_state['latent']
+        noise = style_gan_state['noise']
+        F = style_gan_state['F']
+        style_gan_state['history'] = []
+
+        start_points = [torch.tensor(p).float() for p in points['start']]
+        end_points = [torch.tensor(p).float() for p in points['end']]
+        mask = None
+            
+        step = 0
+        for sample2, latent, F, handle_points in drag_gan(model.g_ema, latent, noise, F,
+                                                          start_points, end_points, mask,
+                                                          max_iters=max_iters):
+            image = to_image(sample2)
+
+            style_gan_state['F'] = F
+            style_gan_state['latent'] = latent
+            style_gan_state['sample'] = sample2
+            points['start'] = [p.cpu().numpy().astype('int').tolist() for p in handle_points]
+            org_image = image.copy()
+            add_points_to_image(image, points, size=click_size)
+
+            style_gan_state['history'].append(org_image)
+            step += 1
+            # print(f'step = {step}')
+            if max_iters == step:
+                
+                video_name = gen_new_name(image_path, 'DragGAN', 'mp4')
+                imageio.mimsave(video_name, style_gan_state['history'])
+                AI_prompt = f'The process of generation is saved in {video_name}: '
+                state += [(None, AI_prompt)]
+                # state += [None, AI_prompt]
+                state += [(None, (video_name, ))]
+                new_image = Image.fromarray(org_image)
+                # image_filename = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
+                image_filename = gen_new_name(image_path, 'DragGAN')
+                new_image.save(image_filename, "PNG")
+                AI_prompt = f'The processed image is named {image_filename}: '
+                state += [(None, AI_prompt)]
+                # state += [None, AI_prompt]
+                state += [(None, (image_filename, ))]
+                user_state[0]['StyleGAN']['state'] = style_gan_state
+                yield image, step, state, state, user_state
+
+            yield image, step, state, state, user_state
+    
+    def try_drag_it(self, state, user_state):
+        start_point = user_state[0]['StyleGAN']['points']['start']
+        end_point = user_state[0]['StyleGAN']['points']['end']
+        if len(start_point) == len(end_point):
+            return self.drag_it(state, user_state)
+        return gr.update(visible=True), 0, state, state, user_state
+    
+    def save_points_for_drag_gan(self, image, user_state, evt: gr.SelectData):
+        points = user_state[0]['StyleGAN']['points']
+        start_point = user_state[0]['StyleGAN']['points'].get('start')
+        end_point = user_state[0]['StyleGAN']['points'].get('end')
+        click_size = user_state[0]['StyleGAN']['click_size']
+        # image_size = user_state[0]['StyleGAN']['image_size']
+        if len(start_point) > len(end_point):
+            points['end'].append([evt.index[1], evt.index[0]])
+            image = add_points_to_image(image, points, size=click_size)
+            return image, user_state
+        
+        points['start'].append([evt.index[1], evt.index[0]])
+        
+        image = add_points_to_image(image, points, size=click_size)
+
+        return image, user_state
+
+    def reset_drag_points(self, image, user_state):
+        if user_state[0].get('StyleGAN', None) is None:
+            return image, user_state
+        
+        user_state[0]['StyleGAN']['points'] = {'end': [], 'start': []}
+        # image_path = user_state[0]['StyleGAN'].get('image_path', None)
+        # if image_path is not None:
+        #     image = Image.open(image_path)
+
+        gan_state = user_state[0]['StyleGAN'].get('state', None)
+        sample = None
+        if gan_state is not None:
+            sample = gan_state.get('sample', None)
+            
+        if sample is not None:
+            image = to_image(sample)
+        else:
+            image_path = user_state[0]['StyleGAN'].get('image_path', None)
+            if image_path is not None:
+                image = Image.open(image_path)
+
+        return image, user_state
+
+    def clear_user_state(self, clear_memory, user_state):
         new_user_state = [{}]
         new_user_state[0]['agent'] = user_state[0]['agent']
         new_user_state[0]['memory'] = user_state[0]['memory']
-        if clear_momery:
+        if clear_memory:
             new_user_state[0]['memory'].clear()
         else:
             new_user_state[0]['memory'] = user_state[0]['memory']

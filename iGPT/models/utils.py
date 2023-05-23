@@ -16,6 +16,30 @@ import random
 
 GLOBAL_SEED=1912
 
+
+def add_points_to_image(image, points, size=5):
+    # h, w, = image.shape[:2]
+    # print(image.shape)
+    # print(image.dtype)
+    # print(points)
+    # print(size)
+    # print('*' * 40)
+    for x, y in points['end']:
+        cv2.circle(image, (y, x), size, (255, 0, 0), -1)
+    for x, y in points['start']:
+        cv2.circle(image, (y, x), size, (0, 0, 255), -1)
+
+    return image
+
+
+def to_image(tensor):
+    tensor = tensor.squeeze(0).permute(1, 2, 0).contiguous()
+    arr = tensor.detach().cpu().numpy()
+    arr = (arr - arr.min()) / (arr.max() - arr.min())
+    arr = arr * 255
+    return arr.astype(np.uint8)
+
+
 def seed_everything(seed):
     if seed == -1:
         seed = gen_new_seed()

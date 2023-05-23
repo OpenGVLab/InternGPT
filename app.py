@@ -30,7 +30,7 @@ from iGPT.controllers import ConversationBot
 import openai
 from langchain.llms.openai import OpenAI
 
-openai.api_base = 'https://closeai.deno.dev/v1'
+# openai.api_base = 'https://closeai.deno.dev/v1'
 
 os.makedirs('image', exist_ok=True)
 
@@ -210,10 +210,16 @@ def process_image_tab():
 def process_audio_tab():
     return gr.update(visible=False), gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)
 
+def process_drag_gan_tab():
+    return gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)
+
 def add_whiteboard():
     # wb = np.ones((1080, 1920, 3), dtype=np.uint8) * 255
     wb = np.ones((720, 1280, 3), dtype=np.uint8) * 255
     return Image.fromarray(wb)
+
+def change_max_iter(max_iters):
+    return gr.update(maximum=max_iters)
 
 
 if __name__ == '__main__':
@@ -287,9 +293,18 @@ if __name__ == '__main__':
                             clear_btn = gr.Button(value="🗑️ Clear All", elem_id="clear_btn")
                 with gr.Tab("Audio (with ImageBind)", elem_id='audio_tab') as audio_tab:
                     audio_input = gr.Audio(source="upload", type="filepath", visible=True, elem_id="audio_upload").style(height=360)
+                with gr.Tab("DragGAN", elem_id='drag_gan') as drag_gan_tab:
+                    drag_image = gr.Image(interactive=False).style(height=340, width=592)
+                    with gr.Row() as drag_btn_row:   
+                        drag_new_img_btn = gr.Button('🖼️ New Image', variant='primary') 
+                        drag_btn = gr.Button('🖱︎ Drag It', variant='primary')
+                        drag_reset_btn = gr.Button('🧹 Reset Points', variant='primary')
+                    drag_max_iters = gr.Slider(1, 100, 25, step=1, label='Max Iterations')
+                    progress = gr.Slider(value=0, maximum=25, label='Progress', interactive=False)
+
                 with gr.Tab("Video", elem_id='video_tab') as video_tab:
                     video_input = gr.Video(interactive=True, include_audio=True, elem_id="video_upload").style(height=360)
-
+        
             login_func = partial(login_with_key, bot, args.debug)
             openai_api_key_text.submit(login_func, [openai_api_key_text], [user_interface, openai_api_key_text, key_submit_button, user_state])
             key_submit_button.click(login_func, [openai_api_key_text, ], [user_interface, openai_api_key_text, key_submit_button, user_state])
@@ -370,6 +385,9 @@ if __name__ == '__main__':
             video_tab.select(process_video_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
             img_tab.select(process_image_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
             audio_tab.select(process_audio_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
+            # process_drag_gan_tab_tab = partial(process_drag_gan_tab, bot)
+            drag_gan_tab.select(process_drag_gan_tab, [], [whiteboard_mode, img_example, aud_example, vid_example]).then(
+                bot.gen_new_image, [state, user_state], [drag_image, chatbot, state, user_state])
             # clear_img_btn.click(bot.reset, [], [click_img])
             clear_func = partial(bot.clear_user_state, True)
             clear_btn.click(lambda: None, [], [click_img, ]).then(
@@ -396,7 +414,17 @@ if __name__ == '__main__':
             
             clear_func = partial(bot.clear_user_state, False)
             video_input.clear(clear_func, [user_state, ], [user_state, ])
-        
+
+            drag_new_img_btn.click(bot.gen_new_image, [state, user_state], [drag_image, chatbot, state, user_state])
+            drag_image.select(bot.save_points_for_drag_gan, [drag_image, user_state, ], [drag_image, user_state, ])
+            drag_btn.click(
+                bot.drag_it, [drag_image, drag_max_iters, state, user_state], [drag_image, progress, chatbot, state, user_state]
+            )
+            # drag_image.select(bot.save_points_for_drag_gan, [drag_image, user_state, ], [drag_image, user_state, ])
+            drag_max_iters.change(change_max_iter, [drag_max_iters,], [progress, ])
+            drag_reset_btn.click(bot.reset_drag_points, [drag_image, user_state], [drag_image, user_state, ])
+            # drag_btn.click(bot.drag_it, [state, user_state], [drag_image, progress, chatbot, state, user_state])
+
         gr.Markdown(
             '''
             **User Manual:**

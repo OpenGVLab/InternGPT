@@ -20,7 +20,7 @@ class DownloadProgressBar(tqdm):
 
 
 def get_path(base_path):
-    BASE_DIR = os.path.join('checkpoints')
+    BASE_DIR = os.path.join('model_zoo')
 
     save_path = os.path.join(BASE_DIR, base_path)
     if not os.path.exists(save_path):
@@ -158,7 +158,7 @@ def bilinear_interpolate_torch(im, y, x):
     return Ia * wa + Ib * wb + Ic * wc + Id * wd
 
 
-def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points, mask, max_iters=1000):
+def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points, mask=None, max_iters=1000):
     handle_points0 = copy.deepcopy(handle_points)
     n = len(handle_points)
     r1, r2, lam, d = 3, 12, 20, 1
@@ -194,7 +194,8 @@ def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points
                     f2 = bilinear_interpolate_torch(F2, qi[0] + di[0], qi[1] + di[1])
                     loss += FF.l1_loss(f2, f1)
 
-            loss += ((F2 - F0) * (1 - mask)).abs().mean() * lam
+            if mask is not None:
+                loss += ((F2 - F0) * (1 - mask)).abs().mean() * lam
 
             loss.backward()
             optimizer.step()
@@ -211,7 +212,11 @@ def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points
                 miny = 1e9
                 for qi in neighbor(int(handle_points[i][0]), int(handle_points[i][1]), r2):
                     # f2 = F2[..., int(qi[0]), int(qi[1])]
-                    f2 = bilinear_interpolate_torch(F2, qi[0], qi[1])
+                    try:
+                        f2 = bilinear_interpolate_torch(F2, qi[0], qi[1])
+                    except:
+                        import ipdb
+                        ipdb.set_trace()
                     v = torch.norm(f2 - f0, p=1)
                     if v < minv:
                         minv = v
@@ -221,14 +226,7 @@ def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points
                 handle_points[i][1] = miny
 
         F = F2.detach().clone()
-        if iter % 1 == 0:
-            print(iter, loss.item(), handle_points, target_points)
-            # p = handle_points[0].int()
-            # sample2[0, :, p[0] - 5:p[0] + 5, p[1] - 5:p[1] + 5] = sample2[0, :, p[0] - 5:p[0] + 5, p[1] - 5:p[1] + 5] * 0
-            # t = target_points[0].int()
-            # sample2[0, :, t[0] - 5:t[0] + 5, t[1] - 5:t[1] + 5] = sample2[0, :, t[0] - 5:t[0] + 5, t[1] - 5:t[1] + 5] * 255
+        # if iter % 1 == 0:
+        #     print(iter, loss.item(), handle_points, target_points)
 
-            # sample2[0, :, 210, 134] = sample2[0, :, 210, 134] * 0
-            # utils.save_image(sample2, "test2.png", normalize=True, range=(-1, 1))
-
-        yield sample2, latent, F2
+        yield sample2, latent, F2, handle_points

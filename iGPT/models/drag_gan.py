@@ -1,31 +1,34 @@
 import numpy as np
 import torch
 from PIL import Image
+import random
+import os
+import uuid
 
-from .drag_gan_src import drag_gan, stylegan2
-from .utils import gen_new_name, prompts
+from .drag_gan_src import drag_gan, stylegan2, get_path
+from .utils import gen_new_name, prompts, to_image
 
 
-def to_image(tensor):
-    tensor = tensor.squeeze(0).permute(1, 2, 0)
-    arr = tensor.detach().cpu().numpy()
-    arr = (arr - arr.min()) / (arr.max() - arr.min())
-    arr = arr * 255
-    return arr.astype('uint8')
-
+CKPT_SIZE = {
+    'stylegan2-ffhq-config-f.pt': 1024,
+    # 'stylegan2-cat-config-f.pt': 256,
+    # 'stylegan2-church-config-f.pt': 256,
+    # 'stylegan2-horse-config-f.pt': 256,
+}
 
 class StyleGAN:
     def __init__(self, device):
         self.g_ema = stylegan2().to(device)
         self.device = device
+        self.image_size = 1024
 
-    @prompts(name="Generate Image with StyleGAN",
-             description="useful when you want to generate a real image with StyleGAn. "
-                         "like: generate a real image with StyleGAn, "
-                         "or generate a new image based on with StyleGAn. "
-                         "This tool does not need input")
+    # @prompts(name="Generate Image with StyleGAN",
+    #          description="useful when you want to generate a real image with StyleGAn. "
+    #                      "like: generate a real image with StyleGAn, "
+    #                      "or generate a new image based on with StyleGAn. "
+    #                      "This tool does not need input")
     @torch.no_grad()
-    def inference(self, inputs):
+    def gen_image(self, inputs):
         sample_z = torch.randn([1, 512], device=self.device)
         latent, noise = self.g_ema.prepare([sample_z])
         sample, F = self.g_ema.generate(latent, noise)
@@ -38,6 +41,15 @@ class StyleGAN:
         new_img_name = gen_new_name('tmp', 'DragGAN')
         image.save(new_img_name)
         return new_img_name
+    
+    def change_ckpt(self, ckpt=None):
+        if ckpt is None:
+            ckpt = random.sample(CKPT_SIZE.keys(), 1)[0]
+        assert ckpt in CKPT_SIZE.keys()
+        checkpoint = torch.load(get_path(ckpt), map_location=f'{self.device}')
+        self.g_ema.load_state_dict(checkpoint["g_ema"], strict=False)
+        self.g_ema.requires_grad_(False)
+        self.g_ema.eval()
 
 
 class DragGAN:
@@ -74,7 +86,8 @@ class DragGAN:
                                                      handle_points, target_points, mask,
                                                      max_iters=max_iters)
         image = Image.fromarray(to_image(sample2))
-        new_img_name = gen_new_name('tmp', 'DragGAN')
+        image_filename = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
+        new_img_name = gen_new_name(image_filename, 'DragGAN')
         image.save(new_img_name)
 
         return new_img_name

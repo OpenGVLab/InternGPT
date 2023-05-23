@@ -13,6 +13,8 @@ from .anything2image import Anything2Image, Audio2Image, Thermal2Image, AudioIma
 from .video import (ActionRecognition, DenseCaption,
                     VideoCaption, GenerateTikTokVideo)
 
+from .drag_gan import StyleGAN
+
 # from .lang import SimpleLanguageModel
 
 from .inpainting import LDMInpainting
@@ -23,7 +25,7 @@ __all__ = [
     'LineText2Image', 'Image2Hed', 'HedText2Image', 'Image2Scribble',
     'ScribbleText2Image', 'Image2Pose', 'PoseText2Image', 'SegText2Image',
     'Image2Depth', 'DepthText2Image', 'Image2Normal', 'NormalText2Image',
-    'SegmentAnything',
+    'SegmentAnything', 'StyleGAN', 
     'Audio2Image', 'Thermal2Image', 'AudioImage2Image', 'Anything2Image', 'AudioText2Image',
     'ExtractMaskedAnything', 'ReplaceMaskedAnything', 'ImageOCRRecognition',
     'ActionRecognition', 'DenseCaption', 'VideoCaption', 'GenerateTikTokVideo'
