@@ -124,9 +124,12 @@ class Seafoam(ThemeBase.Base):
 
 
 css='''
-#chatbot{min-height: 480px}
-#image_upload:{align-items: center; min-width: 640px}
+#image_upload {align-items: center; min-width: 640px}
 '''
+#chatbot {min-height: 480px}
+#drag_gan_btn {max-width: 590px}
+#drag_gan_progress {max-width: 590px}
+#drag_gan_tab {max-width: 590px}
 
 def cut_dialogue_history(history_memory, keep_last_n_words=500):
     if history_memory is None or len(history_memory) == 0:
@@ -280,6 +283,25 @@ if __name__ == '__main__':
                             add_aud_example = gr.Button("📻 Give an Example", variant="primary")
                         with gr.Column(scale=0.4, min_width=0, visible=False) as vid_example:
                             add_vid_example = gr.Button("📽 Give an Example", variant="primary")
+                
+                with gr.Tab("Audio (with ImageBind)", elem_id='audio_tab') as audio_tab:
+                    audio_input = gr.Audio(source="upload", type="filepath", visible=True, elem_id="audio_upload").style(height=360)
+
+                with gr.Tab("DragGAN", elem_id='drag_gan_tab') as drag_gan_tab:
+                    drag_image = gr.Image(interactive=False).style(height=340)
+                    with gr.Row(elem_id='drag_gan_btn') as drag_btn_row:   
+                        with gr.Column(scale=0.33, min_width=0):
+                            drag_new_img_btn = gr.Button('🖼️ New Image', variant='primary') 
+                        with gr.Column(scale=0.33, min_width=0):
+                            drag_btn = gr.Button('🖱︎ Drag It', variant='primary')
+                        with gr.Column(scale=0.33, min_width=0):
+                            drag_reset_btn = gr.Button('🧹 Reset Points', variant='primary')
+                    with gr.Row(elem_id='drag_gan_progress'):   
+                        with gr.Column(scale=0.5, min_width=0):
+                            drag_max_iters = gr.Slider(1, 100, 25, step=1, label='Max Iterations', elem_id='drag_max_iters')
+                        with gr.Column(scale=0.5, min_width=0):
+                            progress = gr.Slider(value=0, maximum=25, label='Progress', interactive=False, elem_id='progress')
+
                 with gr.Tab("Image", elem_id='image_tab') as img_tab:
                     click_img = ImageSketcher(type="pil", interactive=True, brush_radius=15, elem_id="image_upload").style(height=360)
                     with gr.Row() as vis_btn:
@@ -291,17 +313,8 @@ if __name__ == '__main__':
                             process_save_btn = gr.Button(value="📁 Save", variant="primary", elem_id="process_save_btn")
                         with gr.Column(scale=0.25, min_width=0):
                             clear_btn = gr.Button(value="🗑️ Clear All", elem_id="clear_btn")
-                with gr.Tab("Audio (with ImageBind)", elem_id='audio_tab') as audio_tab:
-                    audio_input = gr.Audio(source="upload", type="filepath", visible=True, elem_id="audio_upload").style(height=360)
-                with gr.Tab("DragGAN", elem_id='drag_gan') as drag_gan_tab:
-                    drag_image = gr.Image(interactive=False).style(height=340, width=592)
-                    with gr.Row() as drag_btn_row:   
-                        drag_new_img_btn = gr.Button('🖼️ New Image', variant='primary') 
-                        drag_btn = gr.Button('🖱︎ Drag It', variant='primary')
-                        drag_reset_btn = gr.Button('🧹 Reset Points', variant='primary')
-                    drag_max_iters = gr.Slider(1, 100, 25, step=1, label='Max Iterations')
-                    progress = gr.Slider(value=0, maximum=25, label='Progress', interactive=False)
 
+               
                 with gr.Tab("Video", elem_id='video_tab') as video_tab:
                     video_input = gr.Video(interactive=True, include_audio=True, elem_id="video_upload").style(height=360)
         
@@ -355,7 +368,6 @@ if __name__ == '__main__':
             
             whiteboard_mode.click(add_whiteboard, [], [click_img, ])
 
-            # click_img.upload(bot.upload_image, [click_img, state, txt], [chatbot, state, txt])
             click_img.upload(lambda: gr.update(visible=False), [], [send_btn]).then(
                 lambda: gr.update(visible=False), [], [txt]).then(
                 lambda: gr.update(visible=False), [], [vis_btn]).then( 
@@ -370,13 +382,13 @@ if __name__ == '__main__':
                 bot.process_ocr, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
                 lambda: gr.update(visible=True), [], [vis_btn]
             )
-            # process_seg_btn.click(bot.process_seg, [click_img, state], [chatbot, state, click_img])
+            
             process_seg_btn.click(
                 lambda: gr.update(visible=False), [], [vis_btn]).then(
                 bot.process_seg, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
                 lambda: gr.update(visible=True), [], [vis_btn]
             )
-            # process_save_btn.click(bot.process_save, [click_img, state], [chatbot, state, click_img])
+            
             process_save_btn.click(
                 lambda: gr.update(visible=False), [], [vis_btn]).then(
                 bot.process_save, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
@@ -385,19 +397,16 @@ if __name__ == '__main__':
             video_tab.select(process_video_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
             img_tab.select(process_image_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
             audio_tab.select(process_audio_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
-            # process_drag_gan_tab_tab = partial(process_drag_gan_tab, bot)
+            # drag_gan_tab.select(process_drag_gan_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
             drag_gan_tab.select(process_drag_gan_tab, [], [whiteboard_mode, img_example, aud_example, vid_example]).then(
                 bot.gen_new_image, [state, user_state], [drag_image, chatbot, state, user_state])
-            # clear_img_btn.click(bot.reset, [], [click_img])
             clear_func = partial(bot.clear_user_state, True)
             clear_btn.click(lambda: None, [], [click_img, ]).then(
                 lambda: [], None, state).then(
                 clear_func, [user_state, ], [user_state, ]).then(
                 lambda: None, None, chatbot
             ).then(lambda: '', None, [txt, ])
-            # click_img.upload(bot.reset, None, None)
             
-            # video_input.upload(bot.upload_video, [video_input, state, user_state], [chatbot, state, user_state])
             video_input.upload(lambda: gr.update(visible=False), [], [send_btn]).then(
                 lambda: gr.update(visible=False), [], [txt]).then( 
                 bot.upload_video, [video_input, state, user_state], 
@@ -420,7 +429,6 @@ if __name__ == '__main__':
             drag_btn.click(
                 bot.drag_it, [drag_image, drag_max_iters, state, user_state], [drag_image, progress, chatbot, state, user_state]
             )
-            # drag_image.select(bot.save_points_for_drag_gan, [drag_image, user_state, ], [drag_image, user_state, ])
             drag_max_iters.change(change_max_iter, [drag_max_iters,], [progress, ])
             drag_reset_btn.click(bot.reset_drag_points, [drag_image, user_state], [drag_image, user_state, ])
             # drag_btn.click(bot.drag_it, [state, user_state], [drag_image, progress, chatbot, state, user_state])

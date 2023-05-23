@@ -544,7 +544,7 @@ class ConversationBot:
         user_state[0]['audio_path'] = new_audio_path
 
         Human_prompt = f'\nHuman: provide an audio file named {new_audio_path}. You should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
-        AI_prompt = f"Received audio: {new_audio_path} "
+        AI_prompt = f"Received. "
         # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
 
@@ -583,7 +583,7 @@ class ConversationBot:
             user_state[0]['ocr_res'] = ocr_res_raw
         else:
             Human_prompt = f'\nHuman: provide a image named {image_filename}. The description is: {image_caption} This information helps you to understand this image, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
-        AI_prompt = "Received.  "
+        AI_prompt = "Received. "
         # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + ' AI: ' + AI_prompt
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
         state = state + [(f"![](file={image_filename})*{image_filename}*", AI_prompt)]
@@ -609,7 +609,7 @@ class ConversationBot:
             description = 'A video.'
         user_state[0]['video_caption'] = description
         Human_prompt = f'\nHuman: provide a video named {new_video_path}. The description is: {description}. This information helps you to understand this video, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
-        AI_prompt = f"Received video: {new_video_path} "
+        AI_prompt = f"Received. "
         # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
 
@@ -792,7 +792,10 @@ class ConversationBot:
             256: 6
         }
         user_state[0]['StyleGAN']['click_size'] = SIZE_TO_CLICK_SIZE[model.image_size]
-        
+        Human_prompt = f'\nHuman: provide a image named {image_filename}. You should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
+        AI_prompt = "Received. "
+        # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + ' AI: ' + AI_prompt
+        user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
         return image_arr, state, state, user_state
     
     def drag_it(self, image, max_iters, state, user_state):
@@ -807,11 +810,8 @@ class ConversationBot:
             return image, 0, state, state, user_state
         
         points = user_state[0]['StyleGAN']['points']
-        # image_path = user_state[0]['StyleGAN'].get('image_path', None)
         if len(points['start']) == 0:
-            # raise gr.Error('You must select at least one start point and target point.')
-            # image, step, state, state, user_state
-            
+            state += [(None, f'Please click the image.')]
             return image, 0, state, state, user_state
 
         if len(points['start']) != len(points['end']):
@@ -863,6 +863,10 @@ class ConversationBot:
                 # state += [None, AI_prompt]
                 state += [(None, (image_filename, ))]
                 user_state[0]['StyleGAN']['state'] = style_gan_state
+                Human_prompt = f'\nHuman: provide a image named {image_filename}. You should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
+                AI_prompt = "Received. "
+                # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + ' AI: ' + AI_prompt
+                user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
                 yield image, step, state, state, user_state
 
             yield image, step, state, state, user_state
@@ -904,7 +908,7 @@ class ConversationBot:
         sample = None
         if gan_state is not None:
             sample = gan_state.get('sample', None)
-            
+
         if sample is not None:
             image = to_image(sample)
         else:
