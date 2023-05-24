@@ -189,7 +189,7 @@ Thanks to the open source of the following projects:
 [InstructPix2Pix](https://github.com/timothybrooks/instruct-pix2pix) &#8194; 
 [BLIP](https://github.com/salesforce/BLIP) &#8194;
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
-[EasyOCR](https://github.com/JaidedAI/EasyOCR)
+[EasyOCR](https://github.com/JaidedAI/EasyOCR)&#8194;
 [ImageBind](https://github.com/facebookresearch/ImageBind) &#8194;
 [DragGAN](https://github.com/facebookresearch/ImageBind) &#8194;
 
