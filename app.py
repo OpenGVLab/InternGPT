@@ -327,13 +327,19 @@ if __name__ == '__main__':
                 lambda: gr.update(visible=False), [], [send_btn]).then(
                 lambda: gr.update(visible=False), [], [txt]).then(
                 bot.run_text, [txt, state, user_state], [chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [send_btn]
-            ).then(lambda: "", None, [txt, ]).then(
-                lambda: gr.update(visible=True), [], [txt])
+                    lambda: "", None, [txt, ]).then(
+                lambda: gr.update(visible=True), [], [txt]).then(
+                    lambda: gr.update(visible=True), [], [send_btn]
+                )
 
             send_btn.click(
+                lambda: gr.update(visible=False), [], [send_btn]).then(
+                lambda: gr.update(visible=False), [], [txt]).then(
                 bot.run_task, [audio_switch, txt, audio2text_input, state, user_state], [chatbot, state, user_state]).then(
-                lambda: "", None, [txt, ])
+                lambda: "", None, [txt, ]).then(
+                lambda: gr.update(visible=True), [], [txt]).then(
+                    lambda: gr.update(visible=True), [], [send_btn]
+                )
             
             audio_switch.change(change_input_type, [audio_switch, ], [txt, audio2text_input])
 
