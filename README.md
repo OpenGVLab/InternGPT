@@ -125,30 +125,7 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e
 
 ## 🛠️ Installation
 
-### Basic requirements
-
-- Linux 
-- Python 3.8+ 
-- PyTorch 1.12+
-- CUDA 11.6+ 
-- GCC & G++ 5.4+
-- GPU Memory >= 17G for loading basic tools (HuskyVQA, SegmentAnything, ImageOCRRecognition)
-</details>
-
-### Install Python dependencies
-
-```shell
-conda create -n ichat python=3.8
-conda activate ichat
-pip install -r requirements.txt
-```
-
-
-### 🗃 Model zoo
-our `model_zoo` has been released in [huggingface](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo)! 
-You can download it and directly place it into the root directory of this repo before running the app.
-
-HuskyVQA, a strong VQA model, is also available in `model_zoo`. More details can refer to our [report](https://arxiv.org/pdf/2305.05662.pdf).
+See [INSTALL.md](INSTALL.md)
 
 ## 👨‍🏫 Get Started 
 Running the following shell can start a gradio service:
@@ -205,5 +182,4 @@ Welcome to discuss with us and continuously improve the user experience of Inter
 
 WeChat QR Code
 
-<p align="center"><img width="400" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/paper/media/wechat1.jpg"></p> 
-
+<p align="center"><img width="400" alt="image" src="https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/papers/media/wechat_group.jpg"></p> 
