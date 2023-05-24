@@ -57,6 +57,7 @@ class DragGAN:
 
     def __init__(self, StyleGAN):
         self.g_ema = StyleGAN
+        self.device = self.g_ema.device
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
             ' fewer digits, cropped, worst quality, low quality'
@@ -84,7 +85,7 @@ class DragGAN:
 
         sample2, latent, F, handle_points = drag_gan(self.g_ema, latent, noise, F,
                                                      handle_points, target_points, mask,
-                                                     max_iters=max_iters)
+                                                     self.device, max_iters=max_iters)
         image = Image.fromarray(to_image(sample2))
         image_filename = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
         new_img_name = gen_new_name(image_filename, 'DragGAN')
