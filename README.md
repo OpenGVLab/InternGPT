@@ -68,6 +68,8 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e
 
 **<a id="draggan_demo">Video Demo with DragGAN: </a>**
 
+https://github.com/OpenGVLab/InternGPT/assets/13723743/529abde4-5dce-48de-bb38-0a0c199bb980
+
 
 
 ## 🗓️ Schedule
