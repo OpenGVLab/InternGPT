@@ -242,11 +242,11 @@ if __name__ == '__main__':
         gr.HTML(
             """
             <div align='center'> <img src='/file=./assets/gvlab_logo.png' style='height:70px'/> </div>
-            <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>&nbsp;&nbsp;
-            &nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>Report</b></a>
-            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af"><b>Video Demo with DragGAN</b></a>
-            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af"><b>Video Demo with ImageBind</b></a>
-            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593"><b>Video Demo</b></a></p>
+            <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>Report</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593"><b>Video Demo</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/tree/main#imagebind_demo"><b>Video Demo with ImageBind</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/tree/main#draggan_demo"><b>Video Demo with DragGAN</b></a></p>
             """
         )
         with gr.Row(visible=True, elem_id='login') as login:
