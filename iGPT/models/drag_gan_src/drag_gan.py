@@ -89,13 +89,25 @@ class CustomGenerator(Generator):
 
             latent = torch.cat([latent, latent2], 1)
 
+        # latent = latent.to('cpu')
+        # for i in range(len(noise)):
+        #     if isinstance(noise[i], torch.Tensor):
+        #         noise[i] = noise[i].to('cpu')
+        # torch.cuda.empty_cache()
+        # torch.cuda.ipc_collect()
         return latent, noise
 
     def generate(
         self,
         latent,
         noise,
+        device,
     ):
+        # latent = latent.to(device)
+        # for i in range(len(noise)):
+        #     if isinstance(noise[i], torch.Tensor):
+        #         noise[i] = noise[i].to(device)
+
         out = self.input(latent)
         out = self.conv1(out, latent[:, 0], noise=noise[0])
 
@@ -112,6 +124,9 @@ class CustomGenerator(Generator):
 
         image = skip
         F = FF.interpolate(F, image.shape[-2:], mode='bilinear')
+        # F = F.cpu()
+        # torch.cuda.empty_cache()
+        # torch.cuda.ipc_collect()
         return image, F
 
 
@@ -159,6 +174,12 @@ def bilinear_interpolate_torch(im, y, x):
 
 
 def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points, mask=None, device='cpu', max_iters=1000):
+    # latent = latent.to(device)
+    # F = F.to(device)
+    # for i in range(len(noise)):
+    #     if isinstance(noise[i], torch.Tensor):
+    #         noise[i] = noise[i].to(device)
+
     handle_points0 = copy.deepcopy(handle_points)
     n = len(handle_points)
     r1, r2, lam, d = 3, 12, 20, 1
@@ -179,8 +200,7 @@ def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points
         for s in range(1):
             optimizer.zero_grad()
             latent = torch.cat([latent_trainable, latent_untrainable], dim=1)
-            sample2, F2 = g_ema.generate(latent, noise)
-
+            sample2, F2 = g_ema.generate(latent, noise, device)
             # motion supervision
             loss = 0
             for i in range(n):
@@ -202,7 +222,7 @@ def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points
 
         # point tracking
         with torch.no_grad():
-            sample2, F2 = g_ema.generate(latent, noise)
+            sample2, F2 = g_ema.generate(latent, noise, device)
             for i in range(n):
                 pi = handle_points0[i]
                 # f = F0[..., int(pi[0]), int(pi[1])]
@@ -225,8 +245,14 @@ def drag_gan(g_ema, latent: torch.Tensor, noise, F, handle_points, target_points
                 handle_points[i][0] = minx
                 handle_points[i][1] = miny
 
-        F = F2.detach().clone()
-        # if iter % 1 == 0:
-        #     print(iter, loss.item(), handle_points, target_points)
-
+        # F = F2.detach().cpu().clone()
+        F2 = F2.cpu()
+        # latent = latexwnt.to('cpu')
+        # sample2 = sample2.to('cpu')
+        # for i in range(len(noise)):
+        #     if isinstance(noise[i], torch.Tensor):
+        #         noise[i] = noise[i].to('cpu')
+        # handle_points = [p.cpu() for p in handle_points]
+        # torch.cuda.empty_cache()
+        # torch.cuda.ipc_collect()
         yield sample2, latent, F2, handle_points

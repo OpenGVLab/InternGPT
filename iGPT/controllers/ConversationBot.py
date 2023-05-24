@@ -385,9 +385,7 @@ class ConversationBot:
         
         img_idx = response.find(image_path)
         mask_idx = response.find(mask_path)
-        # if self.find_parent(mask_path) != image_path or \
-        #     mask_idx < img_idx:
-        #     return False
+
         if mask_idx < img_idx:
             return False
 
@@ -476,6 +474,8 @@ class ConversationBot:
         
     def run_text(self, text, state, user_state):
         text = text.strip()
+        torch.cuda.empty_cache()
+        torch.cuda.ipc_collect()
         if text is None or len(text) == 0:
             state += [(None, 'Please input text.')]
             return state, state, user_state
@@ -483,8 +483,7 @@ class ConversationBot:
         agent = user_state[0]['agent']
         agent.memory.buffer = cut_dialogue_history(agent.memory.buffer, keep_last_n_words=500)
         history_msg = agent.memory.buffer[:]
-        # pattern = re.compile('(image/[-\\w]*.(png|mp4))')
-        # response = self.exec_simple_action(text, history_msg)
+        
         try:
             response = self.exec_simple_action(text, history_msg)
             if response is None:
@@ -756,23 +755,31 @@ class ConversationBot:
         if model is None:
             state += [None, 'Please load StyleGAN!']
             return None, state, state, user_state
-        if user_state[0].get('StyleGAN', None) is None or \
-                user_state[0]['StyleGAN'].get('seed', None) is None:
-            seed = 2048
-            seed_everything(seed)
-            user_state[0]['StyleGAN']['seed'] = seed
+        
+        if user_state[0].get('StyleGAN', None) is None:
+            user_state[0]['StyleGAN'] = {}
+
+        styleGAN_state = user_state[0]['StyleGAN']
+        seed = styleGAN_state.get('seed', None)
+        if seed is None:
+            init_seed = 2048
+            seed_everything(init_seed)
+            user_state[0]['StyleGAN']['seed'] = init_seed
 
         device = model.device
         g_ema = model.g_ema
         sample_z = torch.randn([1, 512], device=device)
         latent, noise = g_ema.prepare([sample_z])
-        sample, F = g_ema.generate(latent, noise)
+        sample, F = g_ema.generate(latent, noise, device)
+        for i in range(len(noise)):
+            if isinstance(noise[i], torch.Tensor):
+                noise[i] = noise[i].to('cpu')
 
         gan_state = {
-            'latent': latent,
+            'latent': latent.to('cpu'),
             'noise': noise,
-            'F': F,
-            'sample': sample,
+            'F': F.to('cpu'),
+            'sample': sample.to('cpu'),
             'history': []
         }
         
@@ -799,11 +806,13 @@ class ConversationBot:
         return image_arr, state, state, user_state
     
     def drag_it(self, image, max_iters, state, user_state):
-
         model = self.models.get('StyleGAN', None)
         if model is None:
             state += [(None, 'Please load StyleGAN!')]
             return image, 0, state, state, user_state
+        if user_state[0].get('StyleGAN', None) is None:
+            state += [(None, 'Please click the button `New Image`.')]
+            return image, 0, state, state, user_state 
 
         image_path = user_state[0]['StyleGAN'].get('image_path', None)
         if image_path is None:
@@ -819,11 +828,16 @@ class ConversationBot:
             return image, 0, state, state, user_state
 
         click_size = user_state[0]['StyleGAN']['click_size']
-        style_gan_state = user_state[0]['StyleGAN']['state']
+        style_gan_state = user_state[0]['StyleGAN'].get('state', None)
+        if style_gan_state is None:
+            state += [(None, 'Please click the button `New Image`.')]
+            return image, 0, state, state, user_state 
+        
         max_iters = int(max_iters)
         latent = style_gan_state['latent']
         noise = style_gan_state['noise']
         F = style_gan_state['F']
+
         style_gan_state['history'] = []
 
         start_points = [torch.tensor(p).float() for p in points['start']]
@@ -831,14 +845,19 @@ class ConversationBot:
         mask = None
             
         step = 0
+        device = model.device
+        latent = latent.to(device)
+        F = F.to(device)
+        for i in range(len(noise)):
+            if isinstance(noise[i], torch.Tensor):
+                noise[i] = noise[i].to(device)
         for sample2, latent, F, handle_points in drag_gan(model.g_ema, latent, noise, F,
                                                           start_points, end_points, mask,
-                                                          max_iters=max_iters):
+                                                          device, max_iters=max_iters):
             image = to_image(sample2)
-
-            style_gan_state['F'] = F
-            style_gan_state['latent'] = latent
-            style_gan_state['sample'] = sample2
+            style_gan_state['F'] = F.cpu()
+            style_gan_state['latent'] = latent.cpu()
+            style_gan_state['sample'] = sample2.cpu()
             points['start'] = [p.cpu().numpy().astype('int').tolist() for p in handle_points]
             org_image = image.copy()
             add_points_to_image(image, points, size=click_size)
@@ -847,10 +866,9 @@ class ConversationBot:
             step += 1
             # print(f'step = {step}')
             if max_iters == step:
-                
                 video_name = gen_new_name(image_path, 'DragGAN', 'mp4')
                 imageio.mimsave(video_name, style_gan_state['history'])
-                AI_prompt = f'The process of generation is saved in {video_name}: '
+                AI_prompt = f'The editing process is saved in {video_name}: '
                 state += [(None, AI_prompt)]
                 # state += [None, AI_prompt]
                 state += [(None, (video_name, ))]
@@ -867,6 +885,9 @@ class ConversationBot:
                 AI_prompt = "Received. "
                 # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + ' AI: ' + AI_prompt
                 user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
+                del latent, sample2, F
+                torch.cuda.empty_cache()
+                torch.cuda.ipc_collect()
                 yield image, step, state, state, user_state
 
             yield image, step, state, state, user_state
