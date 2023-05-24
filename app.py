@@ -124,7 +124,7 @@ class Seafoam(ThemeBase.Base):
 
 
 css='''
-#image_upload {align-items: center; min-width: 640px}
+#image_upload {align-items: center; max-width: 640px}
 '''
 #chatbot {min-height: 480px}
 #drag_gan_btn {max-width: 590px}
@@ -242,9 +242,11 @@ if __name__ == '__main__':
         gr.HTML(
             """
             <div align='center'> <img src='/file=./assets/gvlab_logo.png' style='height:70px'/> </div>
-            <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>&nbsp;&nbsp;&nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>Report</b></a>
-            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593"><b>Video Demo</b></a>
-            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af"><b>Video Demo with ImageBind</b></a></p>
+            <p align="center"><a href="https://github.com/OpenGVLab/InternGPT"><b>GitHub</b></a>&nbsp;&nbsp;
+            &nbsp; <a href="https://arxiv.org/pdf/2305.05662.pdf"><b>Report</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af"><b>Video Demo with DragGAN</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af"><b>Video Demo with ImageBind</b></a>
+            &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593"><b>Video Demo</b></a></p>
             """
         )
         with gr.Row(visible=True, elem_id='login') as login:
@@ -313,7 +315,6 @@ if __name__ == '__main__':
                             process_save_btn = gr.Button(value="📁 Save", variant="primary", elem_id="process_save_btn")
                         with gr.Column(scale=0.25, min_width=0):
                             clear_btn = gr.Button(value="🗑️ Clear All", elem_id="clear_btn")
-
                
                 with gr.Tab("Video", elem_id='video_tab') as video_tab:
                     video_input = gr.Video(interactive=True, include_audio=True, elem_id="video_upload").style(height=360)
@@ -431,20 +432,26 @@ if __name__ == '__main__':
             )
             drag_max_iters.change(change_max_iter, [drag_max_iters,], [progress, ])
             drag_reset_btn.click(bot.reset_drag_points, [drag_image, user_state], [drag_image, user_state, ])
-            # drag_btn.click(bot.drag_it, [state, user_state], [drag_image, progress, chatbot, state, user_state])
 
         gr.Markdown(
             '''
             **User Manual:**
+    
             Update:
-            
-            We now support [ImageBind](https://github.com/facebookresearch/ImageBind). If you want to generate a new image conditioned on audio, you can upload an audio file in advance:
+
+            (2023.05.24) We now support [DragGAN](https://arxiv.org/abs/2305.10973). You can try it as follows:
+            - Click the button `New Image`;
+            - Click the image where blue denotes the start point and red denotes the end point;
+            - Notice that the number of blue points is the same as the number of red points. Then you can click the button `Drag It`;
+            - After processing, you will receive an edited image and a video that visualizes the editing process.
+
+            <br>(2023.05.18) We now support [ImageBind](https://github.com/facebookresearch/ImageBind). If you want to generate a new image conditioned on audio, you can upload an audio file in advance:
             - To **generate a new image from a single audio file**, you can send the message like: `"generate a real image from this audio"`;
             - To **generate a new image from audio and text**, you can send the message like: `"generate a real image from this audio and {your prompt}"`;
             - To **generate a new image from audio and image**, you need to upload an image and then send the message like: `"generate a new image from above image and audio"`;
 
-            After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of the image?"`.
-            
+            <br>After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of the image?"`.
+
             You also can interactively operate, edit or generate the image as follows:
             - You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
             - To **remove the masked region** in the image, you can send the message like: `"remove the masked region"`;

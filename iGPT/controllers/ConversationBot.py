@@ -419,7 +419,7 @@ class ConversationBot:
                 img_path = self.find_param(history_msg+inputs, 'mask', excluded=True)
             
             func_inputs = f'{img_path},{mask_path}'
-            func_name = 'RemoveMaskedAnything'
+            func_name = 'LDMInpainting'
         elif 'replace' in new_inputs.lower():
             cls = self.models.get('ReplaceMaskedAnything', None)
             if cls is not None:
@@ -484,7 +484,7 @@ class ConversationBot:
         agent.memory.buffer = cut_dialogue_history(agent.memory.buffer, keep_last_n_words=500)
         history_msg = agent.memory.buffer[:]
         # pattern = re.compile('(image/[-\\w]*.(png|mp4))')
-        response = self.exec_simple_action(text, history_msg)
+        # response = self.exec_simple_action(text, history_msg)
         try:
             response = self.exec_simple_action(text, history_msg)
             if response is None:
