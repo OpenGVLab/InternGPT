@@ -18,7 +18,9 @@
 **InternGPT**(short for **iGPT**) / **InternChat**(short for **iChat**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternGPT stands for **inter**action, **n**onverbal, and Chat**GPT**. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iGPT significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iGPT, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
 ## 🥳 🚀 What's New 
-- (2023.05.18) We have supported [ImageBind](https://github.com/facebookresearch/ImageBind) 🎉🎉🎉. Please see the [video demo](#imagebind_demo) for the usage. Let's try this awesome feauture: [Demo](https://igpt.opengvlab.com/).
+- (2023.05.24) 🎉🎉🎉 We have supported the [DragGAN](https://arxiv.org/abs/2305.10973)! Please see the [video demo](#draggan_demo) for the usage.
+
+- (2023.05.18) We have supported [ImageBind](https://github.com/facebookresearch/ImageBind). Please see the [video demo](#imagebind_demo) for the usage. Let's try this awesome feauture: [Demo](https://igpt.opengvlab.com/).
 
 - (2023.05.15) The [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) including HuskyVQA has been released! Try it on your local machine!
 
@@ -31,6 +33,22 @@
 
 ### 🧭 User Manual
 
+Update:
+
+(2023.05.24) We now support [DragGAN](https://arxiv.org/abs/2305.10973). You can try it as follows:
+- Click the button `New Image`;
+- Click the image where blue denotes the start point and red denotes the end point;
+- Notice that the number of blue points is the same as the number of red points. Then you can click the button `Drag It`;
+- After processing, you will receive an edited image and a video that visualizes the editing process.
+<br>
+
+(2023.05.18) We now support [ImageBind](https://github.com/facebookresearch/ImageBind). If you want to generate a new image conditioned on audio, you can upload an audio file in advance:
+- To **generate a new image from a single audio file**, you can send the message like: `"generate a real image from this audio"`;
+- To **generate a new image from audio and text**, you can send the message like: `"generate a real image from this audio and {your prompt}"`;
+- To **generate a new image from audio and image**, you need to upload an image and then send the message like: `"generate a new image from above image and audio"`.
+
+<br>
+
 After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of image?"`.     
 You also can interactively operate, edit or generate the image as follows:
 - You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
@@ -38,13 +56,6 @@ You also can interactively operate, edit or generate the image as follows:
 - To **replace the masked reigon** in the image, you can send the message like: `"replace the masked region with {your prompt}"`;
 - To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation describing {your prompt}"`
 - To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble describing {your prompt}"`.
-
-**Update**:
-       
-We now support [ImageBind](https://github.com/facebookresearch/ImageBind). If you want to generate a new image conditioned on audio, you can upload an audio file in advance:
-- To **generate a new image from a single audio file**, you can send the message like: `"generate a real image from this audio"`;
-- To **generate a new image from audio and text**, you can send the message like: `"generate a real image from this audio and {your prompt}"`;
-- To **generate a new image from audio and image**, you need to upload an image and then send the message like: `"generate a new image from above image and audio"`;
 
 
 <p align="center"><img src="./assets/demo_short.gif" width="500"></p>
@@ -55,6 +66,7 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af
 
+**<a id="draggan_demo">Video Demo with DragGAN: </a>**
 
 
 
@@ -68,6 +80,7 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e
 - [ ] Web page & code generation 
 - [ ] Support search engine 
 - [ ] Low cost deployment
+- [x] Support [DragGAN](https://arxiv.org/abs/2305.10973)
 - [x] Support [ImageBind](https://github.com/facebookresearch/ImageBind)
 - [x] Response verification for agent
 - [x] Prompt optimization
@@ -174,8 +187,9 @@ Thanks to the open source of the following projects:
 [InstructPix2Pix](https://github.com/timothybrooks/instruct-pix2pix) &#8194; 
 [BLIP](https://github.com/salesforce/BLIP) &#8194;
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
-[EasyOCR](https://github.com/JaidedAI/EasyOCR) &#8194;
+[EasyOCR](https://github.com/JaidedAI/EasyOCR)
 [ImageBind](https://github.com/facebookresearch/ImageBind) &#8194;
+[DragGAN](https://github.com/facebookresearch/ImageBind) &#8194;
 
 
 Welcome to discuss with us and continuously improve the user experience of InternGPT.
