@@ -171,7 +171,7 @@ If you find this project useful in your research, please consider cite:
 ```BibTeX
 @misc{2023interngpt,
     title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
-    author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
+    author={Liu, Zhaoyang and He, Yinan and Wang, Wenhai and Wang, Weiyun and Wang, Yi and Chen, Shoufa and Zhang, Qinglong and Yang, Yang and Li, Qingyun and Yu, Jiashuo and others},
     howpublished = {\url{https://arxiv.org/abs/2305.05662}},
     year={2023}
 }
