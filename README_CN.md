@@ -15,6 +15,8 @@
 
 
 ## 🥳 🚀 更新
+- (2023.05.24) 🎉🎉🎉 现在已经支持[DragGAN](https://github.com/Zeqiang-Lai/DragGAN)! 使用方法请参考[视频演示](#draggan_demo)。赶紧来体验这个新功能吧: [Demo](https://igpt.opengvlab.com/).
+
 - (2023.05.18) 已支持[ImageBind](https://github.com/facebookresearch/ImageBind) 🎉🎉🎉。使用方法请参考[视频演示](#imagebind_demo)。赶紧来体验: [Demo](https://igpt.opengvlab.com/)
 
 - (2023.15.15) [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) 已经公开，里面包含了HuskyVQA! 赶紧在你自己的机器上部署试试吧!
@@ -27,6 +29,27 @@
 [注意] 可能会出现排队等待较长时间。您可以clone我们的仓库并使用您自己的GPU运行。
  
 ### 🧭 Usage Tips
+更新：
+  
+(2023.05.24) 我们现在支持 [DragGAN](https://arxiv.org/abs/2305.10973)。你可以按照以下步骤试用：
+
+- 点击 `New Image` 按钮；
+- 点击图片，其中蓝色表示起点，红色表示终点；
+- 注意蓝色点的个数要和红色点的个数相同。然后你可以点击 `Drag It` 按钮；
+- 处理完成后，你会收到一张编辑后的图片和一个展示编辑过程的视频。
+  
+<br>
+  
+(2023.05.18) 我们现在已支持 [ImageBind](https://github.com/facebookresearch/ImageBind)。如果你想根据音频生成一张新的图片，你可以提前上传一个音频文件：
+
+- 从**单个音频生成新的图片**，你可以发送如下消息：`"generate a real image from this audio"`;
+- 从**音频和文本生成新的图片**，你可以发送如下消息：`"generate a real image from this audio and {your prompt}"`;
+- 从**音频和图片生成新的图片**，你需要再上传一个图片，然后发送如下消息：`"generate a new image from above image and audio"`;
+  
+<br>
+
+**主要功能使用：**
+
 在图片上传成功后, 您可以发送如下消息与iGPT进行多模态相关的对话：`"what is it in the image?"` or `"what is the background color of image?"`.   
 您同样也可以交互式地操作、编辑或者生成图片，具体如下：
 - 点击图片上的任意位置，然后按下 **`Pick`** 按钮，**预览分割区域**。您也可以按下 **`OCR`** 按钮，识别具体位置处存在的所有单词；
@@ -34,22 +57,22 @@
 - 要在图像中 **替换掩码区域的物体为其他物体**，您可以发送如下消息：`“replace the masked region with {your prompt}”`；
 - 想 **生成新图像**，您可以发送如下消息：`“generate a new image based on its segmentation describing {your prompt}”`；
 - 想通过 **涂鸦创建新图像**，您应该按下 **`Whiteboard`** 按钮并在白板上绘制。绘制完成后，您需要按下 **`保存`** 按钮并发送如下消息：`“generate a new image based on this scribble describing {your prompt}”`。
-  
-更新:
-
-我们现在已经支持 [ImageBind](https://github.com/facebookresearch/ImageBind). 如果你想基于音频生成一个新的图片，你可以先上传一个音频文件：
-- 从**单个音频生成新的图片**，你可以发送如下消息：`"generate a real image from this audio"`;
-- 从**音频和文本生成新的图片**，你可以发送如下消息：`"generate a real image from this audio and {your prompt}"`;
-- 从**音频和图片生成新的图片**，你需要再上传一个图片，然后发送如下消息：`"generate a new image from above image and audio"`;
-  
+ 
 
 [**InternGPT** 已上线，尝试一下！](https://igpt.opengvlab.com)
 
-https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
+**<a id="draggan_demo">Video Demo with DragGAN: </a>**
+
+https://github.com/OpenGVLab/InternGPT/assets/13723743/529abde4-5dce-48de-bb38-0a0c199bb980
 
 <a id="imagebind_demo">**iGPT + ImageBind视频演示：**</a>
   
 https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af
+ 
+<a id="igpt_demo">**iGPT 视频演示：**</a>
+  
+https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
+
   
 ## 🗓️ 项目规划
   
@@ -61,7 +84,8 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e
 - [ ] 网页 & 代码生成
 - [ ] 支持搜索引擎 
 - [ ] 低成本部署
-- [x] 支持[ImageBind](https://github.com/facebookresearch/ImageBind)
+- [x] 支持 [DragGAN](https://arxiv.org/abs/2305.10973)
+- [x] 支持 [ImageBind](https://github.com/facebookresearch/ImageBind)
 - [x] Agent响应验证
 - [x] 提示词优化
 - [x] 用户手册和视频demo
@@ -170,11 +194,11 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 
 如果您在研究中发现这个项目有用，请考虑引用我们的论文：
 ```BibTeX
-@misc{2023interngpt,
-    title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
-    author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
-    howpublished = {\url{https://arxiv.org/abs/2305.05662}},
-    year={2023}
+@article{2023interngpt,
+  title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
+  author={Liu, Zhaoyang and He, Yinan and Wang, Wenhai and Wang, Weiyun and Wang, Yi and Chen, Shoufa and Zhang, Qinglong and Yang, Yang and Li, Qingyun and Yu, Jiashuo and others},
+  journal={arXiv preprint arXiv:2305.05662},
+  year={2023}
 }
 ```
 
@@ -191,8 +215,9 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 [InstructPix2Pix](https://github.com/timothybrooks/instruct-pix2pix) &#8194; 
 [BLIP](https://github.com/salesforce/BLIP) &#8194;
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
-[EasyOCR](https://github.com/JaidedAI/EasyOCR) &#8194;
-
+[EasyOCR](https://github.com/JaidedAI/EasyOCR)&#8194;
+[ImageBind](https://github.com/facebookresearch/ImageBind) &#8194;
+[DragGAN](https://github.com/XingangPan/DragGAN) &#8194;
 
 
 如果您在试用、运行、部署中有任何问题，欢迎加入我们的微信群讨论！如果您对项目有任何的想法和建议，欢迎加入我们的微信群讨论！

@@ -18,7 +18,7 @@
 **InternGPT**(short for **iGPT**) / **InternChat**(short for **iChat**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternGPT stands for **inter**action, **n**onverbal, and Chat**GPT**. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iGPT significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iGPT, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
 ## 🥳 🚀 What's New 
-- (2023.05.24) 🎉🎉🎉 We have supported the [DragGAN](https://arxiv.org/abs/2305.10973)! Please see the [video demo](#draggan_demo) for the usage. Let's try this awesome feauture: [Demo](https://igpt.opengvlab.com/).
+- (2023.05.24) 🎉🎉🎉 We have supported the [DragGAN](https://github.com/Zeqiang-Lai/DragGAN)! Please see the [video demo](#draggan_demo) for the usage. Let's try this awesome feauture: [Demo](https://igpt.opengvlab.com/).
 
 - (2023.05.18) We have supported [ImageBind](https://github.com/facebookresearch/ImageBind). Please see the [video demo](#imagebind_demo) for the usage. 
 
@@ -49,6 +49,8 @@ Update:
 
 <br>
 
+**Main features:**
+
 After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of image?"`.     
 You also can interactively operate, edit or generate the image as follows:
 - You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
@@ -58,17 +60,20 @@ You also can interactively operate, edit or generate the image as follows:
 - To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble describing {your prompt}"`.
 
 
-<p align="center"><img src="./assets/demo_short.gif" width="500"></p>
+**<a id="draggan_demo">Video Demo with DragGAN: </a>**
 
-https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
+https://github.com/OpenGVLab/InternGPT/assets/13723743/529abde4-5dce-48de-bb38-0a0c199bb980
 
 **<a id="imagebind_demo">Video Demo with ImageBind: </a>**
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af
 
-**<a id="draggan_demo">Video Demo with DragGAN: </a>**
+**<a id="igpt_demo">iGPT Video Demo: </a>**
 
-https://github.com/OpenGVLab/InternGPT/assets/13723743/529abde4-5dce-48de-bb38-0a0c199bb980
+<p align="center"><img src="./assets/demo_short.gif" width="500"></p>
+
+https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
+
 
 
 
@@ -169,11 +174,11 @@ This project is released under the [Apache 2.0 license](LICENSE).
 If you find this project useful in your research, please consider cite:
 
 ```BibTeX
-@misc{2023interngpt,
-    title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
-    author={Zhaoyang Liu and Yinan He and Wenhai Wang and Weiyun Wang and Yi Wang and Shoufa Chen and Qinglong Zhang and Yang Yang and Qingyun Li and Jiashuo Yu and Kunchang Li and Zhe Chen and Xue Yang and Xizhou Zhu and Yali Wang and Limin Wang and Ping Luo and Jifeng Dai and Yu Qiao},
-    howpublished = {\url{https://arxiv.org/abs/2305.05662}},
-    year={2023}
+@article{2023interngpt,
+  title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
+  author={Liu, Zhaoyang and He, Yinan and Wang, Wenhai and Wang, Weiyun and Wang, Yi and Chen, Shoufa and Zhang, Qinglong and Yang, Yang and Li, Qingyun and Yu, Jiashuo and others},
+  journal={arXiv preprint arXiv:2305.05662},
+  year={2023}
 }
 ```
 
@@ -189,10 +194,9 @@ Thanks to the open source of the following projects:
 [InstructPix2Pix](https://github.com/timothybrooks/instruct-pix2pix) &#8194; 
 [BLIP](https://github.com/salesforce/BLIP) &#8194;
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
-[EasyOCR](https://github.com/JaidedAI/EasyOCR)
+[EasyOCR](https://github.com/JaidedAI/EasyOCR)&#8194;
 [ImageBind](https://github.com/facebookresearch/ImageBind) &#8194;
-[DragGAN](https://github.com/facebookresearch/ImageBind) &#8194;
-
+[DragGAN](https://github.com/XingangPan/DragGAN) &#8194;
 
 Welcome to discuss with us and continuously improve the user experience of InternGPT.
 
