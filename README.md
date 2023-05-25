@@ -49,6 +49,8 @@ Update:
 
 <br>
 
+**Main features:**
+
 After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of image?"`.     
 You also can interactively operate, edit or generate the image as follows:
 - You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
