@@ -191,8 +191,7 @@ Thanks to the open source of the following projects:
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
 [EasyOCR](https://github.com/JaidedAI/EasyOCR)&#8194;
 [ImageBind](https://github.com/facebookresearch/ImageBind) &#8194;
-[DragGAN](https://github.com/facebookresearch/ImageBind) &#8194;
-
+[DragGAN](https://github.com/XingangPan/DragGAN) &#8194;
 
 Welcome to discuss with us and continuously improve the user experience of InternGPT.
 
