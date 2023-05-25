@@ -191,8 +191,9 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 [InstructPix2Pix](https://github.com/timothybrooks/instruct-pix2pix) &#8194; 
 [BLIP](https://github.com/salesforce/BLIP) &#8194;
 [Latent Diffusion Models](https://github.com/CompVis/latent-diffusion) &#8194;
-[EasyOCR](https://github.com/JaidedAI/EasyOCR) &#8194;
-
+[EasyOCR](https://github.com/JaidedAI/EasyOCR)&#8194;
+[ImageBind](https://github.com/facebookresearch/ImageBind) &#8194;
+[DragGAN](https://github.com/XingangPan/DragGAN) &#8194;
 
 
 如果您在试用、运行、部署中有任何问题，欢迎加入我们的微信群讨论！如果您对项目有任何的想法和建议，欢迎加入我们的微信群讨论！
