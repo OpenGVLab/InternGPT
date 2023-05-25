@@ -169,11 +169,11 @@ This project is released under the [Apache 2.0 license](LICENSE).
 If you find this project useful in your research, please consider cite:
 
 ```BibTeX
-@misc{2023interngpt,
-    title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
-    author={Liu, Zhaoyang and He, Yinan and Wang, Wenhai and Wang, Weiyun and Wang, Yi and Chen, Shoufa and Zhang, Qinglong and Yang, Yang and Li, Qingyun and Yu, Jiashuo and others},
-    howpublished = {\url{https://arxiv.org/abs/2305.05662}},
-    year={2023}
+@article{2023interngpt,
+  title={InternGPT: Solving Vision-Centric Tasks by Interacting with ChatGPT Beyond Language},
+  author={Liu, Zhaoyang and He, Yinan and Wang, Wenhai and Wang, Weiyun and Wang, Yi and Chen, Shoufa and Zhang, Qinglong and Yang, Yang and Li, Qingyun and Yu, Jiashuo and others},
+  journal={arXiv preprint arXiv:2305.05662},
+  year={2023}
 }
 ```
 
