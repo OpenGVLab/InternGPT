@@ -291,7 +291,7 @@ class ConversationBot:
             func_inputs = f'{img_path},{prompt}'
         else:
             def only_chat(inputs):
-                res = agent(f"You can use history message to finish the user's request without using any tools. {inputs}")
+                res = agent(f"You can use history message to respond to the following question without using any tools. Request: {inputs}")
                 res = res['output'].replace("\\", "/")
                 return res
             func_name = 'ChatGPT'
@@ -470,6 +470,7 @@ class ConversationBot:
         if len(illegal_files) > 0:
             raise FileNotFoundError(f'{illegal_files} do (does) not exist.')
         res = self.find_latest_image(out_filenames)
+        print(f'The latest file is {res}')
         return res
         
     def run_text(self, text, state, user_state):
@@ -727,12 +728,17 @@ class ConversationBot:
 
     def process_save(self, image, state, user_state):
         if image is None:
+            state += [(None, 'Please upload an image or draw a mask.')]
             return None, state, state, user_state
         
-        uploaded_image_filename = user_state[0]['image_path']
+        uploaded_image_filename = user_state[0].get('image_path', None)
+        if uploaded_image_filename is None and image.get('image', None) is not None:
+            _, state, user_state = self.upload_image(image['image'], state, user_state)
+        elif image.get('mask', None) is None:
+            state += [(None, 'Please upload an image or draw a mask.')]
+            return None, state, state, user_state 
+        
         mask_image = image['mask'].convert('RGB')
-        # mask = np.array(mask, dtype=np.uint8)
-        # mask_image = Image.fromarray(mask).convert('RGB')
         random_name = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
         mask_image_name = gen_new_name(random_name, 'rawmask')
         mask_image.save(mask_image_name, "PNG")
@@ -770,7 +776,7 @@ class ConversationBot:
         g_ema = model.g_ema
         sample_z = torch.randn([1, 512], device=device)
         latent, noise = g_ema.prepare([sample_z])
-        sample, F = g_ema.generate(latent, noise, device)
+        sample, F = g_ema.generate(latent, noise)
         for i in range(len(noise)):
             if isinstance(noise[i], torch.Tensor):
                 noise[i] = noise[i].to('cpu')

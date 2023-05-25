@@ -30,7 +30,10 @@ from iGPT.controllers import ConversationBot
 import openai
 from langchain.llms.openai import OpenAI
 
-# openai.api_base = 'https://closeai.deno.dev/v1'
+
+api_base = os.environ.get('OPENAI_API_BASE', None)
+if api_base is not None:
+    openai.api_base = api_base
 
 os.makedirs('image', exist_ok=True)
 
@@ -204,18 +207,6 @@ def random_audio():
     print(os.path.join(root_path, aud_item))
     return os.path.join(root_path, aud_item)
 
-def process_video_tab():
-    return gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)
-
-def process_image_tab():
-    return gr.update(visible=True), gr.update(visible=True), gr.update(visible=False), gr.update(visible=False)
-
-def process_audio_tab():
-    return gr.update(visible=False), gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)
-
-def process_drag_gan_tab():
-    return gr.update(visible=False), gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)
-
 def add_whiteboard():
     # wb = np.ones((1080, 1920, 3), dtype=np.uint8) * 255
     wb = np.ones((720, 1280, 3), dtype=np.uint8) * 255
@@ -249,6 +240,7 @@ if __name__ == '__main__':
             &nbsp;&nbsp;&nbsp; <a href="https://github.com/OpenGVLab/InternGPT/tree/main#draggan_demo"><b>Video Demo with DragGAN</b></a></p>
             """
         )
+
         with gr.Row(visible=True, elem_id='login') as login:
             with gr.Column(scale=0.6, min_width=0) :
                 openai_api_key_text = gr.Textbox(
@@ -259,35 +251,26 @@ if __name__ == '__main__':
                     type="password").style(container=False)
             with gr.Column(scale=0.4, min_width=0):
                 key_submit_button = gr.Button(value="Please log in with your OpenAI API Key", interactive=True, variant='primary').style(container=False) 
-        
+
         with gr.Row(visible=False) as user_interface:
             with gr.Column(scale=0.5, elem_id="text_input") as chat_part:
                 chatbot = gr.Chatbot(elem_id="chatbot", label="InternGPT").style(height=360)
                 with gr.Row(visible=True) as input_row:
-                    with gr.Column(scale=0.8, min_width=0) as text_col:
+                    with gr.Column(min_width=0) as text_col:
                         txt = gr.Textbox(show_label=False, placeholder="Enter text and press enter, or upload an image").style(
                             container=False)
                         audio2text_input = gr.Audio(source="microphone", type="filepath", visible=False)
-                    with gr.Column(scale=0.2, min_width=20):
-                        # clear = gr.Button("Clear")
+                with gr.Row(visible=True) as input_btn:    
+                    with gr.Column(scale=0.5, min_width=0):
+                        audio_switch = gr.Checkbox(label="🎤 Voice Assistant", elem_id='audio_switch', info=None)
+                    with gr.Column(scale=0.5, min_width=20):
                         send_btn = gr.Button("📤 Send", variant="primary", visible=True)
-            
+                    
             with gr.Column(elem_id="visual_input", scale=0.5) as img_part:
-                with gr.Row(visible=True):
-                        with gr.Column(scale=0.3, min_width=0):
-                            audio_switch = gr.Checkbox(label="Voice Assistant", elem_id='audio_switch', info=None)
-                        with gr.Column(scale=0.3, min_width=0):
-                            whiteboard_mode = gr.Button("⬜️ Whiteboard", variant="primary", visible=True)
-                            # whiteboard_mode = gr.Checkbox(label="Whiteboard", elem_id='whiteboard', info=None)
-                        with gr.Column(scale=0.4, min_width=0, visible=True)as img_example:
-                            add_img_example = gr.Button("🖼️ Give an Example", variant="primary")
-                        with gr.Column(scale=0.4, min_width=0, visible=False) as aud_example:
-                            add_aud_example = gr.Button("📻 Give an Example", variant="primary")
-                        with gr.Column(scale=0.4, min_width=0, visible=False) as vid_example:
-                            add_vid_example = gr.Button("📽 Give an Example", variant="primary")
-                
+
                 with gr.Tab("Audio (with ImageBind)", elem_id='audio_tab') as audio_tab:
                     audio_input = gr.Audio(source="upload", type="filepath", visible=True, elem_id="audio_upload").style(height=360)
+                    add_aud_example = gr.Button("📻 Audio Example", variant="primary")
 
                 with gr.Tab("DragGAN", elem_id='drag_gan_tab') as drag_gan_tab:
                     drag_image = gr.Image(interactive=False).style(height=340)
@@ -297,7 +280,7 @@ if __name__ == '__main__':
                         with gr.Column(scale=0.33, min_width=0):
                             drag_btn = gr.Button('🖱︎ Drag It', variant='primary')
                         with gr.Column(scale=0.33, min_width=0):
-                            drag_reset_btn = gr.Button('🧹 Reset Points', variant='primary')
+                            drag_reset_btn = gr.Button('🧹 Clear Points', variant='primary')
                     with gr.Row(elem_id='drag_gan_progress'):   
                         with gr.Column(scale=0.5, min_width=0):
                             drag_max_iters = gr.Slider(1, 100, 25, step=1, label='Max Iterations', elem_id='drag_max_iters')
@@ -306,7 +289,7 @@ if __name__ == '__main__':
 
                 with gr.Tab("Image", elem_id='image_tab') as img_tab:
                     click_img = ImageSketcher(type="pil", interactive=True, brush_radius=15, elem_id="image_upload").style(height=360)
-                    with gr.Row() as vis_btn:
+                    with gr.Row() as img_btn:
                         with gr.Column(scale=0.25, min_width=0):
                             process_seg_btn = gr.Button(value="👆 Pick", variant="primary", elem_id="process_seg_btn")
                         with gr.Column(scale=0.25, min_width=0):
@@ -315,98 +298,86 @@ if __name__ == '__main__':
                             process_save_btn = gr.Button(value="📁 Save", variant="primary", elem_id="process_save_btn")
                         with gr.Column(scale=0.25, min_width=0):
                             clear_btn = gr.Button(value="🗑️ Clear All", elem_id="clear_btn")
-               
+
+                    with gr.Row(visible=True) as img_example:
+                        with gr.Column(scale=0.5, min_width=0, visible=True) :
+                            add_img_example = gr.Button("🖼️ Image Example", variant="primary")
+                        with gr.Column(scale=0.5, min_width=0):
+                            whiteboard_mode = gr.Button("⬜️ Whiteboard Mode", variant="primary", visible=True)
+
                 with gr.Tab("Video", elem_id='video_tab') as video_tab:
                     video_input = gr.Video(interactive=True, include_audio=True, elem_id="video_upload").style(height=360)
-        
+                    add_vid_example = gr.Button("📽 Video Example", variant="primary")
             login_func = partial(login_with_key, bot, args.debug)
             openai_api_key_text.submit(login_func, [openai_api_key_text], [user_interface, openai_api_key_text, key_submit_button, user_state])
             key_submit_button.click(login_func, [openai_api_key_text, ], [user_interface, openai_api_key_text, key_submit_button, user_state])
-
+            
+            drag_gan_tab.select(
+                bot.gen_new_image, [state, user_state], [drag_image, chatbot, state, user_state])
+            
             txt.submit(
                 lambda: gr.update(visible=False), [], [send_btn]).then(
                 lambda: gr.update(visible=False), [], [txt]).then(
+                lambda: gr.update(visible=False), [], [audio_switch]).then(
                 bot.run_text, [txt, state, user_state], [chatbot, state, user_state]).then(
                     lambda: "", None, [txt, ]).then(
                 lambda: gr.update(visible=True), [], [txt]).then(
                     lambda: gr.update(visible=True), [], [send_btn]
+                ).then(
+                    lambda: gr.update(visible=True), [], [audio_switch]
                 )
 
             send_btn.click(
                 lambda: gr.update(visible=False), [], [send_btn]).then(
                 lambda: gr.update(visible=False), [], [txt]).then(
+                lambda: gr.update(visible=False), [], [audio_switch]).then(
                 bot.run_task, [audio_switch, txt, audio2text_input, state, user_state], [chatbot, state, user_state]).then(
                 lambda: "", None, [txt, ]).then(
-                lambda: gr.update(visible=True), [], [txt]).then(
-                    lambda: gr.update(visible=True), [], [send_btn]
+                lambda: gr.update(visible=True), [], [send_btn]).then(
+                    lambda: gr.update(visible=True), [], [txt]
+                ).then(
+                    lambda: gr.update(visible=True), [], [audio_switch]
                 )
             
             audio_switch.change(change_input_type, [audio_switch, ], [txt, audio2text_input])
 
-            add_img_example.click(random_image, [], [click_img,]).then(
-                lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then(
-                lambda: gr.update(visible=False), [], [vis_btn]).then( 
+            add_img_example.click(random_image, [], [click_img,]).then( 
                 bot.upload_image, [click_img, state, user_state], 
-                [chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [send_btn]).then(
-                lambda: gr.update(visible=True), [], [txt]).then(
-                lambda: gr.update(visible=True), [], [vis_btn])
+                [chatbot, state, user_state])
 
-            add_vid_example.click(random_video, [], [video_input,]).then(
-                lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then(
-                lambda: gr.update(visible=False), [], [vis_btn]).then( 
+            add_vid_example.click(random_video, [], [video_input,]).then( 
                 bot.upload_video, [video_input, state, user_state], 
-                [chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [send_btn]).then(
-                lambda: gr.update(visible=True), [], [txt]).then(
-                lambda: gr.update(visible=True), [], [vis_btn])
+                [chatbot, state, user_state])
 
-            add_aud_example.click(random_audio, [], [audio_input,]).then(
-                lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then(
-                lambda: gr.update(visible=False), [], [vis_btn]).then( 
+            add_aud_example.click(random_audio, [], [audio_input,]).then( 
                 bot.upload_audio, [audio_input, state, user_state], 
-                [chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [send_btn]).then(
-                lambda: gr.update(visible=True), [], [txt]).then(
-                lambda: gr.update(visible=True), [], [vis_btn])
+                [chatbot, state, user_state])
             
             whiteboard_mode.click(add_whiteboard, [], [click_img, ])
 
-            click_img.upload(lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then(
-                lambda: gr.update(visible=False), [], [vis_btn]).then( 
+            click_img.upload(lambda: gr.update(visible=False), [], [send_btn]).then( 
                 bot.upload_image, [click_img, state, user_state], 
                 [chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [send_btn]).then(
-                lambda: gr.update(visible=True), [], [txt]).then(
-                lambda: gr.update(visible=True), [], [vis_btn])
+                lambda: gr.update(visible=True), [], [img_btn])
             
             process_ocr_btn.click(
-                lambda: gr.update(visible=False), [], [vis_btn]).then(
+                lambda: gr.update(visible=False), [], [img_btn]).then(
                 bot.process_ocr, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [vis_btn]
+                lambda: gr.update(visible=True), [], [img_btn]
             )
             
             process_seg_btn.click(
-                lambda: gr.update(visible=False), [], [vis_btn]).then(
+                lambda: gr.update(visible=False), [], [img_btn]).then(
                 bot.process_seg, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [vis_btn]
+                lambda: gr.update(visible=True), [], [img_btn]
             )
             
             process_save_btn.click(
-                lambda: gr.update(visible=False), [], [vis_btn]).then(
+                lambda: gr.update(visible=False), [], [img_btn]).then(
                 bot.process_save, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [vis_btn]
+                lambda: gr.update(visible=True), [], [img_btn]
             )
-            video_tab.select(process_video_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
-            img_tab.select(process_image_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
-            audio_tab.select(process_audio_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
-            # drag_gan_tab.select(process_drag_gan_tab, [], [whiteboard_mode, img_example, aud_example, vid_example])
-            drag_gan_tab.select(process_drag_gan_tab, [], [whiteboard_mode, img_example, aud_example, vid_example]).then(
-                bot.gen_new_image, [state, user_state], [drag_image, chatbot, state, user_state])
+            
             clear_func = partial(bot.clear_user_state, True)
             clear_btn.click(lambda: None, [], [click_img, ]).then(
                 lambda: [], None, state).then(
@@ -414,19 +385,13 @@ if __name__ == '__main__':
                 lambda: None, None, chatbot
             ).then(lambda: '', None, [txt, ])
             
-            video_input.upload(lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then( 
+            video_input.upload( 
                 bot.upload_video, [video_input, state, user_state], 
-                [chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [send_btn]).then(
-                lambda: gr.update(visible=True), [], [txt])
+                [chatbot, state, user_state])
             
-            audio_input.upload(lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then( 
+            audio_input.upload( 
                 bot.upload_audio, [audio_input, state, user_state], 
-                [chatbot, state, user_state]).then(
-                lambda: gr.update(visible=True), [], [send_btn]).then(
-                lambda: gr.update(visible=True), [], [txt])
+                [chatbot, state, user_state])
             
             clear_func = partial(bot.clear_user_state, False)
             video_input.clear(clear_func, [user_state, ], [user_state, ])
@@ -445,7 +410,7 @@ if __name__ == '__main__':
     
             Update:
 
-            (2023.05.24) We now support [DragGAN](https://arxiv.org/abs/2305.10973). You can try it as follows:
+            (2023.05.24) We now support [DragGAN](https://github.com/Zeqiang-Lai/DragGAN). You can try it as follows:
             - Click the button `New Image`;
             - Click the image where blue denotes the start point and red denotes the end point;
             - Notice that the number of blue points is the same as the number of red points. Then you can click the button `Drag It`;
