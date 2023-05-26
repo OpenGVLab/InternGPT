@@ -8,6 +8,8 @@ import whisper
 import torch
 import gradio as gr
 import imageio
+from io import BytesIO
+import requests as req
 
 from PIL import Image
 
@@ -472,6 +474,26 @@ class ConversationBot:
         res = self.find_latest_image(out_filenames)
         print(f'The latest file is {res}')
         return res
+    
+    def read_images_from_internet(self, inputs, user_state):
+        urls = re.findall('(https?://[a-zA-Z0-9\.\?/%-_]*)', inputs)
+        state = []
+        for url in urls:
+            try:
+                response = req.get(url)
+                bytes = BytesIO(response.content)
+                image = Image.open(bytes)
+                image_caption, ocr_res_raw, image_filename = self.process_image(image)
+                _, user_state = self.put_image_info_into_memory(image_caption, ocr_res_raw, image_filename, user_state)
+                # state += [(, None)]
+                state += [(None, f"![](file={image_filename})*{image_filename}(From: {url})*")]
+                inputs = inputs.replace(url, image_filename)
+            except Exception as e:
+                print(e)
+                print(f'Error: {url} is not an Image!')
+
+        return inputs, state, user_state
+
         
     def run_text(self, text, state, user_state):
         text = text.strip()
@@ -481,23 +503,23 @@ class ConversationBot:
             state += [(None, 'Please input text.')]
             return state, state, user_state
 
+        new_inputs, new_state, user_state = self.read_images_from_internet(text, user_state)
         agent = user_state[0]['agent']
         agent.memory.buffer = cut_dialogue_history(agent.memory.buffer, keep_last_n_words=500)
         history_msg = agent.memory.buffer[:]
         
         try:
-            response = self.exec_simple_action(text, history_msg)
+            response = self.exec_simple_action(new_inputs, history_msg)
             if response is None:
                 # inputs = self.get_suggested_inputs(text, history_msg)
-                inputs = text
-                response = self.exec_agent(inputs, agent)
+                response = self.exec_agent(new_inputs, agent)
             else:
-                agent.memory.buffer += f'\nHuman: {text}\n' + f'AI: {response})'
+                agent.memory.buffer += f'\nHuman: {new_inputs}\n' + f'AI: {response})'
             res = self.find_result_path(response)
         except Exception as err1:
             print(f'Error in line {err1.__traceback__.tb_lineno}: {err1}')
             try:
-                response = self.rectify_action(text, history_msg, agent)
+                response = self.rectify_action(new_inputs, history_msg, agent)
                 res = self.find_result_path(response)
                 agent.memory.buffer += f'\nHuman: {text}\n' + f'AI: {response}'
             except Exception as err2:
@@ -505,11 +527,12 @@ class ConversationBot:
                 state += [(text, 'Sorry, something went wrong inside the ChatGPT. Please check whether your image, video and message have been uploaded successfully.')]
                 return state, state, user_state
 
+        state += [(text, None)] + new_state
         if res is not None and agent.memory.buffer.count(res) <= 1:
-            state = state + [(text, response + f' `{res}` is as follows: ')]
+            state = state + [(None, response + f' `{res}` is as follows: ')]
             state = state + [(None, (res, ))]
         else:
-            state = state + [(text, response)]
+            state = state + [(None, response)]
             
         print(f"\nProcessed run_text, Input text: {text}\nCurrent state: {state}\n"
               f"Current Memory: {agent.memory.buffer}")
@@ -545,51 +568,66 @@ class ConversationBot:
 
         Human_prompt = f'\nHuman: provide an audio file named {new_audio_path}. You should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
         AI_prompt = f"Received. "
-        # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
+
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
 
         state = state + [((new_audio_path, ), AI_prompt)]
-        # print('exists = ', os.path.exists("./tmp_files/1e7f_f4236666_tmp.mp4"))
+
         print(f"\nProcessed upload_video, Input Audio: `{new_audio_path}`\nCurrent state: {state}\n"
               f"Current Memory: {user_state[0]['agent'].memory.buffer}")
 
         return state, state, user_state
-
-    def upload_image(self, image, state, user_state):
-        # [txt, click_img, state, user_state], [chatbot, txt, state, user_state]
-        # self.reset()
-        print('upload an image')
-        if image is None or image.get('image', None) is None:
-            return state, state, user_state
-        user_state = self.clear_user_state(False, user_state)
-        img = image['image']
+    
+    def process_image(self, image):
+        img = image
         image_filename = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
         image_filename = gen_new_name(image_filename, 'image')
         img.save(image_filename, "PNG")
-        user_state[0]['image_path'] = image_filename
         img = img.convert('RGB')
+        
+        image_caption = None
+        if 'HuskyVQA' in self.models.keys():
+            image_caption = self.models['HuskyVQA'].inference_captioning(image_filename)
 
-        image_caption = self.models['HuskyVQA'].inference_captioning(image_filename)
-        # description = 'Debug'
-        user_state[0]['image_caption'] = image_caption
-
-        ocr_res = None
-        user_state[0]['ocr_res'] = []
+        ocr_res_raw = None
         if 'ImageOCRRecognition' in self.models.keys():
-            ocr_res = self.models['ImageOCRRecognition'].inference(image_filename)
+            # ocr_res = self.models['ImageOCRRecognition'].inference(image_filename)
             ocr_res_raw = self.models['ImageOCRRecognition'].readtext(image_filename)
+
+        return image_caption, ocr_res_raw, image_filename
+
+    def put_image_info_into_memory(self, image_caption, ocr_res_raw, image_filename, user_state):
+        ocr_res = None
+        state = []
+        if ocr_res_raw is not None:
+            ocr_res = self.models['ImageOCRRecognition'].parse_result(ocr_res_raw)
+
         if ocr_res is not None and len(ocr_res) > 0:
             Human_prompt = f'\nHuman: provide a image named {image_filename}. The description is: {image_caption} OCR result is: {ocr_res}. This information helps you to understand this image, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
             user_state[0]['ocr_res'] = ocr_res_raw
         else:
             Human_prompt = f'\nHuman: provide a image named {image_filename}. The description is: {image_caption} This information helps you to understand this image, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
+
         AI_prompt = "Received. "
-        # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + ' AI: ' + AI_prompt
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
         state = state + [(f"![](file={image_filename})*{image_filename}*", AI_prompt)]
+        return state, user_state
+
+    def upload_image(self, image, state, user_state):
+        # [txt, click_img, state, user_state], [chatbot, txt, state, user_state]
+        print('upload an image')
+        if image is None or image.get('image', None) is None:
+            return state, state, user_state
+        
+        user_state = self.clear_user_state(False, user_state)
+        image_caption, ocr_res_raw, image_filename = self.process_image(image['image'])
+        user_state[0]['image_path'] = image_filename
+        t_state, user_state = self.put_image_info_into_memory(image_caption, ocr_res_raw, image_filename, user_state)
+        state += t_state
+        
         print(f"\nProcessed upload_image, Input image: {image_filename}\nCurrent state: {state}\n"
               f"Current Memory: {user_state[0]['agent'].memory.buffer}")
-
+        
         return state, state, user_state
 
     def upload_video(self, video_path, state, user_state):
@@ -610,11 +648,11 @@ class ConversationBot:
         user_state[0]['video_caption'] = description
         Human_prompt = f'\nHuman: provide a video named {new_video_path}. The description is: {description}. This information helps you to understand this video, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
         AI_prompt = f"Received. "
-        # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
+
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
 
         state = state + [((new_video_path, ), AI_prompt)]
-        # print('exists = ', os.path.exists("./tmp_files/1e7f_f4236666_tmp.mp4"))
+
         print(f"\nProcessed upload_video, Input video: `{new_video_path}`\nCurrent state: {state}\n"
               f"Current Memory: {user_state[0]['agent'].memory.buffer}")
 

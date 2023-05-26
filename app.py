@@ -62,8 +62,6 @@ class ImageSketcher(gr.Image):
                 mask = self.postprocess(mask)
                 x['mask'] = mask
             elif not isinstance(x, dict):
-                # print(x)
-                print(f'type(x) = {type(x)}')
                 decode_image = gr.processing_utils.decode_base64_to_image(x)
                 width, height = decode_image.size
                 decode_image.save('sketch_test.png')

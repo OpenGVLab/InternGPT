@@ -878,13 +878,17 @@ class ImageOCRRecognition:
         image_path = inputs.strip()
         result = self.reader.readtext(image_path)
         # print(self.result)
+        res_text = self.parse_result(result)
+        print(
+            f"\nProcessed ImageOCRRecognition, Input Image: {inputs}, "
+            f"Output Text: {res_text}")
+        return res_text
+    
+    def parse_result(self, result):
         res_text = []
         for item in result:
             # ([[x, y], [x, y], [x, y], [x, y]], text, confidence)
             res_text.append(item[1])
-        print(
-            f"\nProcessed ImageOCRRecognition, Input Image: {inputs}, "
-            f"Output Text: {res_text}")
         return res_text
     
     def readtext(self, img_path):
