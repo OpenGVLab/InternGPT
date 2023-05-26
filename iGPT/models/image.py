@@ -10,8 +10,9 @@ import cv2
 from transformers import pipeline
 
 from .utils import (cal_dilate_factor, dilate_mask, gen_new_name,
-                    seed_everything, prompts, blend_gt2pt, resize_800,
+                    seed_everything, prompts, resize_800,
                     gen_new_seed, GLOBAL_SEED)
+from transformers import pipeline, BlipProcessor, BlipForConditionalGeneration, BlipForQuestionAnswering
 from diffusers import StableDiffusionPipeline, StableDiffusionInpaintPipeline, StableDiffusionInstructPix2PixPipeline
 from diffusers import EulerAncestralDiscreteScheduler
 from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, UniPCMultistepScheduler
@@ -903,3 +904,75 @@ class ImageOCRRecognition:
                 return item[1]
 
         return ''
+
+
+class ImageCaptioning:
+    def __init__(self, device):
+        print(f"Initializing ImageCaptioning to {device}")
+        self.device = device
+        self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
+        self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+        self.model = BlipForConditionalGeneration.from_pretrained(
+            "Salesforce/blip-image-captioning-base", torch_dtype=self.torch_dtype).to(self.device)
+
+    @prompts(name="Get Photo Description",
+             description="useful when you want to know what is inside the photo. receives image_path as input. "
+                         "The input to this tool should be a string, representing the image_path. ")
+    def inference(self, image_path):
+        inputs = self.processor(Image.open(image_path), return_tensors="pt").to(self.device, self.torch_dtype)
+        out = self.model.generate(**inputs)
+        captions = self.processor.decode(out[0], skip_special_tokens=True)
+        print(f"\nProcessed ImageCaptioning, Input Image: {image_path}, Output Text: {captions}")
+        return captions
+    
+
+class VisualQuestionAnswering:
+    def __init__(self, device):
+        print(f"Initializing VisualQuestionAnswering to {device}")
+        self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
+        self.device = device
+        self.processor = BlipProcessor.from_pretrained("Salesforce/blip-vqa-base")
+        self.model = BlipForQuestionAnswering.from_pretrained(
+            "Salesforce/blip-vqa-base", torch_dtype=self.torch_dtype).to(self.device)
+
+    @prompts(name="Answer Question About The Image",
+             description="useful when you need an answer for a question based on an image. "
+                         "like: what is the background color of the last image, how many cats in this figure, what is in this figure. "
+                         "The input to this tool should be a comma separated string of two, representing the image_path and the question")
+    def inference(self, inputs):
+        image_path, question = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
+        raw_image = Image.open(image_path).convert('RGB')
+        inputs = self.processor(raw_image, question, return_tensors="pt").to(self.device, self.torch_dtype)
+        out = self.model.generate(**inputs)
+        answer = self.processor.decode(out[0], skip_special_tokens=True)
+        print(f"\nProcessed VisualQuestionAnswering, Input Image: {image_path}, Input Question: {question}, "
+              f"Output Answer: {answer}")
+        return answer
+    
+
+class MaskedVisualQuestionAnswering:
+    template_model=True
+    def __init__(self, VisualQuestionAnswering, SegmentAnything):
+        self.VisualQuestionAnswering = VisualQuestionAnswering
+        self.SegmentAnything = SegmentAnything
+        print(f"Initializing MaskedVisualQuestionAnswering")
+
+    @prompts(name="Answer Question About The Masked Image",
+             description="useful when you need an answer for a question based on a masked image. "
+                         "like: what is the background color in the masked region, how many cats in this masked figure, what is in this masked figure. "
+                         "The input to this tool should be a comma separated string of two, representing the image_path and the question")
+    def inference_by_mask(self, inputs):
+        image_path, question = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
+        mask_path = self.SegmentAnything.inference_by_mask(image_path)
+        raw_image = Image.open(image_path).convert('RGB')
+        # mask_image = Image.open(mask_path).convert('L')
+        mask_image = Image.open(mask_path).convert('RGB')
+        new_image_arr = np.array(raw_image, dtype=np.uint8) // (np.array(mask_image) // 255)
+        new_image = Image.fromarray(new_image_arr)
+        new_image_path = gen_new_name(image_path, '')
+        new_image.save(new_image_path, 'PNG')
+
+        answer = self.VisualQuestionAnswering.inference(f'{new_image_path},{question}')
+        print(f"\nProcessed VisualQuestionAnswering, Input Image: {image_path}, Input Question: {question}, "
+              f"Output Answer: {answer}")
+        return answer

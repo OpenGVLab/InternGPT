@@ -134,12 +134,12 @@ def cut_dialogue_history(history_memory, keep_last_n_words=500):
 class ConversationBot:
     def __init__(self, load_dict):
         print(f"Initializing InternGPT, load_dict={load_dict}")
-        if 'HuskyVQA' not in load_dict:
-            raise ValueError("You have to load ImageCaptioning as a basic function for iGPT")
-        if 'SegmentAnything' not in load_dict:
-            raise ValueError("You have to load SegmentAnything as a basic function for iGPT")
-        if 'ImageOCRRecognition' not in load_dict:
-            raise ValueError("You have to load ImageOCRRecognition as a basic function for iGPT")
+        # if 'HuskyVQA' not in load_dict:
+        #     raise ValueError("You have to load ImageCaptioning as a basic function for iGPT")
+        # if 'SegmentAnything' not in load_dict:
+        #     raise ValueError("You have to load SegmentAnything as a basic function for iGPT")
+        # if 'ImageOCRRecognition' not in load_dict:
+        #     raise ValueError("You have to load ImageOCRRecognition as a basic function for iGPT")
 
         self.models = {}
         self.audio_model = whisper.load_model("small").to('cuda:0')
@@ -493,7 +493,6 @@ class ConversationBot:
                 print(f'Error: {url} is not an Image!')
 
         return inputs, state, user_state
-
         
     def run_text(self, text, state, user_state):
         text = text.strip()
@@ -599,14 +598,18 @@ class ConversationBot:
     def put_image_info_into_memory(self, image_caption, ocr_res_raw, image_filename, user_state):
         ocr_res = None
         state = []
+        Human_prompt = f'\nHuman: provide a image named {image_filename}. '
+        if image_caption is not None and len(image_caption) > 0:
+            Human_prompt += f'The description is: {image_caption} '
+
         if ocr_res_raw is not None:
             ocr_res = self.models['ImageOCRRecognition'].parse_result(ocr_res_raw)
 
         if ocr_res is not None and len(ocr_res) > 0:
-            Human_prompt = f'\nHuman: provide a image named {image_filename}. The description is: {image_caption} OCR result is: {ocr_res}. This information helps you to understand this image, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
-            user_state[0]['ocr_res'] = ocr_res_raw
-        else:
-            Human_prompt = f'\nHuman: provide a image named {image_filename}. The description is: {image_caption} This information helps you to understand this image, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
+            Human_prompt = f'OCR result is: {ocr_res}. '
+            # user_state[0]['ocr_res'] = ocr_res_raw
+            
+        Human_prompt += f'This information helps you to understand this image, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
 
         AI_prompt = "Received. "
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
@@ -622,6 +625,8 @@ class ConversationBot:
         user_state = self.clear_user_state(False, user_state)
         image_caption, ocr_res_raw, image_filename = self.process_image(image['image'])
         user_state[0]['image_path'] = image_filename
+        user_state[0]['ocr_res'] = ocr_res_raw
+        user_state[0]['image_caption'] = image_caption
         t_state, user_state = self.put_image_info_into_memory(image_caption, ocr_res_raw, image_filename, user_state)
         state += t_state
         
@@ -686,7 +691,7 @@ class ConversationBot:
             return image['image'], state, state, user_state
 
         img = Image.open(user_state[0]['image_path']).convert('RGB')
-        print(f'user_state[0][\'image_path\'] = {user_state[0]["image_path"]}')
+        # print(f'user_state[0][\'image_path\'] = {user_state[0]["image_path"]}')
         img = np.array(img, dtype=np.uint8)
         mask = image['mask'].convert('L')
         mask = np.array(mask, dtype=np.uint8)
@@ -731,13 +736,11 @@ class ConversationBot:
             AI_prompt = "Please upload an image for processing."
             state += [(Human_prompt, AI_prompt)]
             return None, state, state, user_state
+
         uploaded_image_filename = user_state[0]['image_path']
         img = np.array(image['image'])
-        # img[:100+int(time.time() % 50),:100, :] = 0 
         img = Image.fromarray(img)
-        # img = image['image'].convert('RGB')
         mask = image['mask'].convert('L')
-        # mask.save(f'test_{int(time.time()) % 1000}.png')
         mask = np.array(mask, dtype=np.uint8)
 
         if mask.sum() == 0:
@@ -750,7 +753,7 @@ class ConversationBot:
             # self.models['ImageOCRRecognition'].clicked_region = mask
             chosen_ocr_res = self.models['ImageOCRRecognition'].get_ocr_by_mask(mask, user_state[0]['ocr_res'])
         else:
-            state += [Human_prompt, f'ImageOCRRecognition is not loaded.']
+            state += [(Human_prompt, f'ImageOCRRecognition is not loaded.')]
 
         if chosen_ocr_res is not None and len(chosen_ocr_res) > 0:
             AI_prompt = f'OCR result: {chosen_ocr_res}'
@@ -922,12 +925,10 @@ class ConversationBot:
                 new_image.save(image_filename, "PNG")
                 AI_prompt = f'The processed image is named {image_filename}: '
                 state += [(None, AI_prompt)]
-                # state += [None, AI_prompt]
                 state += [(None, (image_filename, ))]
                 user_state[0]['StyleGAN']['state'] = style_gan_state
                 Human_prompt = f'\nHuman: provide a image named {image_filename}. You should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
                 AI_prompt = "Received. "
-                # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + ' AI: ' + AI_prompt
                 user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
                 del latent, sample2, F
                 torch.cuda.empty_cache()
@@ -948,7 +949,7 @@ class ConversationBot:
         start_point = user_state[0]['StyleGAN']['points'].get('start')
         end_point = user_state[0]['StyleGAN']['points'].get('end')
         click_size = user_state[0]['StyleGAN']['click_size']
-        # image_size = user_state[0]['StyleGAN']['image_size']
+
         if len(start_point) > len(end_point):
             points['end'].append([evt.index[1], evt.index[0]])
             image = add_points_to_image(image, points, size=click_size)
@@ -965,9 +966,6 @@ class ConversationBot:
             return image, user_state
         
         user_state[0]['StyleGAN']['points'] = {'end': [], 'start': []}
-        # image_path = user_state[0]['StyleGAN'].get('image_path', None)
-        # if image_path is not None:
-        #     image = Image.open(image_path)
 
         gan_state = user_state[0]['StyleGAN'].get('state', None)
         sample = None
