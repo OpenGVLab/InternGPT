@@ -24,7 +24,7 @@ from iGPT.models.utils import (gen_new_name, to_image,
 from ..models.drag_gan import drag_gan
 
 
-INTERN_CHAT_PREFIX = """InternGPT is designed to be able to assist with a wide range of text and visual related tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. InternGPT is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
+INTERN_GPT_PREFIX = """InternGPT is designed to be able to assist with a wide range of text and visual related tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. InternGPT is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
 
 InternGPT is able to process and understand large amounts of text and images. As a language model, InternGPT can not directly read images, but it has a list of tools to finish different visual tasks. Each image will have a file name formed as "image/xxx.png", and InternGPT can invoke different tools to indirectly understand pictures. When talking about images, InternGPT is very strict to the file name and will never fabricate nonexistent files. When using tools to generate new image files, InternGPT is also known that the image may not be the same as the user's demand, and will use other visual question answering tools or description tools to observe the real image. InternGPT is able to use tools in a sequence, and is loyal to the tool observation outputs rather than faking the image content and image file name. It will remember to provide the file name from the last tool observation, if a new image is generated.
 
@@ -38,7 +38,7 @@ TOOLS:
 
 InternGPT  has access to the following tools:"""
 
-INTERN_CHAT_FORMAT_INSTRUCTIONS = """To use a tool, please use the following format:
+INTERN_GPT_FORMAT_INSTRUCTIONS = """To use a tool, please use the following format:
 
 ```
 Thought: Do I need to use a tool? Yes
@@ -55,7 +55,7 @@ Thought: Do I need to use a tool? No
 ```
 """
 
-INTERN_CHAT_SUFFIX = """You are very strict to the filename correctness and will never fake a file name if it does not exist.
+INTERN_GPT_SUFFIX = """You are very strict to the filename correctness and will never fake a file name if it does not exist.
 You will remember to provide the image file name loyally if it's provided in the last tool observation.
 
 Begin!
@@ -69,7 +69,7 @@ The thoughts and observations are only visible for InternGPT, InternGPT should r
 Thought: Do I need to use a tool? {agent_scratchpad} Let's think step by step.
 """
 
-INTERN_CHAT_PREFIX_CN = """InternGPT 旨在能够协助完成范围广泛的文本和视觉相关任务，从回答简单的问题到提供对广泛主题的深入解释和讨论。 InternGPT 能够根据收到的输入生成类似人类的文本，使其能够进行听起来自然的对话，并提供连贯且与手头主题相关的响应。
+INTERN_GPT_PREFIX_CN = """InternGPT 旨在能够协助完成范围广泛的文本和视觉相关任务，从回答简单的问题到提供对广泛主题的深入解释和讨论。 InternGPT 能够根据收到的输入生成类似人类的文本，使其能够进行听起来自然的对话，并提供连贯且与手头主题相关的响应。
 
 InternGPT 能够处理和理解大量文本和图像。作为一种语言模型，InternGPT 不能直接读取图像，但它有一系列工具来完成不同的视觉任务。每张图片都会有一个文件名，格式为“image/xxx.png”，InternGPT可以调用不同的工具来间接理解图片。在谈论图片时，InternGPT 对文件名的要求非常严格，绝不会伪造不存在的文件。在使用工具生成新的图像文件时，InternGPT也知道图像可能与用户需求不一样，会使用其他视觉问答工具或描述工具来观察真实图像。 InternGPT 能够按顺序使用工具，并且忠于工具观察输出，而不是伪造图像内容和图像文件名。如果生成新图像，它将记得提供上次工具观察的文件名。
 
@@ -82,7 +82,7 @@ Human 可能会向 InternGPT 提供带有描述的新图形。描述帮助 Inter
 
 InternGPT 可以使用这些工具:"""
 
-INTERN_CHAT_FORMAT_INSTRUCTIONS_CN = """用户使用中文和你进行聊天，但是工具的参数应当使用英文。如果要调用工具，你必须遵循如下格式:
+INTERN_GPT_FORMAT_INSTRUCTIONS_CN = """用户使用中文和你进行聊天，但是工具的参数应当使用英文。如果要调用工具，你必须遵循如下格式:
 
 ```
 Thought: Do I need to use a tool? Yes
@@ -100,7 +100,7 @@ Thought: Do I need to use a tool? No
 ```
 """
 
-INTERN_CHAT_SUFFIX_CN = """你对文件名的正确性非常严格，而且永远不会伪造不存在的文件。
+INTERN_GPT_SUFFIX_CN = """你对文件名的正确性非常严格，而且永远不会伪造不存在的文件。
 
 开始!
 
@@ -132,15 +132,10 @@ def cut_dialogue_history(history_memory, keep_last_n_words=500):
 
 
 class ConversationBot:
-    def __init__(self, load_dict):
+    def __init__(self, load_dict, chat_disabled=False):
         print(f"Initializing InternGPT, load_dict={load_dict}")
-        # if 'HuskyVQA' not in load_dict:
-        #     raise ValueError("You have to load ImageCaptioning as a basic function for iGPT")
-        # if 'SegmentAnything' not in load_dict:
-        #     raise ValueError("You have to load SegmentAnything as a basic function for iGPT")
-        # if 'ImageOCRRecognition' not in load_dict:
-        #     raise ValueError("You have to load ImageOCRRecognition as a basic function for iGPT")
-
+        
+        self.chat_disabled = chat_disabled
         self.models = {}
         self.audio_model = whisper.load_model("small").to('cuda:0')
         # Load Basic Foundation Models
@@ -172,8 +167,8 @@ class ConversationBot:
                 verbose=True,
                 memory=memory,
                 return_intermediate_steps=True,
-                agent_kwargs={'prefix': INTERN_CHAT_PREFIX, 'format_instructions': INTERN_CHAT_FORMAT_INSTRUCTIONS,
-                            'suffix': INTERN_CHAT_SUFFIX}, )
+                agent_kwargs={'prefix': INTERN_GPT_PREFIX, 'format_instructions': INTERN_GPT_FORMAT_INSTRUCTIONS,
+                            'suffix': INTERN_GPT_SUFFIX}, )
         
         user_state = [{'agent': agent, 'memory': memory, 'StyleGAN': {}}]
         return user_state
@@ -293,8 +288,11 @@ class ConversationBot:
             func_inputs = f'{img_path},{prompt}'
         else:
             def only_chat(inputs):
-                res = agent(f"You can use history message to respond to the following question without using any tools. Request: {inputs}")
-                res = res['output'].replace("\\", "/")
+                if not self.chat_disabled:
+                    res = agent(f"You can use history message to respond to the following question without using any tools. Request: {inputs}")
+                    res = res['output'].replace("\\", "/")
+                else:
+                    res = f"The chat-related functions is now disabled. Please try other features."
                 return res
             func_name = 'ChatGPT'
             func_inputs = inputs
@@ -456,6 +454,11 @@ class ConversationBot:
         # pattern = re.compile('(image/[-\\w]*.(png|mp4))')
         response = agent({"input": inputs})['output']
         response = response.replace("\\", "/")
+        using_tool_words = "I used the tool"
+        if using_tool_words not in response:
+            response = "For a short period of time in the future, I cannot chat with you due to some policy requirements. I hope you can understand."
+            return response
+
         nonsense_words = 'I do not need to use a tool'
         if nonsense_words in response.split('.')[0] and len(response.split('.')) > 1:
             response = '.'.join(response.split('.')[1:])
@@ -472,7 +475,7 @@ class ConversationBot:
         if len(illegal_files) > 0:
             raise FileNotFoundError(f'{illegal_files} do (does) not exist.')
         res = self.find_latest_image(out_filenames)
-        print(f'The latest file is {res}')
+        print(f'The latest file is {res}.')
         return res
     
     def read_images_from_internet(self, inputs, user_state):
