@@ -19,9 +19,9 @@
 
 - (2023.05.18) 已支持[ImageBind](https://github.com/facebookresearch/ImageBind) 🎉🎉🎉。使用方法请参考[视频演示](#imagebind_demo)。赶紧来体验: [Demo](https://igpt.opengvlab.com/)
 
-- (2023.15.15) [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) 已经公开，里面包含了HuskyVQA! 赶紧在你自己的机器上部署试试吧!
+- (2023.05.15) [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) 已经公开，里面包含了HuskyVQA! 赶紧在你自己的机器上部署试试吧!
 
-- (2023.15.15) 我们的代码在 [Hugging Face](https://huggingface.co/spaces/OpenGVLab/InternGPT)也同步更新! 你可以复制一份仓库，然后使用自己的GPU运行demo。
+- (2023.05.15) 我们的代码在 [Hugging Face](https://huggingface.co/spaces/OpenGVLab/InternGPT)也同步更新! 你可以复制一份仓库，然后使用自己的GPU运行demo。
 
   
 ## 🤖💬 在线Demo
@@ -224,8 +224,7 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 
 加入微信群组二维码：
   
-<p align="center"><img width="400" alt="image" src="https://github.com/OpenGVLab/InternGPT/assets/13723743/3d0aaa3c-da12-4f38-b341-23df2b5a4ce9"></p> 
 
+<p align="center"><img src="https://github.com/OpenGVLab/InternGPT/assets/13723743/4a051f32-ef8d-4af7-bf7d-3b52e8fefba9" width="300"></p>
 
-  
   
