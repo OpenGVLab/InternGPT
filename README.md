@@ -18,6 +18,8 @@
 **InternGPT**(short for **iGPT**) / **InternChat**(short for **iChat**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternGPT stands for **inter**action, **n**onverbal, and Chat**GPT**. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iGPT significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iGPT, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
 ## 🥳 🚀 What's New 
+- (2023.05.31) It is with great regret that due to some emergency reasons, we have to close the online demo. If you want to experience all the features, please try them after deploying locally.
+
 - (2023.05.24) 🎉🎉🎉 We have supported the [DragGAN](https://github.com/Zeqiang-Lai/DragGAN)! Please see the [video demo](#draggan_demo) for the usage. Let's try this awesome feauture: [Demo](https://igpt.opengvlab.com/). （我们现在支持了功能完全的[DragGAN](https://github.com/Zeqiang-Lai/DragGAN)! 可以拖动、可以自定义图片，具体用法见[video demo](#draggan_demo)，复现的DragGAN代码在[这里](https://github.com/Zeqiang-Lai/DragGAN)，在线demo在[这里](https://igpt.opengvlab.com/)）
 
 - (2023.05.18) We have supported [ImageBind](https://github.com/facebookresearch/ImageBind). Please see the [video demo](#imagebind_demo) for the usage. 
@@ -148,7 +150,8 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 See [INSTALL.md](INSTALL.md)
 
 ## 👨‍🏫 Get Started 
-Running the following shell can start a gradio service:
+
+Running the following shell can start a gradio service for our basic features:
 ```shell
 python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
 ```
@@ -164,6 +167,20 @@ and then run:
 python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
 ```
 
+For all features of our iGPT, you need to run:
+```shell
+python -u app.py \
+--load "ImageOCRRecognition_cuda:0,Text2Image_cuda:0,SegmentAnything_cuda:0,ActionRecognition_cuda:0,VideoCaption_cuda:0,DenseCaption_cuda:0,ReplaceMaskedAnything_cuda:0,LDMInpainting_cuda:0,SegText2Image_cuda:0,ScribbleText2Image_cuda:0,Image2Scribble_cuda:0,Image2Canny_cuda:0,CannyText2Image_cuda:0,StyleGAN_cuda:0,Anything2Image_cuda:0,HuskyVQA_cuda:0" -p 3456 --https
+```
+Notice that running all the functions of iGPT requires larger GPU memory. So it is better to run iGPT on A100.
+
+### Selectively Loading Features
+When you only want to try DragGAN, you just need to load StyleGAN and open the tab "DragGAN":
+```shell
+python -u app.py --load "StyleGAN_cuda:0" --tab "DragGAN" --port 3456 --https
+```
+
+In this situation, you can only use the functions of DragGAN.
 
 ## 🎫 License
 
