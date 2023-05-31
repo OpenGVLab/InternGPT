@@ -180,7 +180,7 @@ When you only want to try DragGAN, you just need to load StyleGAN and open the t
 python -u app.py --load "StyleGAN_cuda:0" --tab "DragGAN" --port 3456 --https
 ```
 
-In this situation, you can only use the functions of DragGAN.
+In this situation, you can only use the functions of DragGAN, which frees you from some dependencies that you are not interested in.
 
 ## 🎫 License
 
