@@ -1,6 +1,8 @@
 # coding: utf-8
 import os
+import numpy as np
 os.environ['CURL_CA_BUNDLE'] = ''
+os.environ['MKL_SERVICE_FORCE_INTEL'] = '1'
 
 try:
     import detectron2
@@ -13,7 +15,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "third-party" / "lama")
 
 import random
 from PIL import Image
-import numpy as np
 import argparse
 from functools import partial
 
