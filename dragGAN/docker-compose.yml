@@ -1,0 +1,16 @@
+services:
+  draggan:
+    image: "draggan"
+    container_name: "draggan"
+    restart: "unless-stopped"
+    ports:
+      - "7861:7860"
+    volumes:
+      - /home/ubuntu/dragGAN/checkpoints:/root/draggan/checkpoints
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

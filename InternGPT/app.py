@@ -248,7 +248,7 @@ if __name__ == '__main__':
             with gr.Column(scale=0.4, min_width=0):
                 key_submit_button = gr.Button(value="Please log in with your OpenAI API Key", interactive=True, variant='primary').style(container=False) 
 
-        with gr.Row(visible=False) as user_interface:
+        with gr.Row(visible=True) as user_interface:
             with gr.Column(scale=0.5, elem_id="text_input") as chat_part:
                 chatbot = gr.Chatbot(elem_id="chatbot", label="InternGPT").style(height=360)
                 with gr.Row(visible=True) as input_row:
