@@ -401,39 +401,33 @@ if __name__ == '__main__':
             
             audio_switch.change(change_input_type, [audio_switch, ], [txt, audio2text_input])
             
-            # clear_func = partial(bot.clear_user_state, False)
-            
-        gr.Markdown(
-            '''
-            **User Manual:**
-    
-            Update:
-
-            (2023.05.24) We now support [DragGAN](https://github.com/Zeqiang-Lai/DragGAN). You can try it as follows:
-            - Click the button `New Image`;
-            - Click the image where blue denotes the start point and red denotes the end point;
-            - Notice that the number of blue points is the same as the number of red points. Then you can click the button `Drag It`;
-            - After processing, you will receive an edited image and a video that visualizes the editing process.
-
-            <br>(2023.05.18) We now support [ImageBind](https://github.com/facebookresearch/ImageBind). If you want to generate a new image conditioned on audio, you can upload an audio file in advance:
-            - To **generate a new image from a single audio file**, you can send the message like: `"generate a real image from this audio"`;
-            - To **generate a new image from audio and text**, you can send the message like: `"generate a real image from this audio and {your prompt}"`;
-            - To **generate a new image from audio and image**, you need to upload an image and then send the message like: `"generate a new image from above image and audio"`;
-
-            <br>After uploading the image, you can have a **multi-modal dialogue** by sending messages like: `"what is it in the image?"` or `"what is the background color of the image?"`.
-
-            You also can interactively operate, edit or generate the image as follows:
-            - You can click the image and press the button **`Pick`** to **visualize the segmented region** or press the button **`OCR`** to **recognize the words** at chosen position;
-            - To **remove the masked region** in the image, you can send the message like: `"remove the masked region"`;
-            - To **replace the masked region** in the image, you can send the message like: `"replace the masked region with {your prompt}"`;
-            - To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation describing {your prompt}"`.
-            - To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble describing {your prompt}"`.
-
-            '''
-        )
         gr.HTML(
             """
             <body>
+            <p><strong>User Manual:</strong></p>
+
+            <p>Update:</p>
+
+            <p>(2023.05.24) We now support <a href="https://github.com/Zeqiang-Lai/DragGAN">DragGAN</a>. You can try it as follows:
+            - Click the button <b><code>New Image</code></b>; <br>
+            - Click the image where blue denotes the start point and red denotes the end point;<br>
+            - Notice that the number of blue points is the same as the number of red points. Then you can click the button <b><code>Drag It</code></b>;<br>
+            - After processing, you will receive an edited image and a video that visualizes the editing process.</p><br>
+
+            <p>(2023.05.18) We now support <a href="https://github.com/facebookresearch/ImageBind">ImageBind</a>. If you want to generate a new image conditioned on audio, you can upload an audio file in advance:<br>
+            - To <strong>generate a new image from a single audio file</strong>, you can send the message like: <code>&quot;generate a real image from this audio&quot;</code>;<br>
+            - To <strong>generate a new image from audio and text</strong>, you can send the message like: <code>&quot;generate a real image from this audio and {your prompt}&quot;</code>;<br>
+            - To <strong>generate a new image from audio and image</strong>, you need to upload an image and then send the message like: <code>&quot;generate a new image from above image and audio&quot;</code>;</p><br>
+
+            <p>After uploading the image, you can have a <strong>multi-modal dialogue</strong> by sending messages like: <code>&quot;what is it in the image?&quot;</code> or <code>&quot;what is the background color of the image?&quot;</code>.</p>
+
+            <p>You also can interactively operate, edit or generate the image as follows:<br>
+            - You can click the image and press the button <strong><code>Pick</code></strong> to <strong>visualize the segmented region</strong> or press the button <strong><code>OCR</code></strong> to <strong>recognize the words</strong> at chosen position;<br>
+            - To <strong>remove the masked region</strong> in the image, you can send the message like: <code>&quot;remove the masked region&quot;</code>;<br>
+            - To <strong>replace the masked region</strong> in the image, you can send the message like: <code>&quot;replace the masked region with {your prompt}&quot;</code>;<br>
+            - To <strong>generate a new image</strong>, you can send the message like: <code>&quot;generate a new image based on its segmentation describing {your prompt}&quot;</code>.<br>
+            - To <strong>create a new image by your scribble</strong>, you should press button <strong><code>Whiteboard</code></strong> and draw in the board. After drawing, you need to press the button <strong><code>Save</code></strong> and send the message like: <code>&quot;generate a new image based on this scribble describing {your prompt}&quot;</code>.</p>
+            
             <p style="font-family:verdana;color:#11AA00";>More features are coming soon. Hope you have fun with our demo!</p>
             </body>
             """
