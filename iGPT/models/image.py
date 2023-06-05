@@ -6,6 +6,7 @@ import time
 import numpy as np
 import uuid
 import cv2
+import wget
 
 from transformers import pipeline
 
