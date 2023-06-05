@@ -1,6 +1,8 @@
 # coding: utf-8
 import os
+import numpy as np
 os.environ['CURL_CA_BUNDLE'] = ''
+os.environ['MKL_SERVICE_FORCE_INTEL'] = '1'
 
 try:
     import detectron2
@@ -13,7 +15,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "third-party" / "lama")
 
 import random
 from PIL import Image
-import numpy as np
 import argparse
 from functools import partial
 
@@ -247,7 +248,7 @@ if __name__ == '__main__':
             with gr.Column(scale=0.4, min_width=0):
                 key_submit_button = gr.Button(value="Please log in with your OpenAI API Key", interactive=True, variant='primary').style(container=False) 
 
-        with gr.Row(visible=False) as user_interface:
+        with gr.Row(visible=True) as user_interface:
             with gr.Column(scale=0.5, elem_id="text_input") as chat_part:
                 chatbot = gr.Chatbot(elem_id="chatbot", label="InternGPT").style(height=360)
                 with gr.Row(visible=True) as input_row:
