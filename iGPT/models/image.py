@@ -12,7 +12,7 @@ from transformers import pipeline
 from .utils import (cal_dilate_factor, dilate_mask, gen_new_name,
                     seed_everything, prompts, resize_800,
                     gen_new_seed, GLOBAL_SEED)
-from transformers import pipeline, BlipProcessor, BlipForConditionalGeneration, BlipForQuestionAnswering
+# from transformers import pipeline, BlipProcessor, BlipForConditionalGeneration, BlipForQuestionAnswering
 from diffusers import StableDiffusionPipeline, StableDiffusionInpaintPipeline, StableDiffusionInstructPix2PixPipeline
 from diffusers import EulerAncestralDiscreteScheduler
 from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, UniPCMultistepScheduler

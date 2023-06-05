@@ -172,7 +172,6 @@ class ConversationBot:
         
         user_state = [{'agent': agent, 'memory': memory, 'StyleGAN': {}}]
         return user_state
-
     
     def find_latest_image(self, file_list):
         res = None
@@ -454,8 +453,9 @@ class ConversationBot:
         # pattern = re.compile('(image/[-\\w]*.(png|mp4))')
         response = agent({"input": inputs})['output']
         response = response.replace("\\", "/")
+        print('response = ', response)
         using_tool_words = "I used the tool"
-        if using_tool_words not in response:
+        if self.chat_disabled and using_tool_words not in response:
             response = "For a short period of time in the future, I cannot chat with you due to some policy requirements. I hope you can understand."
             return response
 
@@ -509,7 +509,7 @@ class ConversationBot:
         agent = user_state[0]['agent']
         agent.memory.buffer = cut_dialogue_history(agent.memory.buffer, keep_last_n_words=500)
         history_msg = agent.memory.buffer[:]
-        
+        # response = self.exec_agent(new_inputs, agent)
         try:
             response = self.exec_simple_action(new_inputs, history_msg)
             if response is None:
@@ -519,6 +519,8 @@ class ConversationBot:
                 agent.memory.buffer += f'\nHuman: {new_inputs}\n' + f'AI: {response})'
             res = self.find_result_path(response)
         except Exception as err1:
+            # import pdb
+            # pdb.set_trace()
             print(f'Error in line {err1.__traceback__.tb_lineno}: {err1}')
             try:
                 response = self.rectify_action(new_inputs, history_msg, agent)
