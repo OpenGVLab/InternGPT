@@ -24,6 +24,7 @@ _darcs
 # custom files
 ./image/
 tmp_files/
+.DS_Store
 
 # model files
 model_zoo/
