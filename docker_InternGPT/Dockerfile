@@ -31,10 +31,6 @@ RUN conda install -c conda-forge cudatoolkit-dev
 RUN conda install --channel=numba llvmlite
 RUN conda install -c numba numba
 
-RUN export MKL_SERVICE_FORCE_INTEL=1
-RUN rm app.py
-ADD InternGPT/app.py .
-
 EXPOSE 7862
 
 ENTRYPOINT ["python", "-u", "app.py", "--load", "StyleGAN_cuda:0", "--tab", "DragGAN", "--https"]
