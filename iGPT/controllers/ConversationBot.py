@@ -624,6 +624,7 @@ class ConversationBot:
     def upload_image(self, image, state, user_state):
         # [txt, click_img, state, user_state], [chatbot, txt, state, user_state]
         print('upload an image')
+        print(f'{type(image)}')
         if image is None or image.get('image', None) is None:
             return state, state, user_state
         
@@ -778,9 +779,7 @@ class ConversationBot:
             return None, state, state, user_state
         
         uploaded_image_filename = user_state[0].get('image_path', None)
-        if uploaded_image_filename is None and image.get('image', None) is not None:
-            _, state, user_state = self.upload_image(image['image'], state, user_state)
-        elif image.get('mask', None) is None:
+        if image.get('mask', None) is None:
             state += [(None, 'Please upload an image or draw a mask.')]
             return None, state, state, user_state 
         
