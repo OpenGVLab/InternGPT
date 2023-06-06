@@ -54,7 +54,7 @@ class LDMInpainting:
 
     @prompts(name="Remove the Masked Object",
              description="useful when you want to remove an object by masking the region in the image. "
-                         "like: remove masked object or inpaint the masked region.. "
+                         "like: remove masked object or inpaint the masked region."
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and mask_path")
     @torch.no_grad()

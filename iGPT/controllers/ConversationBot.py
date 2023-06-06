@@ -291,7 +291,7 @@ class ConversationBot:
                     res = agent(f"You can use history message to respond to the following question without using any tools. Request: {inputs}")
                     res = res['output'].replace("\\", "/")
                 else:
-                    res = f"The chat-related functions is now disabled. Please try other features."
+                    res = "The chat-related functions is now disabled. Please try other features."
                 return res
             func_name = 'ChatGPT'
             func_inputs = inputs
@@ -611,10 +611,10 @@ class ConversationBot:
             ocr_res = self.models['ImageOCRRecognition'].parse_result(ocr_res_raw)
 
         if ocr_res is not None and len(ocr_res) > 0:
-            Human_prompt = f'OCR result is: {ocr_res}. '
+            Human_prompt += f'Recognized optical characters: {ocr_res}. '
             # user_state[0]['ocr_res'] = ocr_res_raw
             
-        Human_prompt += f'This information helps you to understand this image, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
+        Human_prompt += 'This information helps you to understand this image, but you should use tools to finish following tasks, rather than directly imagine from my description. If you understand, say \"Received\". \n'
 
         AI_prompt = "Received. "
         user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
@@ -624,7 +624,6 @@ class ConversationBot:
     def upload_image(self, image, state, user_state):
         # [txt, click_img, state, user_state], [chatbot, txt, state, user_state]
         print('upload an image')
-        print(f'{type(image)}')
         if image is None or image.get('image', None) is None:
             return state, state, user_state
         

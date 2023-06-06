@@ -764,7 +764,7 @@ class ExtractMaskedAnything:
     @prompts(name="Extract The Masked Anything",
              description="useful when you want to extract or save the masked region in the image. "
                          "like: extract the masked region, keep the clicked region in the image "
-                         "or save the maskd region in the image. "
+                         "or save the masked region in the image. "
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and mask_path")
     def inference(self, inputs):
