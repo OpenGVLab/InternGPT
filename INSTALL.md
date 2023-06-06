@@ -14,8 +14,7 @@
 
 ```shell
 conda create -n igpt python=3.8
-conda activate igpt
-conda install pytorch==1.13.0 torchvision==0.14.0 torchaudio==0.13.0 pytorch-cuda=11.6 -c pytorch -c nvidia
+conda activate ichat
 pip install -r requirements.txt
 ```
 
@@ -40,3 +39,16 @@ Otherwise, you might encounter issuses similar as [issue #5](https://github.com/
 > model_zoo\llama_7B_hf does not appear to have a file named config.json. 
 
 > FileNotFoundError: [Errno 2] No such file or directory: 'model_zoo/llama/7B/params.json'
+
+## Deploying with Docker
+
+Please add model_zoo and certificate folders to the root directory of this repo, and change `/path/to/model_zoo` and `/path/to/certificate` in `docker/docker-compose.yml` to model_zoo and certificate directories on your machine respectively.
+
+For more features of our iGPT, You can modify the `load` variable in the `command` section in the docker compose file.
+
+```shell
+cd docker
+# Build and run an image (require GPUs):
+docker compose up 
+
+```

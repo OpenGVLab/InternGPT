@@ -16,6 +16,7 @@ RUN conda install pytorch pytorch-cuda=11.7 cudatoolkit -c pytorch -c nvidia
 RUN pip install -r requirements.txt
 RUN pip install git+https://github.com/facebookresearch/detectron2.git
 RUN pip install mediapipe
+RUN pip install imageio-ffmpeg
 
 RUN pip uninstall -y opencv-python  
 RUN pip uninstall -y opencv-python-headless
