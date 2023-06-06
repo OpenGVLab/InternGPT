@@ -50,5 +50,7 @@ For more features of our iGPT, You can modify the `load` variable in the `comman
 cd docker
 # Build and run an image (require GPUs):
 docker compose up 
+# or start an interactive BASH session
+docker compose run -i --entrypoint /bin/bash igpt
 
 ```
