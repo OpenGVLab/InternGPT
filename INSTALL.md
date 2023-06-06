@@ -13,8 +13,8 @@
 ## Install Python dependencies
 
 ```shell
-conda create -n ichat python=3.8
-conda activate ichat
+conda create -n igpt python=3.8
+conda activate igpt
 pip install -r requirements.txt
 ```
 
