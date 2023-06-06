@@ -33,3 +33,4 @@ decord==0.6.0
 ftfy
 regex
 einops
+imageio-ffmpeg
