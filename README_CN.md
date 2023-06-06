@@ -225,5 +225,6 @@ python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognit
 加入微信群组二维码：
   
 
-<p align="center"><img src="https://github.com/OpenGVLab/InternGPT/assets/13723743/e69e6a4b-8dd4-4ff3-853a-b146fcc880af" width="300"></p>
+<p align="center"><img src="https://github.com/Zeqiang-Lai/DragGAN/assets/26198430/e68d099a-0b64-4ed1-a4fb-ce135e47918a" width="300"></p>
+
   
