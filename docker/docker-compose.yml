@@ -1,13 +1,14 @@
 services:
   igpt:
+    build: .
     image: "igpt"
     container_name: "igpt"
     restart: "unless-stopped"
     ports:
       - "7862:7862"
     volumes:
-      - /home/ubuntu/InternGPT/model_zoo:/InternGPT/model_zoo
-      - /home/ubuntu/InternGPT/certificate:/InternGPT/certificate
+      - /path/to/model_zoo:/InternGPT/model_zoo
+      - /path/to/certificate:/InternGPT/certificate
     entrypoint: "python"
     deploy:
       resources:

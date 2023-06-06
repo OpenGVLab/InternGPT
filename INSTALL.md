@@ -39,3 +39,16 @@ Otherwise, you might encounter issuses similar as [issue #5](https://github.com/
 > model_zoo\llama_7B_hf does not appear to have a file named config.json. 
 
 > FileNotFoundError: [Errno 2] No such file or directory: 'model_zoo/llama/7B/params.json'
+
+## Deploying with Docker
+
+Please add model_zoo and certificate folders to the root directory of this repo, and change `/path/to/model_zoo` and `/path/to/certificate` in `docker/docker-compose.yml` to model_zoo and certificate directories on your machine respectively.
+
+For more features of our iGPT, You can modify the `load` variable in the `command` section in the docker compose file.
+
+```shell
+cd docker
+# Build and run an image (require GPUs):
+docker compose up 
+
+```
