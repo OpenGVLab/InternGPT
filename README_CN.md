@@ -166,9 +166,9 @@ pip install -r requirements.txt
 
 ### 使用docker部署
 
-请提前将`model_zoo`和`certificate`文件添加到项目的根目录下面。然后修改`docker/InternGPT_CN/docker-compose.yml`中的`/path/to/InternGPT`变量为项目根目录。
+请提前将`model_zoo`和`certificate`文件添加到项目的根目录下面, 然后将`docker/InternGPT_CN/docker-compose.yml`中的`/path/to/InternGPT`变量修改为项目根目录。
 
-你可以修改`docker/InternGPT_CN/docker-compose.yml`中`command`指令中的`load`变量来运行更多的功能。
+你可以修改`docker/InternGPT_CN/docker-compose.yml`文件中`command`部分的`load`变量来运行更多的功能。
 
 ```shell
 cd docker/InternGPT_CN
