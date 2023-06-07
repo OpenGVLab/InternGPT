@@ -5,7 +5,7 @@ services:
     container_name: "igpt_cn"
     restart: "unless-stopped"
     ports:
-      - "7860:7862"
+      - "7862:7862"
     volumes:
       - /path/to/InternGPT:/root/InternGPT
     entrypoint: "python"
