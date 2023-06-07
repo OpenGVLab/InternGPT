@@ -164,6 +164,19 @@ pip install -r requirements.txt
 
 小彩蛋：HuskyVQA模型也在`model_zoo`里开源了！经我们测试，HuskyVQA的视觉问答能力达到了业界顶尖水平。更多细节请参考我们的[report](https://arxiv.org/pdf/2305.05662.pdf)。
 
+### 使用docker部署
+
+请提前将`model_zoo`和`certificate`文件添加到项目的根目录下面, 然后将`docker/InternGPT_CN/docker-compose.yml`中的`/path/to/InternGPT`变量修改为项目根目录。
+
+你可以修改`docker/InternGPT_CN/docker-compose.yml`文件中`command`部分的`load`变量来运行更多的功能。
+
+```shell
+cd docker/InternGPT_CN
+# 构建镜像并运行一个容器
+docker compose up 
+# 或者启动一个交互式BASH会话
+docker compose run -i --entrypoint /bin/bash igpt_cn
+```
 
 ## 👨‍🏫 运行指南
 

@@ -1,0 +1,28 @@
+services:
+  igpt:
+    build: .
+    image: "igpt_cn"
+    container_name: "igpt_cn"
+    restart: "unless-stopped"
+    ports:
+      - "7860:7862"
+    volumes:
+      - /path/to/InternGPT:/root/InternGPT
+    entrypoint: "python"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command:
+      - "-u"
+      - "app.py"
+      - "--port"
+      - "7862"
+      - "--load"
+      - "StyleGAN_cuda:0"
+      - "--tab"
+      - "DragGAN"
+      - "--https"
