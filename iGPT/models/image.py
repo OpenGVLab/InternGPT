@@ -670,7 +670,7 @@ class SegmentAnything:
         mask_img.save(filaname, "PNG")
         return filaname
     
-    def segment_by_mask(self, mask, features):
+    def segment_by_mask(self, mask, features=None):
         random.seed(GLOBAL_SEED)
         idxs = np.nonzero(mask)
         num_points = min(max(1, int(len(idxs[0]) * 0.01)), 16)
@@ -681,12 +681,19 @@ class SegmentAnything:
         points = np.array(new_mask).reshape(2, -1).transpose(1, 0)[:, ::-1]
         labels = np.array([1] * num_points)
 
-        res_masks, scores, _ = self.predictor.predict(
-            features=features,
-            point_coords=points,
-            point_labels=labels,
-            multimask_output=True,
-        )
+        if features is None:
+            res_masks, scores, _ = self.predictor.predict(
+                point_coords=points,
+                point_labels=labels,
+                multimask_output=True,
+            )
+        else:
+            res_masks, scores, _ = self.predictor.predict(
+                features=features,
+                point_coords=points,
+                point_labels=labels,
+                multimask_output=True,
+            )
 
         return res_masks[np.argmax(scores), :, :]
 
