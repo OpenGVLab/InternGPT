@@ -29,6 +29,8 @@ RUN pip uninstall -y opencv-contrib-python-headless
 RUN pip install opencv-python-headless==4.6.0.66
 RUN pip install opencv-contrib-python==4.6.0.66
 
+RUN conda install torchvision=0.14.0 torchaudio=0.13.0 -c pytorch
+
 RUN git pull
 
 EXPOSE 7862

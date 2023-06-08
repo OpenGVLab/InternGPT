@@ -54,3 +54,15 @@ docker compose up
 docker compose run -i --entrypoint /bin/bash igpt
 
 ```
+
+## A note on dependencies:
+
+CUDA, torch, and opencv are notorious for version incompatibilities (mostly due to binaries being built against specific versions), so here's a quick checklist:
+
+1. `opencv` libraries should always have specified version numbers, and there should only ever be one set on the system
+
+2. `cuda` libraries should always have specified version numbers, but can exist independently using conda
+
+3. `torch` libraries should always have specified version numbers, especially for torchvision [here](https://pypi.org/project/torchvision/) and torchaudio [here](https://pytorch.org/audio/main/installation.html); always check `pytorch` and `python` versions before building
+
+If deploying as Swarm or via Kubernetes, note that the build directory should have access to tty, and individual clients should be paired with individual gpus or gpu partitions. See [here](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html).

@@ -8,6 +8,8 @@ services:
     volumes:
       - /data/InternGPT/model_zoo:/InternGPT/model_zoo
       - /data/InternGPT/certificate:/InternGPT/certificate
+      - /data/InternGPT/checkpoints:/InternGPT/checkpoints
+      - /data/InternGPT/.EasyOCR:/InternGPT/.EasyOCR/model
     entrypoint: "python"
     deploy:
       resources:
@@ -20,5 +22,5 @@ services:
       - "-u"
       - "app.py"
       - "--load"
-      - "ImageOCRRecognition_cuda:0,Text2Image_cuda:0,SegmentAnything_cuda:0,ActionRecognition_cuda:0,VideoCaption_cuda:0,DenseCaption_cuda:0,ReplaceMaskedAnything_cuda:0,LDMInpainting_cuda:0,SegText2Image_cuda:0,ScribbleText2Image_cuda:0,Image2Scribble_cuda:0,Image2Canny_cuda:0,CannyText2Image_cuda:0,StyleGAN_cuda:0,Anything2Image_cuda:0,HuskyVQA_cuda:0"
+      - "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0,Anything2Image_cuda:0,ReplaceMaskedAnything_cuda:0"
       - "--https"
