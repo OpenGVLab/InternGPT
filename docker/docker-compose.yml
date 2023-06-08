@@ -8,19 +8,20 @@ services:
     volumes:
       - /data/InternGPT/model_zoo:/InternGPT/model_zoo
       - /data/InternGPT/certificate:/InternGPT/certificate
-      - /data/InternGPT/checkpoints:/InternGPT/.checkpoints
+      - /data/InternGPT/checkpoints:/InternGPT/checkpoints
       - /data/InternGPT/.EasyOCR:/root/.EasyOCR/model
+      - /data/stable-diffusion-webui-docker/data/image_output:/InternGPT/image
     entrypoint: "python"
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              count: 1
+              count: all
               capabilities: [gpu]
     command:
       - "-u"
       - "app.py"
       - "--load"
-      - "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0,Anything2Image_cuda:0,ReplaceMaskedAnything_cuda:0"
+      - "HuskyVQA_cuda:0,SegmentAnything_cuda:0,Anything2Image_cuda:0"
       - "--https"
