@@ -9,7 +9,7 @@ services:
       - /data/InternGPT/model_zoo:/InternGPT/model_zoo
       - /data/InternGPT/certificate:/InternGPT/certificate
       - /data/InternGPT/checkpoints:/InternGPT/checkpoints
-      - /data/InternGPT/.EasyOCR:/InternGPT/.EasyOCR/model
+      - /data/InternGPT/.EasyOCR:/root/.EasyOCR/model
     entrypoint: "python"
     deploy:
       resources:
