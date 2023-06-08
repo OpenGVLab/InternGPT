@@ -83,7 +83,7 @@ class Text2Image:
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.pipe = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5",
                                                             torch_dtype=self.torch_dtype)
-        self.pipe.to(device)
+        
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                         'fewer digits, cropped, worst quality, low quality'
@@ -93,6 +93,9 @@ class Text2Image:
                          "like: generate an image of an object or something, or generate an image that includes some objects. "
                          "The input to this tool should be a string, representing the text used to generate image. ")
     def inference(self, text):
+
+        self.pipe.to(self.device)
+
         image_filename = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
         image_filename = gen_new_name(image_filename)
         prompt = text + ', ' + self.a_prompt
@@ -100,6 +103,9 @@ class Text2Image:
         image.save(image_filename)
         print(
             f"\nProcessed Text2Image, Input Text: {text}, Output Image: {image_filename}")
+
+        self.pipe.to("cpu")
+
         return image_filename
 
 
@@ -138,7 +144,8 @@ class CannyText2Image:
             "runwayml/stable-diffusion-v1-5", controlnet=self.controlnet, safety_checker=None,
             torch_dtype=self.torch_dtype)
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.to(device)
+        # self.pipe.to(device)
+        self.device = device
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                             'fewer digits, cropped, worst quality, low quality'
@@ -151,6 +158,8 @@ class CannyText2Image:
                          "representing the image_path and the user description. ")
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
+        # to device
+        self.pipe.to(self.device)
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
@@ -165,6 +174,9 @@ class CannyText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed CannyText2Image, Input Canny: {image_path}, Input Text: {instruct_text}, "
               f"Output Text: {updated_image_path}")
+        print("GPU memory: ", torch.cuda.memory_allocated())
+        self.pipe.to("cpu")
+        print("GPU memory: ", torch.cuda.memory_allocated())
         return updated_image_path
 
 
@@ -199,7 +211,8 @@ class LineText2Image:
             torch_dtype=self.torch_dtype
         )
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.to(device)
+        #self.pipe.to(device)
+        self.device = device 
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                             'fewer digits, cropped, worst quality, low quality'
@@ -212,6 +225,7 @@ class LineText2Image:
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and the user description. ")
     def inference(self, inputs):
+        self.pipe.to(self.device)
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
         w, h = image.size
@@ -227,6 +241,7 @@ class LineText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed LineText2Image, Input Line: {image_path}, Input Text: {instruct_text}, "
               f"Output Text: {updated_image_path}")
+        self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -261,7 +276,8 @@ class HedText2Image:
             torch_dtype=self.torch_dtype
         )
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.to(device)
+        self.device =device
+        # self.pipe.to(device)
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                             'fewer digits, cropped, worst quality, low quality'
@@ -274,6 +290,7 @@ class HedText2Image:
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and the user description")
     def inference(self, inputs):
+        self.pipe.to(self.device)
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
         w, h = image.size
@@ -289,6 +306,7 @@ class HedText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed HedText2Image, Input Hed: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
+        self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -323,7 +341,8 @@ class ScribbleText2Image:
             torch_dtype=self.torch_dtype
         )
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.to(device)
+        # self.pipe.to(device)
+        self.device = device 
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                             'fewer digits, cropped, worst quality, low quality'
@@ -335,6 +354,7 @@ class ScribbleText2Image:
                          "representing the image_path and the user description")
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
+        self.pipe.to(self.device)
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
@@ -349,6 +369,7 @@ class ScribbleText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed ScribbleText2Image, Input Scribble: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
+        self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -381,7 +402,8 @@ class PoseText2Image:
             "runwayml/stable-diffusion-v1-5", controlnet=self.controlnet, safety_checker=None,
             torch_dtype=self.torch_dtype)
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.to(device)
+        # self.pipe.to(device)
+        self.device = device
         self.num_inference_steps = 20
         self.unconditional_guidance_scale = 9.0
         self.a_prompt = 'best quality, extremely detailed'
@@ -396,6 +418,7 @@ class PoseText2Image:
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and the user description")
     def inference(self, inputs):
+        self.pipe.to(self.device)
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
         w, h = image.size
@@ -411,6 +434,7 @@ class PoseText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed PoseText2Image, Input Pose: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
+        self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -424,7 +448,8 @@ class SegText2Image:
             "runwayml/stable-diffusion-v1-5", controlnet=self.controlnet, safety_checker=None,
             torch_dtype=self.torch_dtype)
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.to(device)
+        # self.pipe.to(device)
+        self.device = device 
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
                             ' fewer digits, cropped, worst quality, low quality'
@@ -436,6 +461,7 @@ class SegText2Image:
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and the user description")
     def inference(self, inputs):
+        self.pipe.to(self.device)
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
         w, h = image.size
@@ -451,6 +477,7 @@ class SegText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed SegText2Image, Input Seg: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
+        self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -514,7 +541,8 @@ class DepthText2Image:
             "runwayml/stable-diffusion-v1-5", controlnet=self.controlnet, safety_checker=None,
             torch_dtype=self.torch_dtype)
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.to(device)
+        self.device = device 
+        # self.pipe.to(device)
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
                             ' fewer digits, cropped, worst quality, low quality'
@@ -526,6 +554,7 @@ class DepthText2Image:
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and the user description")
     def inference(self, inputs):
+        self.pipe.to(self.device)
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
         w, h = image.size
@@ -541,6 +570,7 @@ class DepthText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed DepthText2Image, Input Depth: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
+        self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -589,7 +619,8 @@ class NormalText2Image:
             "runwayml/stable-diffusion-v1-5", controlnet=self.controlnet, safety_checker=None,
             torch_dtype=self.torch_dtype)
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.to(device)
+        # self.pipe.to(device)
+        self.device = device 
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
                             ' fewer digits, cropped, worst quality, low quality'
@@ -601,6 +632,7 @@ class NormalText2Image:
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and the user description")
     def inference(self, inputs):
+        self.pipe.to(self.device)
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
         self.seed = random.randint(0, 65535)
@@ -612,6 +644,7 @@ class NormalText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed NormalText2Image, Input Normal: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
+        self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -625,7 +658,7 @@ class SegmentAnything:
         self.download_parameters()
         self.sam = sam_model_registry[model_type](checkpoint=self.model_checkpoint_path)
         self.predictor = SamPredictor(self.sam)
-        self.sam.to(device=device)
+        
 
     def download_parameters(self):
         url = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
@@ -671,6 +704,9 @@ class SegmentAnything:
         return filaname
     
     def segment_by_mask(self, mask, features):
+
+        # to device 
+        self.sam.to(device=self.device)
         random.seed(GLOBAL_SEED)
         idxs = np.nonzero(mask)
         num_points = min(max(1, int(len(idxs[0]) * 0.01)), 16)
@@ -687,15 +723,26 @@ class SegmentAnything:
             point_labels=labels,
             multimask_output=True,
         )
-
+        # to cpu 
+        print("Current allocated memory:", torch.cuda.memory_allocated())
+        self.sam.to(device="cpu")
+        print("Current allocated memory:", torch.cuda.memory_allocated())
         return res_masks[np.argmax(scores), :, :]
 
 
     def segment_anything(self, img):
         # img = cv2.imread(img_path)
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        
+        # to device 
+        self.sam.to(device=self.device)
+
         mask_generator = SamAutomaticMaskGenerator(self.sam)
         annos = mask_generator.generate(img)
+        # to cpu 
+        print("Current allocated memory:", torch.cuda.memory_allocated())
+        self.sam.to(device="cpu")
+        print("Current allocated memory:", torch.cuda.memory_allocated())
         return annos
     
     def get_detection_map(self, img_path):
@@ -705,8 +752,14 @@ class SegmentAnything:
         return detection_map
 
     def get_image_embedding(self, img):
-        return self.predictor.set_image(img)
+        # to device 
+        self.sam.to(device=self.device)
+        embedding = self.predictor.set_image(img)
+        # to cpu 
+        self.sam.to(device="cpu")
+        return embedding
 
+        
     def show_annos(self, anns):
         # From https://github.com/sail-sg/EditAnything/blob/main/sam2image.py#L91
         if len(anns) == 0:
@@ -791,9 +844,10 @@ class ReplaceMaskedAnything:
         self.device=device
         self.revision = 'fp16' if 'cuda' in device else None
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
+        # self.inpaint = StableDiffusionInpaintPipeline.from_pretrained(
+        #     "runwayml/stable-diffusion-inpainting", revision=self.revision, torch_dtype=self.torch_dtype).to(device)
         self.inpaint = StableDiffusionInpaintPipeline.from_pretrained(
-            "runwayml/stable-diffusion-inpainting", revision=self.revision, torch_dtype=self.torch_dtype).to(device)
-    
+            "runwayml/stable-diffusion-inpainting", revision=self.revision, torch_dtype=self.torch_dtype)
 
     @prompts(name="Replace The Masked Object",
              description="useful when you want to replace an object by clicking in the image "
@@ -801,7 +855,8 @@ class ReplaceMaskedAnything:
                          "like: replace the masked object with a new object or something. "
                          "The input to this tool should be a comma separated string of three, "
                          "representing the image_path and the mask_path and the prompt")
-    def inference(self, inputs):
+    def inference(self, inputs): 
+        self.inpaint.to(self.device)
         print("Inputs: ", inputs)
         image_path, mask_path = inputs.split(',')[:2]
         image_path = image_path.strip()
@@ -821,6 +876,7 @@ class ReplaceMaskedAnything:
         gen_img_path = gen_new_name(image_path, 'ReplaceMaskedAnything')
         gen_img.save(gen_img_path, 'PNG')
         print(f"\nProcessed ReplaceMaskedAnything, Input Image: {inputs}, Output Depth: {gen_img_path}.")
+        self.inpaint.to("cpu")
         return gen_img_path
 
 
@@ -913,17 +969,21 @@ class ImageCaptioning:
         self.device = device
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+        # self.model = BlipForConditionalGeneration.from_pretrained(
+        #     "Salesforce/blip-image-captioning-base", torch_dtype=self.torch_dtype).to(self.device)
         self.model = BlipForConditionalGeneration.from_pretrained(
-            "Salesforce/blip-image-captioning-base", torch_dtype=self.torch_dtype).to(self.device)
+            "Salesforce/blip-image-captioning-base", torch_dtype=self.torch_dtype)     
 
     @prompts(name="Get Photo Description",
              description="useful when you want to know what is inside the photo. receives image_path as input. "
                          "The input to this tool should be a string, representing the image_path. ")
     def inference(self, image_path):
+        self.model.to(self.device)
         inputs = self.processor(Image.open(image_path), return_tensors="pt").to(self.device, self.torch_dtype)
         out = self.model.generate(**inputs)
         captions = self.processor.decode(out[0], skip_special_tokens=True)
         print(f"\nProcessed ImageCaptioning, Input Image: {image_path}, Output Text: {captions}")
+        self.model.to("cpu")
         return captions
     
 
@@ -933,14 +993,17 @@ class VisualQuestionAnswering:
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.device = device
         self.processor = BlipProcessor.from_pretrained("Salesforce/blip-vqa-base")
+        # self.model = BlipForQuestionAnswering.from_pretrained(
+        #     "Salesforce/blip-vqa-base", torch_dtype=self.torch_dtype).to(self.device)
         self.model = BlipForQuestionAnswering.from_pretrained(
-            "Salesforce/blip-vqa-base", torch_dtype=self.torch_dtype).to(self.device)
+            "Salesforce/blip-vqa-base", torch_dtype=self.torch_dtype)
 
     @prompts(name="Answer Question About The Image",
              description="useful when you need an answer for a question based on an image. "
                          "like: what is the background color of the last image, how many cats in this figure, what is in this figure. "
                          "The input to this tool should be a comma separated string of two, representing the image_path and the question")
     def inference(self, inputs):
+        self.model.to(self.device)
         image_path, question = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         raw_image = Image.open(image_path).convert('RGB')
         inputs = self.processor(raw_image, question, return_tensors="pt").to(self.device, self.torch_dtype)
@@ -948,6 +1011,7 @@ class VisualQuestionAnswering:
         answer = self.processor.decode(out[0], skip_special_tokens=True)
         print(f"\nProcessed VisualQuestionAnswering, Input Image: {image_path}, Input Question: {question}, "
               f"Output Answer: {answer}")
+        self.model.to("cpu")
         return answer
     
 

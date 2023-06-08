@@ -40,10 +40,10 @@ def dense_pred_to_caption_only_name(predictions):
 
 def setup_cfg(args):
     cfg = get_cfg()
-    # if args["cpu"]:
-    #     cfg.MODEL.DEVICE="cpu"
+
     add_centernet_config(cfg)
     add_grit_config(cfg)
+    cfg.merge_from_file(args["config_file"])
     cfg.merge_from_file(args["config_file"])
     cfg.merge_from_list(args["opts"])
     # Set score_threshold for builtin models
@@ -54,6 +54,8 @@ def setup_cfg(args):
     cfg.MODEL.BEAM_SIZE = 1
     cfg.MODEL.ROI_HEADS.SOFT_NMS_ENABLED = False
     cfg.USE_ACT_CHECKPOINT = False
+    if args["device"]=="cpu":
+        cfg.MODEL.DEVICE="cpu"
     cfg.freeze()
     return cfg
 

@@ -11,13 +11,14 @@ class Anything2Image:
             "stabilityai/stable-diffusion-2-1-unclip", torch_dtype=torch.float16, variation="fp16"
         )
         self.device = device
-        self.pipe = pipe.to(device)
+        #self.pipe = pipe.to(device)
+        self.pipe = pipe
         self.pipe.enable_model_cpu_offload()
         self.pipe.enable_vae_slicing()
 
         self.model = ib.imagebind_huge(pretrained=True)
         self.model.eval()
-        self.model.to(device)
+        #self.model.to(device)
 
 
 class Audio2Image:
@@ -38,6 +39,10 @@ class Audio2Image:
                          "The input to this tool should be a string, representing the audio_path")
     @torch.no_grad()
     def inference(self, inputs):
+
+        self.pipe.to(self.device)
+        self.model.to(self.device)
+
         audio_paths = [inputs]
         embeddings = self.model.forward({
             ib.ModalityType.AUDIO: ib.load_and_transform_audio_data(audio_paths, self.device),
@@ -46,6 +51,10 @@ class Audio2Image:
         images = self.pipe(image_embeds=embeddings.half(), width=512, height=512).images
         new_img_name = gen_new_name(audio_paths[0], 'Audio2Image')
         images[0].save(new_img_name)
+
+        self.pipe.to("cpu")
+        self.model.to("cpu")
+
         return new_img_name
 
 
@@ -67,6 +76,10 @@ class Thermal2Image:
                          "The input to this tool should be a string, representing the image_path")
     @torch.no_grad()
     def inference(self, inputs):
+
+        self.pipe.to(self.device)
+        self.model.to(self.device)
+
         thermal_paths = [inputs]
         embeddings = self.model.forward({
             ib.ModalityType.THERMAL: ib.load_and_transform_thermal_data(thermal_paths, self.device),
@@ -75,6 +88,10 @@ class Thermal2Image:
         images = self.pipe(image_embeds=embeddings.half(), width=512, height=512).images
         new_img_name = gen_new_name(thermal_paths[0], 'Thermal2Image')
         images[0].save(new_img_name)
+
+        self.pipe.to("cpu")
+        self.model.to("cpu")
+
         return new_img_name
 
 
@@ -97,6 +114,8 @@ class AudioImage2Image:
                          "representing the image_path and audio_path")
     @torch.no_grad()
     def inference(self, inputs):
+        self.pipe.to(self.device)
+        self.model.to(self.device)
         print(f'AudioImage2Image: {inputs}')
         image_path, audio_path = inputs.split(',')
         image_path, audio_path = image_path.strip(), audio_path.strip()
@@ -112,6 +131,8 @@ class AudioImage2Image:
         images = self.pipe(image_embeds=embeddings.half(), width=512, height=512).images
         new_img_name = gen_new_name(audio_path, 'AudioImage2Image')
         images[0].save(new_img_name)
+        self.pipe.to(self.device)
+        self.model.to(self.device)
         return new_img_name
 
 
@@ -134,6 +155,10 @@ class AudioText2Image:
                          "representing audio_path and prompt")
     @torch.no_grad()
     def inference(self, inputs):
+
+        self.pipe.to(self.device)
+        self.model.to(self.device)
+
         audio_path  = inputs.split(',')[0]
         prompt = ','.join(inputs.split(',')[1:])
         audio_path = audio_path.strip()
@@ -154,4 +179,8 @@ class AudioText2Image:
         images = self.pipe(image_embeds=embeddings.half(), width=512, height=512).images
         new_img_name = gen_new_name(audio_paths[0], 'AudioText2Image')
         images[0].save(new_img_name)
+
+        self.pipe.to(self.device)
+        self.model.to(self.device)
+
         return new_img_name

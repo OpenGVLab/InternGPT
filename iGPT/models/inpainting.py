@@ -3,6 +3,7 @@ import sys
 import cv2
 import numpy as np
 import torch
+import ipdb
 from PIL import Image
 from .utils import gen_new_name, prompts
 import torch
@@ -44,7 +45,8 @@ class LDMInpainting:
         model = instantiate_from_config(config.model)
         self.download_parameters()
         model.load_state_dict(torch.load(self.model_checkpoint_path)["state_dict"], strict=False)
-        self.model = model.to(device=device)
+        #self.model = model.to(device=device)
+        self.model = model
         self.sampler = DDIMSampler(model)
     
     def download_parameters(self):
@@ -59,6 +61,10 @@ class LDMInpainting:
                          "representing the image_path and mask_path")
     @torch.no_grad()
     def inference(self, inputs):
+        #print("GPU memory: ", torch.cuda.memory_allocated())
+        self.model.to(device=self.device)    
+        #print("GPU memory: ", torch.cuda.memory_allocated())
+
         print(f'inputs: {inputs}')
         # image, mask, device
         img_path, mask_path = inputs.split(',')[0], inputs.split(',')[1]
@@ -73,7 +79,7 @@ class LDMInpainting:
         mask = np.array(mask)
         dilate_factor = cal_dilate_factor(mask.astype(np.uint8))
         mask = dilate_mask(mask, dilate_factor)
-        
+
         with self.model.ema_scope():
             batch = make_batch(image, mask, device=self.device)
             # encode masked image and concat downsampled mask
@@ -109,6 +115,9 @@ class LDMInpainting:
         print(
             f"\nProcessed LDMInpainting, Inputs: {inputs}, "
             f"Output Image: {new_img_name}")
+        #print("GPU memory: ", torch.cuda.memory_allocated())
+        self.model.to(device="cpu")
+        #print("GPU memory: ", torch.cuda.memory_allocated())
         return new_img_name
         # return inpainted
 

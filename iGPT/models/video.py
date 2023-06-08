@@ -28,7 +28,8 @@ class VideoCaption:
         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                         std=[0.229, 0.224, 0.225])
         self.transform = transforms.Compose([transforms.ToPILImage(),transforms.Resize((self.image_size,  self.image_size)), transforms.ToTensor(),self.normalize])
-        self.model = tag2text_caption(pretrained="model_zoo/tag2text_swin_14m.pth", image_size=self.image_size, vit='swin_b').eval().to(device)
+        #self.model = tag2text_caption(pretrained="model_zoo/tag2text_swin_14m.pth", image_size=self.image_size, vit='swin_b').eval().to(device)
+        self.model = tag2text_caption(pretrained="model_zoo/tag2text_swin_14m.pth", image_size=self.image_size, vit='swin_b').eval()
         self.load_video = LoadVideo()
         print("[INFO] initialize Caption model success!")
 
@@ -74,6 +75,8 @@ class VideoCaption:
     def inference(self, inputs):
         video_path = inputs.strip()
         data = self.load_video(video_path)
+        
+        self.model.to(device=self.device)
         # progress(0.2, desc="Loading Videos")
         tmp = []
         for _, img in enumerate(data):
@@ -94,6 +97,7 @@ class VideoCaption:
         self.result = caption
         self.tags = tags
         # return '. '.join(caption)
+        self.model.to(device="cpu")
         return caption
 
 
@@ -124,7 +128,7 @@ class ActionRecognition:
         self.device = device
         self.video_path = None
         # self.result = None
-        self.model = load_intern_action(device)
+        self.model = load_intern_action()
         self.transform = transform_action()
         self.toPIL = T.ToPILImage()
         self.load_video = LoadVideo()
@@ -136,6 +140,9 @@ class ActionRecognition:
                          "The input to this tool should be a string, "
                          "representing the video_path")
     def inference(self, inputs):
+        
+        self.model.to(self.device)
+        
         video_path = inputs.strip()
         # if self.video_path == video_path:
         #     return self.result
@@ -157,6 +164,9 @@ class ActionRecognition:
             prediction = F.softmax(prediction, dim=1).flatten()
             prediction = kinetics_classnames[str(int(prediction.argmax()))]
         # self.result = prediction
+        
+        self.model.to("cpu")
+        
         return prediction
 
 
