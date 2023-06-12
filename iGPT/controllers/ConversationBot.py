@@ -138,6 +138,7 @@ class ConversationBot:
         self.chat_disabled = chat_disabled
         self.models = {}
         self.audio_model = whisper.load_model("small").to('cuda:0')
+        #self.audio_model = whisper.load_model("small")
         # Load Basic Foundation Models
         for class_name, device in load_dict.items():
             self.models[class_name] = globals()[class_name](device=device)
@@ -156,7 +157,10 @@ class ConversationBot:
                 if e.startswith('inference'):
                     func = getattr(instance, e)
                     self.tools.append(Tool(name=func.name, description=func.description, func=func))
-    
+
+        print("Current allocated memory:", torch.cuda.memory_allocated())
+        print("models",set([type(e).__name__ for e in self.models.values()]))
+
     def init_agent(self):
         memory = ConversationBufferMemory(memory_key="chat_history", output_key='output')
         llm = OpenAI(temperature=0)
@@ -817,10 +821,11 @@ class ConversationBot:
             user_state[0]['StyleGAN']['seed'] = init_seed
 
         device = model.device
-        g_ema = model.g_ema
+        g_ema = model.g_ema.to(device=device)
         sample_z = torch.randn([1, 512], device=device)
         latent, noise = g_ema.prepare([sample_z])
         sample, F = g_ema.generate(latent, noise)
+        g_ema = model.g_ema.to(device="cpu")
         for i in range(len(noise)):
             if isinstance(noise[i], torch.Tensor):
                 noise[i] = noise[i].to('cpu')
@@ -897,6 +902,9 @@ class ConversationBot:
         step = 0
         device = model.device
         latent = latent.to(device)
+        # to device 
+        model.g_ema.to(device=device)
+
         F = F.to(device)
         for i in range(len(noise)):
             if isinstance(noise[i], torch.Tensor):
@@ -934,6 +942,7 @@ class ConversationBot:
                 AI_prompt = "Received. "
                 user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
                 del latent, sample2, F
+                model.g_ema.to(device="cpu")
                 torch.cuda.empty_cache()
                 torch.cuda.ipc_collect()
                 yield image, step, state, state, user_state

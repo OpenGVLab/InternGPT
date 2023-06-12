@@ -59,7 +59,7 @@ class LitEma(nn.Module):
           parameters: Iterable of `torch.nn.Parameter`; the parameters to be
             temporarily stored.
         """
-        self.collected_params = [param.clone() for param in parameters]
+        self.collected_params = [param.to("cpu").clone() for param in parameters]
 
     def restore(self, parameters):
         """

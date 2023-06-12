@@ -42,6 +42,10 @@ Otherwise, you might encounter issuses similar as [issue #5](https://github.com/
 
 ## Deploying with Docker
 
+Now, the docker is ready! Welcom to try it.
+
+For people in mainland China, please refer to https://github.com/OpenGVLab/InternGPT/blob/main/README_CN.md#%E4%BD%BF%E7%94%A8docker%E9%83%A8%E7%BD%B2
+
 Please add model_zoo and certificate folders to the root directory of this repo, and change `/path/to/model_zoo` and `/path/to/certificate` in `docker/docker-compose.yml` to model_zoo and certificate directories on your machine respectively.
 
 For more features of our iGPT, You can modify the `load` variable in the `command` section in the docker compose file.

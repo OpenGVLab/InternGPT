@@ -44,7 +44,7 @@ def transform_action():
         GroupNormalize(input_mean, input_std) 
     ])
 
-def load_intern_action(device):
+def load_intern_action():
     # Create an id to label name mapping
     kinetics_id_to_classname = {}
     for k, v in kinetics_classnames.items():
@@ -53,10 +53,11 @@ def load_intern_action(device):
     model_path = hf_hub_download(repo_id="Andy1621/uniformerv2", filename="k400+k710_uniformerv2_b16_8x224.pyth")
     # Pick a pretrained model 
     model = Intern_Action(intern_action_b16(pretrained=False, t_size=8, no_lmhra=True, temporal_downsample=False))
-    state_dict = torch.load(model_path, map_location=device)
+    #state_dict = torch.load(model_path, map_location=device)
+    state_dict = torch.load(model_path, map_location="cpu")
     model.load_state_dict(state_dict)
     # Set to eval mode and move to desired device
-    model = model.to(device)
+    # model = model.to(device)
     model = model.eval()
     return model
 

@@ -29,7 +29,8 @@ RUN git clone https://github.com/facebookresearch/detectron2 detectron2_repo && 
 
 RUN pip install --no-cache-dir imageio-ffmpeg
 
-ENV OPENAI_API_BASE=https://api.openai-proxy.com/v1
+# openai api proxy
+#ENV OPENAI_API_BASE=https://xxx.com
 
 RUN rm -rf InternGPT
 
