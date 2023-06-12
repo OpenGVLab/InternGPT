@@ -219,6 +219,6 @@ Welcome to discuss with us and continuously improve the user experience of Inter
 
 WeChat QR Code:
 
-<p align="center"><img src="https://github.com/Zeqiang-Lai/DragGAN/assets/26198430/962435d4-8858-4032-ab76-f8ae1e6b18c9" width="300"></p>
+<p align="center"><img src="https://github.com/Zeqiang-Lai/DragGAN/assets/26198430/8a2b033b-fb7a-47dc-a334-97a692e6e71e" width="300"></p>
 
 
