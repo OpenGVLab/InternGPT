@@ -17,6 +17,30 @@
 <!-- ## Description -->
 **InternGPT**(short for **iGPT**) / **InternChat**(short for **iChat**) is pointing-language-driven visual interactive system, allowing you to interact with ChatGPT by clicking, dragging and drawing using a pointing device. The name InternGPT stands for **inter**action, **n**onverbal, and Chat**GPT**. Different from existing interactive systems that rely on pure language, by incorporating pointing instructions, iGPT significantly improves the efficiency of communication between users and chatbots, as well as the accuracy of chatbots in vision-centric tasks, especially in complicated visual scenarios. Additionally, in iGPT, an auxiliary control mechanism is used to improve the control capability of LLM, and a large vision-language model termed **Husky** is fine-tuned for high-quality multi-modal dialogue (impressing ChatGPT-3.5-turbo with **93.89% GPT-4 Quality**).
 
+
+## 🤖💬 Online Demo
+**InternGPT** is online (see [https://igpt.opengvlab.com](https://igpt.opengvlab.com/)). Let's try it!
+
+[**NOTE**] It is possible that you are waiting in a lengthy queue. You can clone our repo and run it with your private GPU.
+
+**<a id="igpt_demo">iGPT Video Demo: </a>**
+
+<p align="center"><img src="./assets/demo_short.gif" width="500"></p>
+
+**<a id="draggan_demo">Video Demo with DragGAN: </a>**
+
+https://github.com/OpenGVLab/InternGPT/assets/13723743/529abde4-5dce-48de-bb38-0a0c199bb980
+
+**<a id="imagebind_demo">Video Demo with ImageBind: </a>**
+
+https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af
+
+
+https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
+
+
+
+
 ## 🥳 🚀 What's New 
 - (2023.05.31) It is with great regret that due to some emergency reasons, we have to suspend the online demo. If you want to experience all the features, please try them after deploying locally.
 
@@ -27,11 +51,6 @@
 - (2023.05.15) The [model_zoo](https://huggingface.co/spaces/OpenGVLab/InternGPT/tree/main/model_zoo) including HuskyVQA has been released! Try it on your local machine!
 
 - (2023.05.15) Our code is also publicly available on [Hugging Face](https://huggingface.co/spaces/OpenGVLab/InternGPT)! You can duplicate the repository and run it on your own GPUs.
-
-## 🤖💬 Online Demo
-**InternGPT** is online (see [https://igpt.opengvlab.com](https://igpt.opengvlab.com/)). Let's try it!
-
-[**NOTE**] It is possible that you are waiting in a lengthy queue. You can clone our repo and run it with your private GPU.
 
 ### 🧭 User Manual
 
@@ -60,23 +79,6 @@ You also can interactively operate, edit or generate the image as follows:
 - To **replace the masked reigon** in the image, you can send the message like: `"replace the masked region with {your prompt}"`;
 - To **generate a new image**, you can send the message like: `"generate a new image based on its segmentation describing {your prompt}"`
 - To **create a new image by your scribble**, you should press button **`Whiteboard`** and draw in the board. After drawing, you need to press the button **`Save`** and send the message like: `"generate a new image based on this scribble describing {your prompt}"`.
-
-
-**<a id="draggan_demo">Video Demo with DragGAN: </a>**
-
-https://github.com/OpenGVLab/InternGPT/assets/13723743/529abde4-5dce-48de-bb38-0a0c199bb980
-
-**<a id="imagebind_demo">Video Demo with ImageBind: </a>**
-
-https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af
-
-**<a id="igpt_demo">iGPT Video Demo: </a>**
-
-<p align="center"><img src="./assets/demo_short.gif" width="500"></p>
-
-https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
-
-
 
 
 ## 🗓️ Schedule
