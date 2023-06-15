@@ -17,9 +17,12 @@ CKPT_SIZE = {
 }
 
 class StyleGAN:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
+        self.e_mode = e_mode
         #self.g_ema = stylegan2().to(device)
         self.g_ema = stylegan2()
+        if self.e_mode is not True:
+            self.g_ema.to(device=self.device)
         self.device = device
         self.image_size = 1024
 
@@ -30,7 +33,8 @@ class StyleGAN:
     #                      "This tool does not need input")
     @torch.no_grad()
     def gen_image(self, inputs):
-        self.g_ema.to(device=self.device)
+        if self.e_mode:
+            self.g_ema.to(device=self.device)
         sample_z = torch.randn([1, 512], device=self.device)
         latent, noise = self.g_ema.prepare([sample_z])
         sample, F = self.g_ema.generate(latent, noise)
@@ -42,7 +46,8 @@ class StyleGAN:
         }
         new_img_name = gen_new_name('tmp', 'DragGAN')
         image.save(new_img_name)
-        self.g_ema.to(device="cpu")
+        if self.e_mode:
+            self.g_ema.to(device="cpu")
         return new_img_name
     
     def change_ckpt(self, ckpt=None):
