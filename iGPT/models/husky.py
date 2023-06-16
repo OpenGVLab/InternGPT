@@ -362,7 +362,8 @@ def download_if_not_exists(base_path, delta_path, new_path):
 class HuskyVQA:
     def __init__(
         self,
-        device
+        device,
+        e_mode
     ):
         model_path = 'model_zoo/husky-7b-v0_01'
         download_if_not_exists(base_path="model_zoo/llama", 

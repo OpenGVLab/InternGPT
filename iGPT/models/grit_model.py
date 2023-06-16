@@ -5,14 +5,17 @@ from .grit_src.image_dense_captions import image_caption_api, init_demo, dense_p
 from detectron2.data.detection_utils import read_image
 
 class DenseCaptioning():
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         self.device = device
         self.demo =  None
+        self.e_mode = e_mode
 
 
     def initialize_model(self):
-        #self.demo = init_demo(self.device)
-        self.demo = init_demo("cpu")
+        if self.e_mode is True:
+            self.demo = init_demo("cpu")
+        else:
+            self.demo = init_demo(self.device)
     def image_dense_caption_debug(self, image_src):
         dense_caption = """
         1. the broccoli is green, [0, 0, 333, 325]; 
@@ -30,10 +33,14 @@ class DenseCaptioning():
         return dense_caption
     
     def run_caption_api(self,image_src):
+        if self.e_mode:
+            self.demo.predictor.model.to(self.device)
         img = read_image(image_src, format="BGR")
         print(img.shape)
         predictions, visualized_output = self.demo.run_on_image(img,self.device)
         new_caption = dense_pred_to_caption_only_name(predictions)
+        if self.e_mode:
+            self.demo.predictor.model.to("cpu")
         return new_caption
 
     def run_caption_tensor(self,img):

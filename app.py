@@ -219,9 +219,10 @@ if __name__ == '__main__':
     parser.add_argument('--https', action='store_true')
     parser.add_argument('--load', type=str, default="HuskyVQA_cuda:0,ImageOCRRecognition_cuda:0,SegmentAnything_cuda:0")
     parser.add_argument('--tab', type=str, default="Audio,DragGAN,Image,Video")
+    parser.add_argument('-e', '--e-mode', action='store_true')
     args = parser.parse_args()
     load_dict = {e.split('_')[0].strip(): e.split('_')[1].strip() for e in args.load.split(',')}
-    bot = ConversationBot(load_dict=load_dict)
+    bot = ConversationBot(load_dict=load_dict, e_mode=args.e_mode)
     with gr.Blocks(theme=Seafoam(), css=css) as demo:
         state = gr.State([])
         # user_state is dict. Keys: [agent, memory, image_path, video_path, seg_mask, image_caption, OCR_res, ...]

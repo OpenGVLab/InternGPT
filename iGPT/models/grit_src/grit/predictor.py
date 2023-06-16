@@ -80,16 +80,10 @@ class VisualizationDemo(object):
         self.predictor = DefaultPredictor(cfg)
 
     def run_on_image(self, image,device):
-        #print("GPU memory: ", torch.cuda.memory_allocated())
-        self.predictor.model.to(device)
-        #print("GPU memory: ", torch.cuda.memory_allocated())
         predictions = self.predictor(image)
         # Convert image from OpenCV BGR format to Matplotlib RGB format.
         image = image[:, :, ::-1]
         visualizer = Visualizer_GRiT(image, instance_mode=self.instance_mode)
         instances = predictions["instances"].to(self.cpu_device)
         vis_output = visualizer.draw_instance_predictions(predictions=instances)
-        #print("GPU memory: ", torch.cuda.memory_allocated())
-        self.predictor.model.to("cpu")
-        #print("GPU memory: ", torch.cuda.memory_allocated())
         return predictions, vis_output

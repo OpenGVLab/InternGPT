@@ -36,17 +36,20 @@ def make_batch(image, mask, device):
 
 
 class LDMInpainting:
-    def __init__(self, device):
+    def __init__(self, device, e_mode):
         self.model_checkpoint_path = 'model_zoo/ldm_inpainting_big.ckpt'
         config = './iGPT/models/inpainting_src/ldm_inpainting/config.yaml'
         self.ddim_steps = 50
         self.device = device
+        self.e_mode = e_mode
         config = OmegaConf.load(config)
         model = instantiate_from_config(config.model)
         self.download_parameters()
         model.load_state_dict(torch.load(self.model_checkpoint_path)["state_dict"], strict=False)
-        #self.model = model.to(device=device)
-        self.model = model
+        if self.e_mode is not True:
+            self.model = model.to(device=device)
+        else:
+            self.model = model
         self.sampler = DDIMSampler(model)
     
     def download_parameters(self):
@@ -61,8 +64,8 @@ class LDMInpainting:
                          "representing the image_path and mask_path")
     @torch.no_grad()
     def inference(self, inputs):
-        #print("GPU memory: ", torch.cuda.memory_allocated())
-        self.model.to(device=self.device)    
+        if self.e_mode is not True:
+            self.model.to(device=self.device)
         #print("GPU memory: ", torch.cuda.memory_allocated())
 
         print(f'inputs: {inputs}')
@@ -115,9 +118,8 @@ class LDMInpainting:
         print(
             f"\nProcessed LDMInpainting, Inputs: {inputs}, "
             f"Output Image: {new_img_name}")
-        #print("GPU memory: ", torch.cuda.memory_allocated())
-        self.model.to(device="cpu")
-        #print("GPU memory: ", torch.cuda.memory_allocated())
+        if self.e_mode is not True:
+            self.model.to(device="cpu")
         return new_img_name
         # return inpainted
 

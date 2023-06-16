@@ -183,7 +183,7 @@ docker compose run -i --entrypoint /bin/bash igpt_cn
 运行以下 shell 可启动一个 gradio 服务：
 
 ```shell
-python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456
+python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 -e
 ```
 如果您想启用语音助手，请使用 openssl 生成证书：
 
@@ -194,8 +194,9 @@ openssl req -x509 -newkey rsa:4096 -keyout certificate/key.pem -out certificate/
 然后运行：
 
 ```shell
-python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https
+python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https -e
 ```
+如果您想减少响应时间并且有足够的显存容量，请移除命令中的`-e`选项。
 
 
 

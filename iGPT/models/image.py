@@ -77,13 +77,15 @@ class InstructPix2Pix:
 
 
 class Text2Image:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing Text2Image to {device}")
         self.device = device
+        self.e_mode = e_mode
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.pipe = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5",
                                                             torch_dtype=self.torch_dtype)
-        
+        if self.e_mode is not True:
+            self.pipe.to(self.device)
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                         'fewer digits, cropped, worst quality, low quality'
@@ -93,9 +95,8 @@ class Text2Image:
                          "like: generate an image of an object or something, or generate an image that includes some objects. "
                          "The input to this tool should be a string, representing the text used to generate image. ")
     def inference(self, text):
-
-        self.pipe.to(self.device)
-
+        if self.e_mode:
+            self.pipe.to(self.device)
         image_filename = os.path.join('image', f"{str(uuid.uuid4())[:6]}.png")
         image_filename = gen_new_name(image_filename)
         prompt = text + ', ' + self.a_prompt
@@ -103,14 +104,13 @@ class Text2Image:
         image.save(image_filename)
         print(
             f"\nProcessed Text2Image, Input Text: {text}, Output Image: {image_filename}")
-
-        self.pipe.to("cpu")
-
+        if self.e_mode:
+            self.pipe.to("cpu")
         return image_filename
 
 
 class Image2Canny:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print("Initializing Image2Canny")
         self.low_threshold = 100
         self.high_threshold = 200
@@ -135,7 +135,7 @@ class Image2Canny:
 
 
 class CannyText2Image:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing CannyText2Image to {device}")
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.controlnet = ControlNetModel.from_pretrained("fusing/stable-diffusion-v1-5-controlnet-canny",
@@ -144,8 +144,10 @@ class CannyText2Image:
             "runwayml/stable-diffusion-v1-5", controlnet=self.controlnet, safety_checker=None,
             torch_dtype=self.torch_dtype)
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        # self.pipe.to(device)
         self.device = device
+        self.e_mode = e_mode
+        if self.e_mode is not True:
+            self.pipe.to(device)
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                             'fewer digits, cropped, worst quality, low quality'
@@ -159,7 +161,8 @@ class CannyText2Image:
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         # to device
-        self.pipe.to(self.device)
+        if self.e_mode:
+            self.pipe.to(self.device)
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
@@ -174,14 +177,14 @@ class CannyText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed CannyText2Image, Input Canny: {image_path}, Input Text: {instruct_text}, "
               f"Output Text: {updated_image_path}")
-        print("GPU memory: ", torch.cuda.memory_allocated())
-        self.pipe.to("cpu")
-        print("GPU memory: ", torch.cuda.memory_allocated())
+        if self.e_mode:
+            self.pipe.to("cpu")
+            print("GPU memory: ", torch.cuda.memory_allocated())
         return updated_image_path
 
 
 class Image2Line:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print("Initializing Image2Line")
         self.detector = MLSDdetector.from_pretrained('lllyasviel/ControlNet')
 
@@ -246,7 +249,7 @@ class LineText2Image:
 
 
 class Image2Hed:
-    def __init__(self, device):
+    def __init__(self, device, e_mode):
         print("Initializing Image2Hed")
         self.detector = HEDdetector.from_pretrained('lllyasviel/ControlNet')
 
@@ -311,7 +314,7 @@ class HedText2Image:
 
 
 class Image2Scribble:
-    def __init__(self, device):
+    def __init__(self, device, e_mode):
         print("Initializing Image2Scribble")
         self.detector = HEDdetector.from_pretrained('lllyasviel/ControlNet')
 
@@ -331,7 +334,7 @@ class Image2Scribble:
 
 
 class ScribbleText2Image:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing ScribbleText2Image to {device}")
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.controlnet = ControlNetModel.from_pretrained("fusing/stable-diffusion-v1-5-controlnet-scribble",
@@ -341,7 +344,9 @@ class ScribbleText2Image:
             torch_dtype=self.torch_dtype
         )
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        # self.pipe.to(device)
+        self.e_mode = e_mode
+        if self.e_mode is not True:
+            self.pipe.to(device)
         self.device = device 
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
@@ -354,7 +359,8 @@ class ScribbleText2Image:
                          "representing the image_path and the user description")
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
-        self.pipe.to(self.device)
+        if self.e_mode:
+            self.pipe.to(self.device)
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
@@ -369,7 +375,8 @@ class ScribbleText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed ScribbleText2Image, Input Scribble: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
-        self.pipe.to("cpu")
+        if self.e_mode:
+            self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -439,7 +446,7 @@ class PoseText2Image:
 
 
 class SegText2Image:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing SegText2Image to {device}")
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.controlnet = ControlNetModel.from_pretrained("fusing/stable-diffusion-v1-5-controlnet-seg",
@@ -450,6 +457,9 @@ class SegText2Image:
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
         # self.pipe.to(device)
         self.device = device 
+        self.e_mode =e_mode
+        if self.e_mode is not True:
+            self.pipe.to(device)
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit,' \
                             ' fewer digits, cropped, worst quality, low quality'
@@ -461,7 +471,8 @@ class SegText2Image:
                          "The input to this tool should be a comma separated string of two, "
                          "representing the image_path and the user description")
     def inference(self, inputs):
-        self.pipe.to(self.device)
+        if self.e_mode:
+            self.pipe.to(self.device)
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         image = Image.open(image_path)
         w, h = image.size
@@ -477,7 +488,8 @@ class SegText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed SegText2Image, Input Seg: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
-        self.pipe.to("cpu")
+        if self.e_mode:
+            self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -649,17 +661,19 @@ class NormalText2Image:
 
 
 class SegmentAnything:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing SegmentAnything to {device}")
 
         self.device = device
+        self.e_mode = e_mode 
         self.model_checkpoint_path = "model_zoo/sam_vit_h_4b8939.pth"
         model_type = "vit_h"
         self.download_parameters()
         self.sam = sam_model_registry[model_type](checkpoint=self.model_checkpoint_path)
+        if self.e_mode is not True:
+            self.sam.to(device=self.device)
         self.predictor = SamPredictor(self.sam)
         
-
     def download_parameters(self):
         url = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
         if not os.path.exists(self.model_checkpoint_path):
@@ -706,7 +720,8 @@ class SegmentAnything:
     def segment_by_mask(self, mask, features):
 
         # to device 
-        self.sam.to(device=self.device)
+        if self.e_mode:
+            self.sam.to(device=self.device)
         random.seed(GLOBAL_SEED)
         idxs = np.nonzero(mask)
         num_points = min(max(1, int(len(idxs[0]) * 0.01)), 16)
@@ -724,25 +739,24 @@ class SegmentAnything:
             multimask_output=True,
         )
         # to cpu 
-        print("Current allocated memory:", torch.cuda.memory_allocated())
-        self.sam.to(device="cpu")
-        print("Current allocated memory:", torch.cuda.memory_allocated())
+        if self.e_mode:
+            self.sam.to(device="cpu") 
+            print("Current allocated memory:", torch.cuda.memory_allocated())
         return res_masks[np.argmax(scores), :, :]
-
 
     def segment_anything(self, img):
         # img = cv2.imread(img_path)
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
-        # to device 
-        self.sam.to(device=self.device)
-
+        # to device
+        if self.e_mode:
+            self.sam.to(device=self.device)
         mask_generator = SamAutomaticMaskGenerator(self.sam)
         annos = mask_generator.generate(img)
         # to cpu 
-        print("Current allocated memory:", torch.cuda.memory_allocated())
-        self.sam.to(device="cpu")
-        print("Current allocated memory:", torch.cuda.memory_allocated())
+        if self.e_mode:
+            self.sam.to(device="cpu")
+            print("Current allocated memory:", torch.cuda.memory_allocated())
         return annos
     
     def get_detection_map(self, img_path):
@@ -753,10 +767,13 @@ class SegmentAnything:
 
     def get_image_embedding(self, img):
         # to device 
-        self.sam.to(device=self.device)
+        if self.e_mode:
+            self.sam.to(device=self.device)
         embedding = self.predictor.set_image(img)
         # to cpu 
-        self.sam.to(device="cpu")
+        if self.e_mode:
+            self.sam.to(device="cpu")
+            print("Current allocated memory:", torch.cuda.memory_allocated())
         return embedding
 
         
@@ -839,15 +856,18 @@ class ExtractMaskedAnything:
 
 
 class ReplaceMaskedAnything:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing ReplaceMaskedAnything to {device}")
         self.device=device
+        self.e_mode = e_mode
         self.revision = 'fp16' if 'cuda' in device else None
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         # self.inpaint = StableDiffusionInpaintPipeline.from_pretrained(
         #     "runwayml/stable-diffusion-inpainting", revision=self.revision, torch_dtype=self.torch_dtype).to(device)
         self.inpaint = StableDiffusionInpaintPipeline.from_pretrained(
             "runwayml/stable-diffusion-inpainting", revision=self.revision, torch_dtype=self.torch_dtype)
+        if self.e_mode is not True:
+            self.inpaint.to(device)
 
     @prompts(name="Replace The Masked Object",
              description="useful when you want to replace an object by clicking in the image "
@@ -855,8 +875,9 @@ class ReplaceMaskedAnything:
                          "like: replace the masked object with a new object or something. "
                          "The input to this tool should be a comma separated string of three, "
                          "representing the image_path and the mask_path and the prompt")
-    def inference(self, inputs): 
-        self.inpaint.to(self.device)
+    def inference(self, inputs):
+        if self.e_mode is True:
+            self.inpaint.to(self.device)
         print("Inputs: ", inputs)
         image_path, mask_path = inputs.split(',')[:2]
         image_path = image_path.strip()
@@ -876,12 +897,13 @@ class ReplaceMaskedAnything:
         gen_img_path = gen_new_name(image_path, 'ReplaceMaskedAnything')
         gen_img.save(gen_img_path, 'PNG')
         print(f"\nProcessed ReplaceMaskedAnything, Input Image: {inputs}, Output Depth: {gen_img_path}.")
-        self.inpaint.to("cpu")
+        if self.e_mode is True:
+            self.inpaint.to("cpu")
         return gen_img_path
 
 
 class ImageOCRRecognition:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing ImageOCRRecognition to {device}")
         self.device = device
         self.reader = easyocr.Reader(['ch_sim', 'en'], gpu=device) # this needs to run only once to load the model into memory

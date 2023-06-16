@@ -132,7 +132,7 @@ def cut_dialogue_history(history_memory, keep_last_n_words=500):
 
 
 class ConversationBot:
-    def __init__(self, load_dict, chat_disabled=False):
+    def __init__(self, load_dict, e_mode=False, chat_disabled=False):
         print(f"Initializing InternGPT, load_dict={load_dict}")
         
         self.chat_disabled = chat_disabled
@@ -141,7 +141,7 @@ class ConversationBot:
         #self.audio_model = whisper.load_model("small")
         # Load Basic Foundation Models
         for class_name, device in load_dict.items():
-            self.models[class_name] = globals()[class_name](device=device)
+            self.models[class_name] = globals()[class_name](device=device,e_mode=e_mode)
 
         # Load Template Foundation Models
         for class_name, module in globals().items():
@@ -820,12 +820,16 @@ class ConversationBot:
             seed_everything(init_seed)
             user_state[0]['StyleGAN']['seed'] = init_seed
 
-        device = model.device
-        g_ema = model.g_ema.to(device=device)
+        device = model.device 
+        e_mode = model.e_mode
+        g_ema = model.g_ema
+        if e_mode is True:
+            g_ema.to(device=device)
         sample_z = torch.randn([1, 512], device=device)
         latent, noise = g_ema.prepare([sample_z])
         sample, F = g_ema.generate(latent, noise)
-        g_ema = model.g_ema.to(device="cpu")
+        if e_mode is True:
+            g_ema.to(device="cpu")
         for i in range(len(noise)):
             if isinstance(noise[i], torch.Tensor):
                 noise[i] = noise[i].to('cpu')
@@ -901,10 +905,10 @@ class ConversationBot:
             
         step = 0
         device = model.device
+        e_mode = model.e_mode
         latent = latent.to(device)
-        # to device 
-        model.g_ema.to(device=device)
-
+        if e_mode is True:
+            model.g_ema.to(device=device)
         F = F.to(device)
         for i in range(len(noise)):
             if isinstance(noise[i], torch.Tensor):
@@ -942,7 +946,8 @@ class ConversationBot:
                 AI_prompt = "Received. "
                 user_state[0]['agent'].memory.buffer += Human_prompt + 'AI: ' + AI_prompt
                 del latent, sample2, F
-                model.g_ema.to(device="cpu")
+                if e_mode is True:
+                    model.g_ema.to(device="cpu")
                 torch.cuda.empty_cache()
                 torch.cuda.ipc_collect()
                 yield image, step, state, state, user_state

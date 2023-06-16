@@ -18,8 +18,9 @@ from bark import SAMPLE_RATE, generate_audio
 
 
 class VideoCaption:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         self.device = device
+        self.e_mode = e_mode
         self.image_size = 384
         # self.threshold = 0.68
         self.video_path = None
@@ -30,6 +31,8 @@ class VideoCaption:
         self.transform = transforms.Compose([transforms.ToPILImage(),transforms.Resize((self.image_size,  self.image_size)), transforms.ToTensor(),self.normalize])
         #self.model = tag2text_caption(pretrained="model_zoo/tag2text_swin_14m.pth", image_size=self.image_size, vit='swin_b').eval().to(device)
         self.model = tag2text_caption(pretrained="model_zoo/tag2text_swin_14m.pth", image_size=self.image_size, vit='swin_b').eval()
+        if self.e_mode is not True:
+            self.model.to(device)
         self.load_video = LoadVideo()
         print("[INFO] initialize Caption model success!")
 
@@ -75,8 +78,8 @@ class VideoCaption:
     def inference(self, inputs):
         video_path = inputs.strip()
         data = self.load_video(video_path)
-        
-        self.model.to(device=self.device)
+        if self.e_mode:
+            self.model.to(device=self.device)
         # progress(0.2, desc="Loading Videos")
         tmp = []
         for _, img in enumerate(data):
@@ -97,7 +100,8 @@ class VideoCaption:
         self.result = caption
         self.tags = tags
         # return '. '.join(caption)
-        self.model.to(device="cpu")
+        if self.e_mode:
+            self.model.to(device="cpu")
         return caption
 
 
@@ -124,11 +128,14 @@ class Summarization:
 
 
 class ActionRecognition:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         self.device = device
+        self.e_mode = e_mode
         self.video_path = None
         # self.result = None
         self.model = load_intern_action()
+        if self.e_mode is not True:
+            self.model.to(self.device)
         self.transform = transform_action()
         self.toPIL = T.ToPILImage()
         self.load_video = LoadVideo()
@@ -140,8 +147,8 @@ class ActionRecognition:
                          "The input to this tool should be a string, "
                          "representing the video_path")
     def inference(self, inputs):
-        
-        self.model.to(self.device)
+        if self.e_mode:
+            self.model.to(self.device)
         
         video_path = inputs.strip()
         # if self.video_path == video_path:
@@ -164,16 +171,16 @@ class ActionRecognition:
             prediction = F.softmax(prediction, dim=1).flatten()
             prediction = kinetics_classnames[str(int(prediction.argmax()))]
         # self.result = prediction
-        
-        self.model.to("cpu")
+        if self.e_mode:
+            self.model.to("cpu")
         
         return prediction
 
 
 class DenseCaption:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         self.device = device
-        self.model = DenseCaptioning(device)
+        self.model = DenseCaptioning(device,e_mode)
         self.model.initialize_model()
         # self.model = self.model.to(device)
         self.load_video = LoadVideo()
