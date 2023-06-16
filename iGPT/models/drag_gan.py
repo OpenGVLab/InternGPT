@@ -19,11 +19,11 @@ CKPT_SIZE = {
 class StyleGAN:
     def __init__(self, device,e_mode):
         self.e_mode = e_mode
+        self.device = device
         #self.g_ema = stylegan2().to(device)
         self.g_ema = stylegan2()
         if self.e_mode is not True:
             self.g_ema.to(device=self.device)
-        self.device = device
         self.image_size = 1024
 
     # @prompts(name="Generate Image with StyleGAN",

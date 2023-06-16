@@ -110,7 +110,7 @@ class Text2Image:
 
 
 class Image2Canny:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print("Initializing Image2Canny")
         self.low_threshold = 100
         self.high_threshold = 200
@@ -184,7 +184,7 @@ class CannyText2Image:
 
 
 class Image2Line:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print("Initializing Image2Line")
         self.detector = MLSDdetector.from_pretrained('lllyasviel/ControlNet')
 
@@ -249,7 +249,7 @@ class LineText2Image:
 
 
 class Image2Hed:
-    def __init__(self, device):
+    def __init__(self, device, e_mode):
         print("Initializing Image2Hed")
         self.detector = HEDdetector.from_pretrained('lllyasviel/ControlNet')
 
@@ -314,7 +314,7 @@ class HedText2Image:
 
 
 class Image2Scribble:
-    def __init__(self, device):
+    def __init__(self, device, e_mode):
         print("Initializing Image2Scribble")
         self.detector = HEDdetector.from_pretrained('lllyasviel/ControlNet')
 
@@ -334,7 +334,7 @@ class Image2Scribble:
 
 
 class ScribbleText2Image:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing ScribbleText2Image to {device}")
         self.torch_dtype = torch.float16 if 'cuda' in device else torch.float32
         self.controlnet = ControlNetModel.from_pretrained("fusing/stable-diffusion-v1-5-controlnet-scribble",
@@ -344,7 +344,9 @@ class ScribbleText2Image:
             torch_dtype=self.torch_dtype
         )
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        # self.pipe.to(device)
+        self.e_mode = e_mode
+        if self.e_mode is not True:
+            self.pipe.to(device)
         self.device = device 
         self.a_prompt = 'best quality, extremely detailed'
         self.n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
@@ -357,7 +359,8 @@ class ScribbleText2Image:
                          "representing the image_path and the user description")
     def inference(self, inputs):
         image_path, instruct_text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
-        self.pipe.to(self.device)
+        if self.e_mode:
+            self.pipe.to(self.device)
         image = Image.open(image_path)
         w, h = image.size
         image = resize_800(image)
@@ -372,7 +375,8 @@ class ScribbleText2Image:
         image.save(updated_image_path)
         print(f"\nProcessed ScribbleText2Image, Input Scribble: {image_path}, Input Text: {instruct_text}, "
               f"Output Image: {updated_image_path}")
-        self.pipe.to("cpu")
+        if self.e_mode:
+            self.pipe.to("cpu")
         return updated_image_path
 
 
@@ -899,7 +903,7 @@ class ReplaceMaskedAnything:
 
 
 class ImageOCRRecognition:
-    def __init__(self, device):
+    def __init__(self, device,e_mode):
         print(f"Initializing ImageOCRRecognition to {device}")
         self.device = device
         self.reader = easyocr.Reader(['ch_sim', 'en'], gpu=device) # this needs to run only once to load the model into memory

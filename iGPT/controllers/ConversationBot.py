@@ -822,13 +822,14 @@ class ConversationBot:
 
         device = model.device 
         e_mode = model.e_mode
+        g_ema = model.g_ema
         if e_mode is True:
-            g_ema = model.g_ema.to(device=device)
+            g_ema.to(device=device)
         sample_z = torch.randn([1, 512], device=device)
         latent, noise = g_ema.prepare([sample_z])
         sample, F = g_ema.generate(latent, noise)
         if e_mode is True:
-            g_ema = model.g_ema.to(device="cpu")
+            g_ema.to(device="cpu")
         for i in range(len(noise)):
             if isinstance(noise[i], torch.Tensor):
                 noise[i] = noise[i].to('cpu')
