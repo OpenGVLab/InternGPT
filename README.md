@@ -221,6 +221,6 @@ Welcome to discuss with us and continuously improve the user experience of Inter
 
 WeChat QR Code:
 
-<p align="center"><img src="https://github.com/OpenGVLab/InternGPT/assets/13723743/87eee510-299b-48c4-967e-500569f56dec" width="300"></p>
+<p align="center"><img src="https://github.com/OpenGVLab/InternGPT/assets/13723743/7af9f4ad-4f25-4e66-891e-e69c43bcda81" width="300"></p>
 
 
