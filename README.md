@@ -40,6 +40,10 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4
 
 
 ## 🥳 🚀 What's New 
+- (2023.06.19) We optimize the GPU memory usage when executing the tools. Please refer to [Get Started](#get_started).
+
+- (2023.06.19) We update the [INSTALL.md](https://github.com/OpenGVLab/InternGPT/blob/main/INSTALL.md) which provides more detailed instructions for setting up environment.
+
 - (2023.05.31) It is with great regret that due to some emergency reasons, we have to suspend the online demo. If you want to experience all the features, please try them after deploying locally.
 
 - (2023.05.24) 🎉🎉🎉 We have supported the [DragGAN](https://github.com/Zeqiang-Lai/DragGAN)! Please see the [video demo](#draggan_demo) for the usage. Let's try this awesome feauture: [Demo](https://igpt.opengvlab.com/). （我们现在支持了功能完全的[DragGAN](https://github.com/Zeqiang-Lai/DragGAN)! 可以拖动、可以自定义图片，具体用法见[video demo](#draggan_demo)，复现的DragGAN代码在[这里](https://github.com/Zeqiang-Lai/DragGAN)，在线demo在[这里](https://igpt.opengvlab.com/)）
@@ -149,7 +153,7 @@ You also can interactively operate, edit or generate the image as follows:
 
 See [INSTALL.md](INSTALL.md)
 
-## 👨‍🏫 Get Started 
+## 👨‍🏫 **<a id="get_started">Get Started </a>
 
 Running the following shell can start a gradio service for our basic features:
 ```shell
