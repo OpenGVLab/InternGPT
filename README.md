@@ -153,7 +153,7 @@ You also can interactively operate, edit or generate the image as follows:
 
 See [INSTALL.md](INSTALL.md)
 
-## 👨‍🏫 **<a id="get_started">Get Started </a>
+## 👨‍🏫 <a id="get_started">Get Started </a>
 
 Running the following shell can start a gradio service for our basic features:
 ```shell
