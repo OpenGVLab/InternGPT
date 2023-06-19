@@ -23,9 +23,6 @@
 
 [**NOTE**] It is possible that you are waiting in a lengthy queue. You can clone our repo and run it with your private GPU.
 
-**<a id="igpt_demo">iGPT Video Demo: </a>**
-
-<p align="center"><img src="./assets/demo_short.gif" width="500"></p>
 
 **<a id="draggan_demo">Video Demo with DragGAN: </a>**
 
@@ -35,6 +32,7 @@ https://github.com/OpenGVLab/InternGPT/assets/13723743/529abde4-5dce-48de-bb38-0
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/bacf3e58-6c24-4c0f-8cf7-e0c4b8b3d2af
 
+**<a id="igpt_demo">iGPT Video Demo: </a>**
 
 https://github.com/OpenGVLab/InternGPT/assets/13723743/8fd9112f-57d9-4871-a369-4e1929aa2593
 
