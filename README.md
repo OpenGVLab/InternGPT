@@ -166,20 +166,23 @@ openssl req -x509 -newkey rsa:4096 -keyout certificate/key.pem -out certificate/
 
 and then run:
 ```shell
-python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" --port 3456 --https -e
+python -u app.py --load "HuskyVQA_cuda:0,SegmentAnything_cuda:0,ImageOCRRecognition_cuda:0" \
+--port 3456 --https -e
 ```
 
 For all features of our iGPT, you need to run:
 ```shell
 python -u app.py \
---load "ImageOCRRecognition_cuda:0,Text2Image_cuda:0,SegmentAnything_cuda:0,ActionRecognition_cuda:0,VideoCaption_cuda:0,DenseCaption_cuda:0,ReplaceMaskedAnything_cuda:0,LDMInpainting_cuda:0,SegText2Image_cuda:0,ScribbleText2Image_cuda:0,Image2Scribble_cuda:0,Image2Canny_cuda:0,CannyText2Image_cuda:0,StyleGAN_cuda:0,Anything2Image_cuda:0,HuskyVQA_cuda:0" -p 3456 --https -e
+--load "ImageOCRRecognition_cuda:0,Text2Image_cuda:0,SegmentAnything_cuda:0,ActionRecognition_cuda:0,VideoCaption_cuda:0,DenseCaption_cuda:0,ReplaceMaskedAnything_cuda:0,LDMInpainting_cuda:0,SegText2Image_cuda:0,ScribbleText2Image_cuda:0,Image2Scribble_cuda:0,Image2Canny_cuda:0,CannyText2Image_cuda:0,StyleGAN_cuda:0,Anything2Image_cuda:0,HuskyVQA_cuda:0" \
+-p 3456 --https -e
 ```
-Notice that running all the functions of iGPT requires larger GPU memory. So it is better to run iGPT on A100. If you want to reduce the response time and have enough GPU memory, you can remove the `-e` flag from the command.
+
+Notice that `-e` flag can save a lot of memory.
 
 ### Selectively Loading Features
 When you only want to try DragGAN, you just need to load StyleGAN and open the tab "DragGAN":
 ```shell
-python -u app.py --load "StyleGAN_cuda:0" --tab "DragGAN" --port 3456 --https
+python -u app.py --load "StyleGAN_cuda:0" --tab "DragGAN" --port 3456 --https -e
 ```
 
 In this situation, you can only use the functions of DragGAN, which frees you from some dependencies that you are not interested in.
