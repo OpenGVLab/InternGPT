@@ -35,6 +35,25 @@ class CLinear(nn.Module):
         weight = decompress(self.weight, default_compression_config)
         return F.linear(input, weight, self.bias)
 
+class CLinear_V2(nn.Module):
+    """Compressed Linear Layer."""
+
+    def __init__(self, weight, bias, device):
+        super().__init__()
+        self.weight = weight.data.to("cpu")
+        self.weight_int8 = self.weight
+        self.bias = bias
+        self.device = device
+    
+    def compress_weight(self):
+        self.weight_int8 = compress(self.weight.data.to(self.device), default_compression_config)
+
+    def forward(self, input: Tensor) -> Tensor:
+        weight = decompress(self.weight_int8, default_compression_config)
+        return F.linear(input, weight, self.bias)
+
+    def decompress_weight(self):
+        self.weight_int8 = self.weight
 
 def compress_module(module, target_device):
     for attr_str in dir(module):
@@ -48,7 +67,34 @@ def compress_module(module, target_device):
     for name, child in module.named_children():
         compress_module(child, target_device)
 
+def replace_linear(module, target_device):
+    for attr_str in dir(module):
+        target_attr = getattr(module, attr_str)
+        if type(target_attr) == torch.nn.Linear:
+            setattr(
+                module,
+                attr_str,
+                CLinear_V2(target_attr.weight, target_attr.bias, target_device),
+            )
+    for name, child in module.named_children():
+        replace_linear(child, target_device)
 
+def compress_module_V2(module):
+    for attr_str in dir(module):
+        target_attr = getattr(module, attr_str)
+        if type(target_attr) == CLinear_V2:
+            target_attr.compress_weight()
+    for name, child in module.named_children():
+        compress_module_V2(child)
+
+def decompress_module_V2(module):
+    for attr_str in dir(module):
+        target_attr = getattr(module, attr_str)
+        if type(target_attr) == CLinear_V2:
+            target_attr.decompress_weight()
+    for name, child in module.named_children():
+        decompress_module_V2(child)
+       
 def compress(tensor, config):
     """Simulate group-wise quantization."""
     if not config.enabled:

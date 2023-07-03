@@ -32,7 +32,7 @@ from .husky_src.conversation import (
     get_default_conv_template,
 )
 
-from .husky_src.compression import compress_module
+from .husky_src.compression import compress_module, replace_linear, compress_module_V2 ,decompress_module_V2
 from .utils import prompts, gen_new_name
 
 DEFAULT_UNK_TOKEN = "<unk>"
@@ -72,11 +72,11 @@ def load_model(
         model_path, low_cpu_mem_usage=True, **kwargs
     )
 
-    if load_8bit:
-        compress_module(model, device)
+    # if load_8bit:
+    #     compress_module(model, device)
 
-    if (device == "cuda" and num_gpus == 1) or device == "mps":
-        model.to(device)
+    # if (device == "cuda" and num_gpus == 1) or device == "mps":
+    #     model.to(device)
 
     if debug:
         print(model)
@@ -247,12 +247,23 @@ class Chat:
             conv_template="multi_model",
             temperature=0.7,
             max_new_tokens=512,
+            e_mode=False
     ):
         model, tokenizer = load_model(
             model_path, device, num_gpus, load_8bit=load_8bit
         )
+        self.load_8bit = load_8bit
         self.conv_template = conv_template
-        self.model = model.to(device)
+        self.e_mode = e_mode
+        if self.e_mode:
+            if load_8bit:
+                replace_linear(model, device)
+            self.model = model
+        else:
+            if load_8bit:
+                compress_module(model, device)
+            self.model = model.to(device)
+
         self.tokenizer = tokenizer
         num_queries = model.config.num_query_tokens
         self.image_processor = build_transform(input_size=224)
@@ -297,6 +308,10 @@ class Chat:
 
     @torch.no_grad()
     def get_image_embedding(self, image_file):
+        if self.e_mode:
+            if self.load_8bit:
+                compress_module_V2(self.model)
+            self.model.to(self.device)
         image = load_image(image_file)
         pixel_values = self.image_processor(image)
         pixel_values = pixel_values.unsqueeze(
@@ -326,6 +341,12 @@ class Chat:
         preds = generation_output.sequences
         outputs = self.tokenizer.batch_decode(
             preds, skip_special_tokens=True)[0]
+        if self.e_mode:
+            if self.load_8bit:
+                decompress_module_V2(self.model)
+            self.model.to("cpu")
+            # print("Max allocated memory:", torch.cuda.max_memory_allocated())
+            # print("Current allocated memory:", torch.cuda.memory_allocated())
         return outputs
     
     def reset(self):
@@ -378,6 +399,7 @@ class HuskyVQA:
             load_8bit=load_8bit,
             max_new_tokens=max_new_tokens,
             num_gpus=1,
+            e_mode=e_mode
         )
 
     # @prompts(name="Visual Question Answering or Image Caption",

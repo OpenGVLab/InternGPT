@@ -158,8 +158,6 @@ class ConversationBot:
                     func = getattr(instance, e)
                     self.tools.append(Tool(name=func.name, description=func.description, func=func))
 
-        print("Current allocated memory:", torch.cuda.memory_allocated())
-        print("models",set([type(e).__name__ for e in self.models.values()]))
 
     def init_agent(self):
         memory = ConversationBufferMemory(memory_key="chat_history", output_key='output')
@@ -544,6 +542,7 @@ class ConversationBot:
             
         print(f"\nProcessed run_text, Input text: {text}\nCurrent state: {state}\n"
               f"Current Memory: {agent.memory.buffer}")
+
         return state, state, user_state
     
     def run_audio(self, audio_path, state, user_state):
