@@ -27,4 +27,7 @@ tmp_files/
 .DS_Store
 
 # model files
-model_zoo/
+model_zoo
+shells/
+certificate/
+image/

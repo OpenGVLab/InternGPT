@@ -329,27 +329,27 @@ if __name__ == '__main__':
                     
                     whiteboard_mode.click(add_whiteboard, [], [click_img, ])
 
-                    click_img.upload(lambda: gr.update(visible=False), [], [send_btn]).then( 
+                    click_img.upload(lambda: gr.update(interactive=False), [], [send_btn]).then( 
                         bot.upload_image, [click_img, state, user_state], 
                         [chatbot, state, user_state]).then(
-                        lambda: gr.update(visible=True), [], [img_btn])
+                        lambda: gr.update(interactive=True), [], [img_btn])
                     
                     process_ocr_btn.click(
-                        lambda: gr.update(visible=False), [], [img_btn]).then(
+                        lambda: gr.update(interactive=False), [], [img_btn]).then(
                         bot.process_ocr, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                        lambda: gr.update(visible=True), [], [img_btn]
+                        lambda: gr.update(interactive=True), [], [img_btn]
                     )
                     
                     process_seg_btn.click(
-                        lambda: gr.update(visible=False), [], [img_btn]).then(
+                        lambda: gr.update(interactive=False), [], [img_btn]).then(
                         bot.process_seg, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                        lambda: gr.update(visible=True), [], [img_btn]
+                        lambda: gr.update(interactive=True), [], [img_btn]
                     )
                     
                     process_save_btn.click(
-                        lambda: gr.update(visible=False), [], [img_btn]).then(
+                        lambda: gr.update(interactive=False), [], [img_btn]).then(
                         bot.process_save, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                        lambda: gr.update(visible=True), [], [img_btn]
+                        lambda: gr.update(interactive=True), [], [img_btn]
                     )
                     clear_func = partial(bot.clear_user_state, True)
                     clear_btn.click(lambda: None, [], [click_img, ]).then(
@@ -379,27 +379,27 @@ if __name__ == '__main__':
             key_submit_button.click(login_func, [openai_api_key_text, ], [user_interface, openai_api_key_text, key_submit_button, user_state])
             
             txt.submit(
-                lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then(
-                lambda: gr.update(visible=False), [], [audio_switch]).then(
+                lambda: gr.update(interactive=False), [], [send_btn]).then(
+                lambda: gr.update(interactive=False), [], [txt]).then(
+                lambda: gr.update(interactive=False), [], [audio_switch]).then(
                 bot.run_text, [txt, state, user_state], [chatbot, state, user_state]).then(
                     lambda: "", None, [txt, ]).then(
-                lambda: gr.update(visible=True), [], [txt]).then(
-                    lambda: gr.update(visible=True), [], [send_btn]
+                lambda: gr.update(interactive=True), [], [txt]).then(
+                    lambda: gr.update(interactive=True), [], [send_btn]
                 ).then(
-                    lambda: gr.update(visible=True), [], [audio_switch]
+                    lambda: gr.update(interactive=True), [], [audio_switch]
                 )
 
             send_btn.click(
-                lambda: gr.update(visible=False), [], [send_btn]).then(
-                lambda: gr.update(visible=False), [], [txt]).then(
-                lambda: gr.update(visible=False), [], [audio_switch]).then(
+                lambda: gr.update(interactive=False), [], [send_btn]).then(
+                lambda: gr.update(interactive=False), [], [txt]).then(
+                lambda: gr.update(interactive=False), [], [audio_switch]).then(
                 bot.run_task, [audio_switch, txt, audio2text_input, state, user_state], [chatbot, state, user_state]).then(
                 lambda: "", None, [txt, ]).then(
-                lambda: gr.update(visible=True), [], [send_btn]).then(
-                    lambda: gr.update(visible=True), [], [txt]
+                lambda: gr.update(interactive=True), [], [send_btn]).then(
+                    lambda: gr.update(interactive=True), [], [txt]
                 ).then(
-                    lambda: gr.update(visible=True), [], [audio_switch]
+                    lambda: gr.update(interactive=True), [], [audio_switch]
                 )
             
             audio_switch.change(change_input_type, [audio_switch, ], [txt, audio2text_input])
