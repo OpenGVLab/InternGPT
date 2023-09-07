@@ -224,9 +224,9 @@ Thanks to the open source of the following projects:
 
 Welcome to discuss with us and continuously improve the user experience of InternGPT.
 
-WeChat QR Code:
+If you want to join our WeChat group, please scan the following QR Code to add our assistant as a Wechat friend:
 
-<p align="center"><img width="300" alt="image" src="https://github.com/OpenGVLab/DragGAN/assets/26198430/885cb87a-4acc-490d-8a45-96f3ab870611"><img width="300" alt="image" src="https://github.com/OpenGVLab/DragGAN/assets/26198430/e3f0807f-956a-474e-8fd2-1f7c22d73997"></p> 
+<p align="center"><img width="300" alt="image" src="https://github.com/OpenGVLab/DragGAN/assets/26198430/e3f0807f-956a-474e-8fd2-1f7c22d73997"></p> 
 
 
 
