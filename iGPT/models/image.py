@@ -316,7 +316,7 @@ class HedText2Image:
 class Image2Scribble:
     def __init__(self, device, e_mode):
         print("Initializing Image2Scribble")
-        self.detector = HEDdetector.from_pretrained('lllyasviel/ControlNet')
+        self.detector = HEDdetector.from_pretrained('lllyasviel/Annotators')
 
     @prompts(name="Sketch Detection On Image",
              description="useful when you want to generate a scribble of the image. "

@@ -332,24 +332,24 @@ if __name__ == '__main__':
                     click_img.upload(lambda: gr.update(interactive=False), [], [send_btn]).then( 
                         bot.upload_image, [click_img, state, user_state], 
                         [chatbot, state, user_state]).then(
-                        lambda: gr.update(interactive=True), [], [img_btn])
+                        lambda: gr.update(interactive=True), [], [send_btn])
                     
                     process_ocr_btn.click(
-                        lambda: gr.update(interactive=False), [], [img_btn]).then(
+                        lambda: gr.update(interactive=False), [], [process_ocr_btn]).then(
                         bot.process_ocr, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                        lambda: gr.update(interactive=True), [], [img_btn]
+                        lambda: gr.update(interactive=True), [], [process_ocr_btn]
                     )
                     
                     process_seg_btn.click(
-                        lambda: gr.update(interactive=False), [], [img_btn]).then(
+                        lambda: gr.update(interactive=False), [], [process_seg_btn]).then(
                         bot.process_seg, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                        lambda: gr.update(interactive=True), [], [img_btn]
+                        lambda: gr.update(interactive=True), [], [process_seg_btn]
                     )
                     
                     process_save_btn.click(
-                        lambda: gr.update(interactive=False), [], [img_btn]).then(
+                        lambda: gr.update(interactive=False), [], [process_save_btn]).then(
                         bot.process_save, [click_img, state, user_state], [click_img, chatbot, state, user_state]).then(
-                        lambda: gr.update(interactive=True), [], [img_btn]
+                        lambda: gr.update(interactive=True), [], [process_save_btn]
                     )
                     clear_func = partial(bot.clear_user_state, True)
                     clear_btn.click(lambda: None, [], [click_img, ]).then(
