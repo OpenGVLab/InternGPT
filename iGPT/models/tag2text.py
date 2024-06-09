@@ -400,9 +400,9 @@ def load_checkpoint_swinbase(model,url_or_filename,kwargs):
     elif kwargs['image_size'] == 608:
         vision_config_path = 'configs/swin/config_swinB_608.json'
     window_size = read_json(vision_config_path)['window_size']
-    # print('--------------')
-    # print(url_or_filename)
-    # print('--------------')
+    print('--------------')
+    print(url_or_filename)
+    print('--------------')
     if is_url(url_or_filename):
         cached_file = download_cached_file(url_or_filename, check_hash=False, progress=True)
         checkpoint = torch.load(cached_file, map_location='cpu') 

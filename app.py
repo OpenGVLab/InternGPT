@@ -23,8 +23,6 @@ import gradio as gr
 import gradio.themes.base as ThemeBase
 from gradio.themes.utils import colors, fonts, sizes
 
-from openai.error import APIConnectionError
-
 # from iGPT.models import *
 
 from iGPT.controllers import ConversationBot
@@ -160,9 +158,19 @@ def login_with_key(bot, debug, api_key):
             os.environ["OPENAI_API_KEY"] = api_key
             openai.api_key = api_key
             try:
-                llm = OpenAI(temperature=0)
-                llm('Hi!')
-                response = 'Success!'
+                response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant."},
+                        {"role": "user", "content": "Hi!"}
+                    ],
+                    temperature=0
+                )
+                response = response.choices[0].message['content'].strip()
+                print(response)
+                #llm = OpenAI(temperature=0)
+                #llm('Hi!')
+                #response = 'Success!'
                 is_error = False
                 user_state = bot.init_agent()
             except Exception as err:
