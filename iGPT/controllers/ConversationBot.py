@@ -16,7 +16,8 @@ from PIL import Image
 from langchain.agents.initialize import initialize_agent
 from langchain.agents.tools import Tool
 from langchain.chains.conversation.memory import ConversationBufferMemory
-from langchain.llms.openai import OpenAI
+
+from .llm_provider import create_llm
 
 from ..models import *
 from iGPT.models.utils import (gen_new_name, to_image, 
@@ -159,9 +160,9 @@ class ConversationBot:
                     self.tools.append(Tool(name=func.name, description=func.description, func=func))
 
 
-    def init_agent(self):
+    def init_agent(self, provider=None, api_key=None):
         memory = ConversationBufferMemory(memory_key="chat_history", output_key='output')
-        llm = OpenAI(temperature=0)
+        llm = create_llm(provider=provider, api_key=api_key, temperature=0)
         agent = initialize_agent(
                 self.tools,
                 llm,
