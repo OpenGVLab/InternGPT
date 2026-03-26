@@ -181,6 +181,33 @@ python -u app.py \
 
 Notice that `-e` flag can save a lot of memory.
 
+### Using MiniMax as LLM Provider
+
+InternGPT supports [MiniMax](https://www.minimax.io/) as an alternative LLM backend. MiniMax provides powerful language models (M2.7, M2.5) via an OpenAI-compatible API.
+
+**Option 1: Environment variables**
+
+Set the following environment variables before starting the app:
+```shell
+export LLM_PROVIDER=minimax
+export MINIMAX_API_KEY=your_minimax_api_key
+```
+
+If only `MINIMAX_API_KEY` is set (without `OPENAI_API_KEY`), MiniMax is auto-detected.
+
+**Option 2: UI selector**
+
+Select "minimax" from the provider dropdown on the login page and enter your MiniMax API key.
+
+**Available MiniMax models:**
+
+| Model | Description |
+|---|---|
+| `MiniMax-M2.7` | Latest flagship model (default) |
+| `MiniMax-M2.7-highspeed` | Fast variant of M2.7 |
+| `MiniMax-M2.5` | Previous generation, 204K context |
+| `MiniMax-M2.5-highspeed` | Fast variant of M2.5 |
+
 ### Selectively Loading Features
 When you only want to try DragGAN, you just need to load StyleGAN and open the tab "DragGAN":
 ```shell

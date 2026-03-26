@@ -28,6 +28,7 @@ from openai.error import APIConnectionError
 # from iGPT.models import *
 
 from iGPT.controllers import ConversationBot
+from iGPT.controllers.llm_provider import create_llm, detect_provider, MiniMaxLLM
 
 import openai
 from langchain.llms.openai import OpenAI
@@ -146,7 +147,7 @@ def cut_dialogue_history(history_memory, keep_last_n_words=500):
     return '\n' + '\n'.join(paragraphs)
 
 
-def login_with_key(bot, debug, api_key):
+def login_with_key(bot, debug, api_key, provider="openai"):
     # Just for debug
     print('===>logging in')
     user_state = [{}]
@@ -157,14 +158,18 @@ def login_with_key(bot, debug, api_key):
     else:
         if api_key and len(api_key) > 30:
             print(api_key)
-            os.environ["OPENAI_API_KEY"] = api_key
-            openai.api_key = api_key
             try:
-                llm = OpenAI(temperature=0)
+                if provider == "minimax":
+                    os.environ["MINIMAX_API_KEY"] = api_key
+                    llm = create_llm(provider="minimax", api_key=api_key)
+                else:
+                    os.environ["OPENAI_API_KEY"] = api_key
+                    openai.api_key = api_key
+                    llm = create_llm(provider="openai", api_key=api_key)
                 llm('Hi!')
                 response = 'Success!'
                 is_error = False
-                user_state = bot.init_agent()
+                user_state = bot.init_agent(provider=provider, api_key=api_key)
             except Exception as err:
                 # gr.update(visible=True)
                 print(err)
@@ -173,7 +178,7 @@ def login_with_key(bot, debug, api_key):
         else:
             is_error = True
             response = 'Incorrect key, please input again'
-        
+
         return gr.update(visible=not is_error), gr.update(visible=is_error), gr.update(visible=is_error, value=response), user_state
 
     
@@ -240,15 +245,21 @@ if __name__ == '__main__':
         )
 
         with gr.Row(visible=True, elem_id='login') as login:
-            with gr.Column(scale=0.6, min_width=0) :
+            with gr.Column(scale=0.4, min_width=0) :
                 openai_api_key_text = gr.Textbox(
-                    placeholder="Input openAI API key",
+                    placeholder="Input API key (OpenAI or MiniMax)",
                     show_label=False,
-                    label="OpenAI API Key",
+                    label="API Key",
                     lines=1,
                     type="password").style(container=False)
+            with gr.Column(scale=0.2, min_width=0):
+                provider_selector = gr.Dropdown(
+                    choices=["openai", "minimax"],
+                    value="openai",
+                    label="LLM Provider",
+                    show_label=False).style(container=False)
             with gr.Column(scale=0.4, min_width=0):
-                key_submit_button = gr.Button(value="Please log in with your OpenAI API Key", interactive=True, variant='primary').style(container=False) 
+                key_submit_button = gr.Button(value="Log in with your API Key", interactive=True, variant='primary').style(container=False) 
 
         with gr.Row(visible=False) as user_interface:
             with gr.Column(scale=0.5, elem_id="text_input") as chat_part:
@@ -375,8 +386,8 @@ if __name__ == '__main__':
             
 
             login_func = partial(login_with_key, bot, args.debug)
-            openai_api_key_text.submit(login_func, [openai_api_key_text], [user_interface, openai_api_key_text, key_submit_button, user_state])
-            key_submit_button.click(login_func, [openai_api_key_text, ], [user_interface, openai_api_key_text, key_submit_button, user_state])
+            openai_api_key_text.submit(login_func, [openai_api_key_text, provider_selector], [user_interface, openai_api_key_text, key_submit_button, user_state])
+            key_submit_button.click(login_func, [openai_api_key_text, provider_selector], [user_interface, openai_api_key_text, key_submit_button, user_state])
             
             txt.submit(
                 lambda: gr.update(interactive=False), [], [send_btn]).then(
